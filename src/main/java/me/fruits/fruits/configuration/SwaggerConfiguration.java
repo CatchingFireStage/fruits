@@ -3,19 +3,14 @@ package me.fruits.fruits.configuration;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.schema.ScalarType;
 import springfox.documentation.schema.WildcardType;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.ParameterType;
-import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -47,19 +42,19 @@ public class SwaggerConfiguration {
                                 typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
                                 typeResolver.resolve(WildcardType.class)))
                 .useDefaultResponseMessages(false)
-                .globalResponses(HttpMethod.GET,
-                        singletonList(new ResponseBuilder()
-                                .code("500")
-                                .description("500 message")
-                                .representation(MediaType.TEXT_XML)
-                                .apply(r ->
-                                        r.model(m ->
-                                                m.referenceModel(ref ->
-                                                        ref.key(k ->
-                                                                k.qualifiedModelName(q ->
-                                                                        q.namespace("some:namespace")
-                                                                                .name("ERROR"))))))
-                                .build()))
+//                .globalResponses(HttpMethod.GET,
+//                        singletonList(new ResponseBuilder()
+//                                .code("500")
+//                                .description("500 message")
+//                                .representation(MediaType.TEXT_XML)
+//                                .apply(r ->
+//                                        r.model(m ->
+//                                                m.referenceModel(ref ->
+//                                                        ref.key(k ->
+//                                                                k.qualifiedModelName(q ->
+//                                                                        q.namespace("some:namespace")
+//                                                                                .name("ERROR"))))))
+//                                .build()))
                 .securitySchemes(singletonList(apiKey()))
                 .securityContexts(singletonList(securityContext()))
                 .enableUrlTemplating(true)
@@ -71,7 +66,8 @@ public class SwaggerConfiguration {
                                 .in(ParameterType.QUERY)
                                 .required(true)
                                 .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
-                                .build()));
+                                .build()))
+                .apiInfo(apiInfo());
     }
 
     private ApiKey apiKey() {
@@ -92,6 +88,15 @@ public class SwaggerConfiguration {
         authorizationScopes[0] = authorizationScope;
         return singletonList(
                 new SecurityReference("mykey", authorizationScopes));
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("水果店铺")
+                .description("水果店铺api接口")
+//                .termsOfServiceUrl("http://127.0.0.1:6061/swagger-ui.html")
+                .version("1.0")
+                .build();
     }
 
 
