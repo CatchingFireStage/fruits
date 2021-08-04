@@ -19,7 +19,6 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.service.Tag;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.time.LocalDate;
@@ -34,7 +33,7 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 public class SwaggerConfiguration {
 
     @Bean
-    public Docket petApi(TypeResolver typeResolver){
+    public Docket petApi(TypeResolver typeResolver) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -72,8 +71,7 @@ public class SwaggerConfiguration {
                                 .in(ParameterType.QUERY)
                                 .required(true)
                                 .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
-                                .build()))
-                .tags(new Tag("Pet Service", "All apis relating to pets"));
+                                .build()));
     }
 
     private ApiKey apiKey() {
