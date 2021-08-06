@@ -33,7 +33,7 @@ public class SwaggerConfiguration {
 
         //全局添加参数
         List<RequestParameter> pars = new ArrayList<>();
-        pars.add(new RequestParameterBuilder().name("access-token").description("前台登录的token").required(true).in(ParameterType.HEADER).build());
+        pars.add(new RequestParameterBuilder().name("access-token-admin").description("前台登录的token").required(true).in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()
@@ -62,7 +62,7 @@ public class SwaggerConfiguration {
 
         //全局添加参数
         List<RequestParameter> pars = new ArrayList<>();
-        pars.add(new RequestParameterBuilder().name("access-token").description("后台登录的token").in(ParameterType.HEADER).build());
+        pars.add(new RequestParameterBuilder().name("access-token-mini").description("后台登录的token").in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()

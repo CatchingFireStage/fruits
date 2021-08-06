@@ -19,7 +19,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("{}",request.getRequestURI());
-        return true;
+        if(request.getRequestURI().indexOf("/admin/") == 0){
+            //todo admin拦截
+            return true;
+        }
+
+        return false;
     }
 
     /**
