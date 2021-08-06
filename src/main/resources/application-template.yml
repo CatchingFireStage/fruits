@@ -7,12 +7,22 @@ spring:
     password: 密码
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson: GMT+8
+
+#http服务配置
 server:
   port: 8080
 
+#swagger配置
 swagger:
   enable: true
   application-name: ${spring.application.name}
   application-version: 1.0
   application-description: springfox swagger 3.0整合Demo
   try-host: http://localhost:${server.port}
+
+#项目的一些配置
+fruits:
+  #后台登录账号配置
+  admin:
+    username: 后台账号
+    password: 后台密码
