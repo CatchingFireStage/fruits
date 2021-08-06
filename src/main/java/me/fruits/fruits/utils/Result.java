@@ -26,4 +26,8 @@ public class Result<T> {
     public static Result failed(FruitsException exception) {
         return new Result(exception.getErrCode(), exception.getMessage(), null);
     }
+
+    public static Result failed(String err) {
+        return new Result(FruitsException.DEFAULT_ERR, err, null);
+    }
 }
