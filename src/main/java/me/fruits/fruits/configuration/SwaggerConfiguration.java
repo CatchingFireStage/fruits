@@ -5,10 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.ScalarType;
+import springfox.documentation.builders.*;
 import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
@@ -18,6 +15,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -32,6 +30,10 @@ public class SwaggerConfiguration {
     public Docket adminApi(TypeResolver typeResolver) {
 
         ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/admin.*");
+
+        //全局添加参数
+        List<RequestParameter> pars = new ArrayList<>();
+        pars.add(new RequestParameterBuilder().name("access-token").description("前台登录的token").required(true).in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()
@@ -48,14 +50,7 @@ public class SwaggerConfiguration {
                 .securityContexts(singletonList(securityContext()))
                 .enableUrlTemplating(true)
                 //全局属性设置
-                .globalRequestParameters(
-                        singletonList(new springfox.documentation.builders.RequestParameterBuilder()
-                                .name("水果项目")
-                                .description("水果项目描述")
-                                .in(ParameterType.QUERY)
-                                .required(true)
-                                .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
-                                .build()))
+                .globalRequestParameters(pars)
                 .apiInfo(apiInfo());
     }
 
@@ -63,6 +58,11 @@ public class SwaggerConfiguration {
     @Bean
     public Docket miniApi(TypeResolver typeResolver){
         ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/mini.*");
+
+
+        //全局添加参数
+        List<RequestParameter> pars = new ArrayList<>();
+        pars.add(new RequestParameterBuilder().name("access-token").description("后台登录的token").required(true).in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()
@@ -79,14 +79,7 @@ public class SwaggerConfiguration {
                 .securityContexts(singletonList(securityContext()))
                 .enableUrlTemplating(true)
                 //全局属性设置
-                .globalRequestParameters(
-                        singletonList(new springfox.documentation.builders.RequestParameterBuilder()
-                                .name("水果项目")
-                                .description("水果项目描述")
-                                .in(ParameterType.QUERY)
-                                .required(true)
-                                .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
-                                .build()))
+                .globalRequestParameters(pars)
                 .apiInfo(apiInfo());
     }
 
@@ -129,7 +122,6 @@ public class SwaggerConfiguration {
         return new ApiInfoBuilder()
                 .title("水果店铺")
                 .description("水果店铺api接口")
-//                .termsOfServiceUrl("http://127.0.0.1:6061/swagger-ui.html")
                 .version("1.0")
                 .build();
     }

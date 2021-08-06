@@ -41,7 +41,7 @@ public class LoginService {
         LocalDateTime expires = nowTime.plusDays(1);
 
         JWTCreator.Builder builder = JWT.create()
-                .withAudience("fruits")
+                .withAudience("fruits-admin")
                 .withClaim("adminId", 1)
                 .withClaim("username", username)
                 .withExpiresAt(Date.from(expires.atZone(ZoneId.systemDefault()).toInstant()));
