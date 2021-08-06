@@ -13,6 +13,7 @@ import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -28,13 +29,14 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 public class SwaggerConfiguration {
 
     @Bean
-    public Docket petApi(TypeResolver typeResolver) {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+    public Docket adminApi(TypeResolver typeResolver) {
+
+        ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/admin.*");
+
+        return commentApiSelectorBuilder
                 .build()
                 .pathMapping("/")
+                .groupName("后台api")
                 .directModelSubstitute(LocalDate.class, String.class)
                 .genericModelSubstitutes(ResponseEntity.class)
                 .alternateTypeRules(
@@ -42,19 +44,6 @@ public class SwaggerConfiguration {
                                 typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
                                 typeResolver.resolve(WildcardType.class)))
                 .useDefaultResponseMessages(false)
-//                .globalResponses(HttpMethod.GET,
-//                        singletonList(new ResponseBuilder()
-//                                .code("500")
-//                                .description("500 message")
-//                                .representation(MediaType.TEXT_XML)
-//                                .apply(r ->
-//                                        r.model(m ->
-//                                                m.referenceModel(ref ->
-//                                                        ref.key(k ->
-//                                                                k.qualifiedModelName(q ->
-//                                                                        q.namespace("some:namespace")
-//                                                                                .name("ERROR"))))))
-//                                .build()))
                 .securitySchemes(singletonList(apiKey()))
                 .securityContexts(singletonList(securityContext()))
                 .enableUrlTemplating(true)
@@ -69,6 +58,52 @@ public class SwaggerConfiguration {
                                 .build()))
                 .apiInfo(apiInfo());
     }
+
+
+    @Bean
+    public Docket miniApi(TypeResolver typeResolver){
+        ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/mini.*");
+
+        return commentApiSelectorBuilder
+                .build()
+                .pathMapping("/")
+                .groupName("小程序api")
+                .directModelSubstitute(LocalDate.class, String.class)
+                .genericModelSubstitutes(ResponseEntity.class)
+                .alternateTypeRules(
+                        newRule(typeResolver.resolve(DeferredResult.class,
+                                typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
+                                typeResolver.resolve(WildcardType.class)))
+                .useDefaultResponseMessages(false)
+                .securitySchemes(singletonList(apiKey()))
+                .securityContexts(singletonList(securityContext()))
+                .enableUrlTemplating(true)
+                //全局属性设置
+                .globalRequestParameters(
+                        singletonList(new springfox.documentation.builders.RequestParameterBuilder()
+                                .name("水果项目")
+                                .description("水果项目描述")
+                                .in(ParameterType.QUERY)
+                                .required(true)
+                                .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
+                                .build()))
+                .apiInfo(apiInfo());
+    }
+
+    /**
+     * 获取公共的设置
+     * @param apiPrefix
+     */
+    private ApiSelectorBuilder getCommentApiSelectorBuilder(String apiPrefix){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                //paths和groupName搭配使用，可以进行多模块配置
+                .paths(PathSelectors.regex(apiPrefix));
+    }
+
+
+
 
     private ApiKey apiKey() {
         return new ApiKey("mykey", "api_key", "header");
