@@ -16,10 +16,14 @@ public class Result<T> {
     }
 
 
+    public static <T> Result<T> success(T data) {
+        return new Result(0, "", data);
+    }
+
     /**
      * 失败
      */
-    public static Result FAILED(FruitsException exception) {
+    public static Result failed(FruitsException exception) {
         return new Result(exception.getErrCode(), exception.getMessage(), null);
     }
 }

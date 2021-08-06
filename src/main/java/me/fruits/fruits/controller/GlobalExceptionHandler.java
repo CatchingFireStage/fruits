@@ -24,6 +24,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(FruitsException.class)
     @ResponseBody
     public Result FruitsExceptionHandler(HttpServletRequest request, FruitsException ex) {
-        return Result.FAILED(ex);
+        return Result.failed(ex);
     }
 }
