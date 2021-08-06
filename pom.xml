@@ -45,6 +45,11 @@
             <optional>true</optional>
         </dependency>
 
+        <!--        mysql驱动依赖-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
         <!--        mybatis依赖引入-->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -53,7 +58,6 @@
         </dependency>
 
     </dependencies>
-
 
 
     <build>
