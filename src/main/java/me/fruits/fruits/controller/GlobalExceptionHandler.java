@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 
 /**
  * 全局异常处理器
@@ -25,5 +26,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public Result FruitsExceptionHandler(HttpServletRequest request, FruitsException ex) {
         return Result.failed(ex);
+    }
+
+
+    /**
+     *
+     * @param constraintViolationException
+     * @return
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseBody
+    public Result ValidationExceptionHandler(ConstraintViolationException constraintViolationException){
+        return Result.failed(constraintViolationException.getMessage());
     }
 }

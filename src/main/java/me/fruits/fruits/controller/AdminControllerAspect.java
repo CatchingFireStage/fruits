@@ -42,7 +42,7 @@ public class AdminControllerAspect {
     public Object needLogin(ProceedingJoinPoint pjp) throws Throwable {
 
         //是否需要登录验证
-        boolean needLogin = true;
+        boolean needLogin = false;
 
         //反射获是否存在注解
         Signature signature = pjp.getSignature();
