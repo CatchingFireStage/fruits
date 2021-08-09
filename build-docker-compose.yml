@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   build:
-    container_name: maven_build
+    container_name: fruits_build
     image: maven:3.8.1-jdk-11
       #工作目录空间
     working_dir: /usr/src/mymaven

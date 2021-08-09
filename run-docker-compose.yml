@@ -1,7 +1,7 @@
 version: '3.7'
 services:
-  build:
-    container_name: maven_build
+  run:
+    container_name: fruits_run
     image: maven:3.8.1-jdk-11
     ports:
       - 8080:8080
