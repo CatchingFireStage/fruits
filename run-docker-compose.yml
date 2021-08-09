@@ -4,7 +4,7 @@ services:
     container_name: fruits_run
     image: maven:3.8.1-jdk-11
     ports:
-      - 8080:8080
+      - 8081:8081
     #工作目录空间
     working_dir: /usr/src/mymaven
     volumes:
