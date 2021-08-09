@@ -8,5 +8,5 @@ services:
     volumes:
       - ./:/usr/src/mymaven
       #重用maven库
-      - /home/xiaoyouyu/maven/3.8.1-jdk-11/repo:/root/.m2
+      - /home/xiaoyouyu/maven/3.8.1-jdk-11/repo:/usr/share/maven/ref/repository
     command: mvn clean package
