@@ -17,6 +17,11 @@ pipeline {
                  sh 'sudo docker-compose -f build-docker-compose.yml up'
              }
         }
+        stage('停止maven容器内打包,避免端口占用'){
+            steps {
+                 sh 'sudo docker-compose -f build-docker-compose.yml down'
+            }
+        }
         stage('停止运行java程序'){
               steps {
                  sh 'sudo docker-compose -f run-docker-compose.yml down'
