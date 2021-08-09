@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  build:
+    container_name: maven_build
+    image: maven:3.8.1-jdk-11
+      #工作目录空间
+    working_dir: /usr/src/mymaven
+    volumes:
+      - ./:/usr/src/mymaven
+      #重用maven库
+      - /home/xiaoyouyu/maven/3.8.1-jdk-11/repo:/root/.m2
+    command: mvn clean package
