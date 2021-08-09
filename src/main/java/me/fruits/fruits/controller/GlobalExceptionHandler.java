@@ -3,20 +3,19 @@ package me.fruits.fruits.controller;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.Result;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 
 /**
  * 全局异常处理器
  */
 @ControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
 
 
     /**
@@ -30,13 +29,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     /**
+     * 所有验证框架异常捕获处理
      *
-     * @param constraintViolationException
      * @return
      */
-    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
-    public Result ValidationExceptionHandler(ConstraintViolationException constraintViolationException){
-        return Result.failed(constraintViolationException.getMessage());
+    @ExceptionHandler(value = BindException.class)
+    public Result validationExceptionHandler(BindException exception) {
+        return Result.failed(exception.getAllErrors().get(0).getDefaultMessage());
+
     }
 }
