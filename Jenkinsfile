@@ -17,5 +17,15 @@ pipeline {
                  sh 'sudo docker-compose -f build-docker-compose.yml up'
              }
         }
+        stage('停止运行java程序'){
+              steps {
+                 sh 'sudo docker-compose -f run-docker-compose.yml down'
+              }
+        }
+        stage('开始运行java程序'){
+              steps {
+                 sh 'sudo docker-compose -f run-docker-compose.yml up -d'
+              }
+        }
     }
 }
