@@ -64,6 +64,12 @@
             <version>3.8.3</version>
         </dependency>
 
+        <!--        spring boot aop-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
     </dependencies>
 
 

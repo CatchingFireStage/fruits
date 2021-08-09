@@ -3,10 +3,17 @@ package me.fruits.fruits.service.admin;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import me.fruits.fruits.utils.AdminRequestHolder;
+import me.fruits.fruits.utils.FruitsException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -22,6 +29,9 @@ public class LoginService {
     private String password;
 
     private static final String SECRET = "123fruits123";
+
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * 登录
@@ -48,5 +58,24 @@ public class LoginService {
 
 
         return builder.sign(Algorithm.HMAC256(SECRET));
+    }
+
+
+    /**
+     * 注入jwtToken
+     */
+    public void injectJwtTokenContext() throws FruitsException {
+        String accessTokenAdmin = request.getHeader("access-token-admin");
+        try {
+            DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(accessTokenAdmin);
+            Claim adminId = verify.getClaim("adminId");
+            Claim username = verify.getClaim("username");
+            AdminDTO adminDTO = new AdminDTO();
+            adminDTO.setId(adminId.asLong());
+            adminDTO.setName(username.asString());
+            AdminRequestHolder.set(adminDTO);
+        } catch (JWTVerificationException e) {
+            throw new FruitsException(FruitsException.TOKEN_ERR, "token异常");
+        }
     }
 }
