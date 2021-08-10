@@ -57,12 +57,12 @@ public class SwaggerConfiguration {
 
     @Bean
     public Docket miniApi(TypeResolver typeResolver){
-        ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/mini.*");
+        ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/api.*");
 
 
         //全局添加参数
         List<RequestParameter> pars = new ArrayList<>();
-        pars.add(new RequestParameterBuilder().name("access-token-mini").description("后台登录的token").in(ParameterType.HEADER).build());
+        pars.add(new RequestParameterBuilder().name("access-token-api").description("登录的token").in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()

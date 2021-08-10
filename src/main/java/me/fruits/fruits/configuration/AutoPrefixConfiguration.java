@@ -16,7 +16,7 @@ public class AutoPrefixConfiguration implements WebMvcConfigurer {
      */
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer.addPathPrefix("/admin", HandlerTypePredicate.forBasePackage("me.fruits.fruits.controller.admin"));
-        configurer.addPathPrefix("/mini", HandlerTypePredicate.forBasePackage("me.fruits.fruits.controller.mini"));
+        configurer.addPathPrefix("/api", HandlerTypePredicate.forBasePackage("me.fruits.fruits.controller.api"));
     }
 
 }

@@ -1,4 +1,4 @@
-package me.fruits.fruits.controller.mini;
+package me.fruits.fruits.controller.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
