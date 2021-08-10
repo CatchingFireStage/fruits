@@ -2,7 +2,6 @@ package me.fruits.fruits.controller.admin.spu;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
@@ -10,7 +9,6 @@ import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
 import me.fruits.fruits.mapper.enums.IsInventoryEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
-import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +41,8 @@ public class SpuController {
 
     @GetMapping(value = "/spu")
     @ApiOperation("列表页")
-    public Result spu(PageVo pageVo) {
-        return Result.success(String.format("第%d页，每页%d条",pageVo.getP(),pageVo.getPageSize()));
+    public Result spu() {
+        return null;
     }
 
     @PostMapping(value = "/spu")
