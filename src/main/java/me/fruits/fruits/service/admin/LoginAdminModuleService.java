@@ -66,6 +66,9 @@ public class LoginAdminModuleService {
      */
     public void injectJwtTokenContext() throws FruitsException {
         String accessTokenAdmin = request.getHeader("access-token-admin");
+        if(accessTokenAdmin == null){
+            throw new FruitsException(FruitsException.TOKEN_ERR, "token异常");
+        }
         try {
             DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(accessTokenAdmin);
             Claim adminId = verify.getClaim("adminId");
