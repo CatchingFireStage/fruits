@@ -6,7 +6,7 @@ import org.springframework.util.ObjectUtils;
 /**
  * admin模块的RequestHolder
  */
-public class AdminRequestHolder {
+public class AdminModuleRequestHolder {
     private final static ThreadLocal<AdminDTO> threadLocal = new ThreadLocal<>();
 
     public static void set(AdminDTO adminDTO) {

@@ -7,7 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.utils.AdminRequestHolder;
+import me.fruits.fruits.utils.AdminModuleRequestHolder;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +73,7 @@ public class LoginAdminModuleService {
             AdminDTO adminDTO = new AdminDTO();
             adminDTO.setId(adminId.asLong());
             adminDTO.setName(username.asString());
-            AdminRequestHolder.set(adminDTO);
+            AdminModuleRequestHolder.set(adminDTO);
         } catch (JWTVerificationException e) {
             throw new FruitsException(FruitsException.TOKEN_ERR, "token异常");
         }
