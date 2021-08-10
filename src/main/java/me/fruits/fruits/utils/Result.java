@@ -23,11 +23,11 @@ public class Result<T> {
     /**
      * 失败
      */
-    public static Result failed(FruitsException exception) {
-        return new Result(exception.getErrCode(), exception.getMessage(), null);
+    public static Result<String> failed(FruitsException exception) {
+        return new Result<>(exception.getErrCode(), exception.getMessage(), null);
     }
 
-    public static Result failed(String err) {
-        return new Result(FruitsException.DEFAULT_ERR, err, null);
+    public static Result<String> failed(String err) {
+        return new Result<>(FruitsException.DEFAULT_ERR, err, null);
     }
 }

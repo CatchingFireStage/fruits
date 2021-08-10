@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(FruitsException.class)
     @ResponseBody
-    public Result FruitsExceptionHandler(HttpServletRequest request, FruitsException ex) {
+    public Result<String> FruitsExceptionHandler(HttpServletRequest request, FruitsException ex) {
         return Result.failed(ex);
     }
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(value = BindException.class)
-    public Result validationExceptionHandler(BindException exception) {
+    public Result<String> validationExceptionHandler(BindException exception) {
         return Result.failed(exception.getAllErrors().get(0).getDefaultMessage());
 
     }
