@@ -9,7 +9,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@TableName(value = "specification_spu")
+@TableName(value = "specification_value")
 public class SpecificationValue implements Serializable {
     private static final long serialVersionUID = 2441296441524352342L;
 
