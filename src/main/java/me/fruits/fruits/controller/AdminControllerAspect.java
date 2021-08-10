@@ -1,7 +1,7 @@
 package me.fruits.fruits.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import me.fruits.fruits.service.admin.LoginService;
+import me.fruits.fruits.service.admin.LoginAdminModuleService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -33,7 +33,7 @@ public class AdminControllerAspect {
 
 
     @Autowired
-    private LoginService loginService;
+    private LoginAdminModuleService loginService;
 
     /**
      * 接口是否需要登录的

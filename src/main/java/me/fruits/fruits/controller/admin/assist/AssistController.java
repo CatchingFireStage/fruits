@@ -3,7 +3,7 @@ package me.fruits.fruits.controller.admin.assist;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.admin.assist.vo.LoginRequest;
-import me.fruits.fruits.service.admin.LoginService;
+import me.fruits.fruits.service.admin.LoginAdminModuleService;
 import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class AssistController {
 
     @Autowired
-    private LoginService loginService;
+    private LoginAdminModuleService loginService;
 
 
     @ApiOperation("登录")

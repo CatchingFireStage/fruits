@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Service
 @Slf4j
-public class LoginService {
+public class LoginAdminModuleService {
 
     @Value("${fruits.admin.username}")
     private String username;
