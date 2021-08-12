@@ -2,6 +2,9 @@ package me.fruits.fruits.utils;
 
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.List;
+
 @Data
 public class Result<T> {
 
@@ -17,7 +20,15 @@ public class Result<T> {
 
 
     public static <T> Result<T> success(T data) {
-        return new Result(0, "", data);
+        return new Result<>(0, "", data);
+    }
+
+    public static Result<HashMap<String, Object>> success(long total, long pages, List<?> list) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("pages", pages);
+        data.put("list", list);
+        return new Result<>(0, "", data);
     }
 
     /**

@@ -1,6 +1,9 @@
 package me.fruits.fruits.service.spu;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.SpuMapper;
 import me.fruits.fruits.mapper.enums.IsInventoryEnum;
@@ -16,6 +19,18 @@ public class SpuAdminModuleService extends SpuService {
 
     @Autowired
     private SpuMapper spuMapper;
+
+    /**
+     * spu列表
+     */
+    public IPage<Spu> getSPUs(int p, int pageSize, String keyword) {
+
+        QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("name", keyword);
+        queryWrapper.orderByDesc("id");
+
+        return this.spuMapper.selectPage(new Page<>(p, pageSize), queryWrapper);
+    }
 
     /**
      * 添加一个spu

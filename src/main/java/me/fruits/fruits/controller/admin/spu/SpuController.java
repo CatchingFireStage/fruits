@@ -1,7 +1,9 @@
 package me.fruits.fruits.controller.admin.spu;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
@@ -41,8 +43,18 @@ public class SpuController {
 
     @GetMapping(value = "/spu")
     @ApiOperation("列表页")
-    public Result spu() {
-        return null;
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "p", value = "第几页", defaultValue = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "每页多少条", defaultValue = "20"),
+            @ApiImplicitParam(name = "keyword", value = "spu商品名搜索", defaultValue = "")
+    })
+    public Result spu(
+            @RequestParam(defaultValue = "1") Integer p,
+            @RequestParam(defaultValue = "50") Integer pageSize,
+            @RequestParam(defaultValue = "") String keyword
+    ) {
+        IPage<Spu> spUs = adminModuleService.getSPUs(p, pageSize, keyword);
+        return Result.success(spUs.getTotal(), spUs.getPages(), spUs.getRecords());
     }
 
     @PostMapping(value = "/spu")
