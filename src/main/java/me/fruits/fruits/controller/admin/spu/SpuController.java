@@ -11,11 +11,13 @@ import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
 import me.fruits.fruits.mapper.enums.IsInventoryEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
+import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -45,27 +47,26 @@ public class SpuController {
     @GetMapping(value = "/spu")
     @ApiOperation("列表页-spu")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "p", value = "第几页", example = "1"),
-            @ApiImplicitParam(name = "pageSize", value = "每页多少条", example = "20"),
             @ApiImplicitParam(name = "keyword", value = "spu商品名搜索", example = "")
     })
     public Result<HashMap<String, Object>> spu(
-            @RequestParam(defaultValue = "1") Integer p,
-            @RequestParam(defaultValue = "50") Integer pageSize,
-            @RequestParam(defaultValue = "") String keyword
+            @RequestParam(defaultValue = "") String keyword,
+            PageVo pageVo
     ) {
-        IPage<Spu> spUs = adminModuleService.getSPUs(p, pageSize, keyword);
+        IPage<Spu> spUs = adminModuleService.getSPUs(pageVo.getP(), pageVo.getPageSize(), keyword);
         return Result.success(spUs.getTotal(), spUs.getPages(), spUs.getRecords());
     }
 
     @PostMapping(value = "/spu")
     @ApiOperation(value = "添加-spu")
-    public Result<String> spu(@RequestBody @Valid AddSpuRequest addSpuRequest) {
+    public Result<String> spu(@RequestBody @Valid AddSpuRequest addSpuRequest, @RequestParam(value = "file")MultipartFile file) {
 
         Spu spu = new Spu();
         BeanUtils.copyProperties(addSpuRequest, spu);
 
-        adminModuleService.add(spu);
+        file.isEmpty();
+        file.getOriginalFilename();
+//        adminModuleService.add(spu);
         return Result.success("成功");
     }
 

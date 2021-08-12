@@ -9,6 +9,7 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddCategoryRequest;
 import me.fruits.fruits.mapper.po.SpuCategory;
 import me.fruits.fruits.service.spu.SpuCategoryAdminModuleService;
+import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +33,14 @@ public class SpuCategoryController {
     @GetMapping(value = "/categories")
     @ApiOperation("商品分类-列表页")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "p", value = "第几页", example = "1"),
-            @ApiImplicitParam(name = "pageSize", value = "每页多少条", example = "50"),
             @ApiImplicitParam(name = "keyword", value = "商品分类搜索名", example = "")
     })
     public Result<HashMap<String, Object>> categories(
-            @RequestParam(defaultValue = "1") Integer p,
-            @RequestParam(defaultValue = "50") Integer pageSize,
-            @RequestParam(defaultValue = "") String keyword
+            @RequestParam(defaultValue = "") String keyword,
+            PageVo pageVo
     ) {
-        //todo 列表页
-
-        IPage<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(p, pageSize, keyword);
+        
+        IPage<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(pageVo.getP(), pageVo.getPageSize(), keyword);
 
         return Result.success(spuCategories.getTotal(), spuCategories.getPages(), spuCategories.getRecords());
     }
