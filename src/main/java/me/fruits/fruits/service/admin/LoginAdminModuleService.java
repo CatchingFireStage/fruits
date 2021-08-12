@@ -48,7 +48,7 @@ public class LoginAdminModuleService {
 
         //过期时间,1天
         LocalDateTime nowTime = LocalDateTime.now();
-        LocalDateTime expires = nowTime.plusDays(1);
+        LocalDateTime expires = nowTime.plusDays(30);
 
         JWTCreator.Builder builder = JWT.create()
                 .withAudience("fruits-admin")

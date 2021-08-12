@@ -45,9 +45,9 @@ public class SpuController {
     @GetMapping(value = "/spu")
     @ApiOperation("列表页-spu")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "p", value = "第几页", defaultValue = "1"),
-            @ApiImplicitParam(name = "pageSize", value = "每页多少条", defaultValue = "20"),
-            @ApiImplicitParam(name = "keyword", value = "spu商品名搜索", defaultValue = "")
+            @ApiImplicitParam(name = "p", value = "第几页", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "每页多少条", example = "20"),
+            @ApiImplicitParam(name = "keyword", value = "spu商品名搜索", example = "")
     })
     public Result<HashMap<String, Object>> spu(
             @RequestParam(defaultValue = "1") Integer p,

@@ -48,7 +48,7 @@ public class SwaggerConfiguration {
                 .useDefaultResponseMessages(false)
                 .securitySchemes(singletonList(apiKey()))
                 .securityContexts(singletonList(securityContext()))
-                .enableUrlTemplating(true)
+//                .enableUrlTemplating(true)
                 //全局属性设置
                 .globalRequestParameters(pars)
                 .apiInfo(apiInfo());
@@ -77,7 +77,7 @@ public class SwaggerConfiguration {
                 .useDefaultResponseMessages(false)
                 .securitySchemes(singletonList(apiKey()))
                 .securityContexts(singletonList(securityContext()))
-                .enableUrlTemplating(true)
+//                .enableUrlTemplating(true)
                 //全局属性设置
                 .globalRequestParameters(pars)
                 .apiInfo(apiInfo());
