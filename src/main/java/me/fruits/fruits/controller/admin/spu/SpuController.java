@@ -54,7 +54,7 @@ public class SpuController {
         return Result.success(spUs.getTotal(), spUs.getPages(), spUs.getRecords());
     }
 
-    @PostMapping(value = "/spu" )
+    @PostMapping(value = "/spu", headers = "content-type=multipart/form-data")
     @ApiOperation(value = "添加-spu")
     public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) {
         Spu spu = new Spu();
