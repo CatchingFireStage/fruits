@@ -1,10 +1,7 @@
 package me.fruits.fruits.controller.admin.spu;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
 import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
@@ -57,10 +54,9 @@ public class SpuController {
         return Result.success(spUs.getTotal(), spUs.getPages(), spUs.getRecords());
     }
 
-    @PostMapping(value = "/spu")
+    @PostMapping(value = "/spu" )
     @ApiOperation(value = "添加-spu")
-    public Result<String> spu(@RequestBody @Valid AddSpuRequest addSpuRequest, @RequestParam(value = "file")MultipartFile file) {
-
+    public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) {
         Spu spu = new Spu();
         BeanUtils.copyProperties(addSpuRequest, spu);
 
