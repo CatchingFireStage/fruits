@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 @RequestMapping("/spu")
 @RestController(value = "AdminSpuCategoryController")
-@Api(tags = "SPU")
+@Api(tags = "SPU-分类")
 @AdminLogin
 @Validated
 public class SpuCategoryController {
@@ -39,7 +39,7 @@ public class SpuCategoryController {
             @RequestParam(defaultValue = "") String keyword,
             PageVo pageVo
     ) {
-        
+
         IPage<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(pageVo.getP(), pageVo.getPageSize(), keyword);
 
         return Result.success(spuCategories.getTotal(), spuCategories.getPages(), spuCategories.getRecords());
