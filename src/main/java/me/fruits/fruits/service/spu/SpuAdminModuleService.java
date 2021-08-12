@@ -26,7 +26,11 @@ public class SpuAdminModuleService extends SpuService {
     public IPage<Spu> getSPUs(int p, int pageSize, String keyword) {
 
         QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("name", keyword);
+
+        if (keyword != null && !keyword.equals("")) {
+            queryWrapper.like("name", keyword);
+        }
+
         queryWrapper.orderByDesc("id");
 
         return this.spuMapper.selectPage(new Page<>(p, pageSize), queryWrapper);

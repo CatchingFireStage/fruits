@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 
 /**
  * GET（SELECT）：从服务器取出资源（一项或多项）。
@@ -42,13 +43,13 @@ public class SpuController {
 
 
     @GetMapping(value = "/spu")
-    @ApiOperation("列表页")
+    @ApiOperation("列表页-spu")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "p", value = "第几页", defaultValue = "1"),
             @ApiImplicitParam(name = "pageSize", value = "每页多少条", defaultValue = "20"),
             @ApiImplicitParam(name = "keyword", value = "spu商品名搜索", defaultValue = "")
     })
-    public Result spu(
+    public Result<HashMap<String, Object>> spu(
             @RequestParam(defaultValue = "1") Integer p,
             @RequestParam(defaultValue = "50") Integer pageSize,
             @RequestParam(defaultValue = "") String keyword
@@ -58,7 +59,7 @@ public class SpuController {
     }
 
     @PostMapping(value = "/spu")
-    @ApiOperation(value = "添加一个spu")
+    @ApiOperation(value = "添加-spu")
     public Result<String> spu(@RequestBody @Valid AddSpuRequest addSpuRequest) {
 
         Spu spu = new Spu();
@@ -69,7 +70,7 @@ public class SpuController {
     }
 
     @PutMapping("/spu/{id}")
-    @ApiOperation(value = "更新一个spu")
+    @ApiOperation(value = "更新-spu")
     public Result<String> spu(@PathVariable long id, @RequestBody @Valid AddSpuRequest addSpuRequest) {
 
         Spu spu = new Spu();
@@ -81,7 +82,7 @@ public class SpuController {
     }
 
     @PatchMapping("/spu/{id}")
-    @ApiOperation(value = "更新是否有货状态")
+    @ApiOperation(value = "更新是否有货状态-spu")
     public Result<String> spu(@PathVariable long id, @RequestBody @Valid ChangeIsInventoryRequest changeIsInventoryRequest) {
 
         if (changeIsInventoryRequest.getIsInventory().equals(IsInventoryEnum.ON_INVENTORY.getValue())) {
@@ -97,7 +98,7 @@ public class SpuController {
 
 
     @DeleteMapping("/spu/{id}")
-    @ApiOperation(value = "删除一个spu")
+    @ApiOperation(value = "删除-spu")
     public Result<String> spu(@PathVariable long id) {
         return Result.failed("暂时不支持删除");
     }
