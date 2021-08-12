@@ -32,3 +32,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#fruits上传目录
+upload/

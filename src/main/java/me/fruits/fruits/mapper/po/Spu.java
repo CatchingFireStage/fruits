@@ -28,6 +28,9 @@ public class Spu implements Serializable {
     @ApiModelProperty("是否有货：0没有货：1有货")
     private Integer isInventory;
 
+    @ApiModelProperty("商品图片")
+    private String image;
+
     @ApiModelProperty("创建时间")
     private LocalDateTime createTime;
 

@@ -8,6 +8,8 @@ import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
 import me.fruits.fruits.mapper.enums.IsInventoryEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
+import me.fruits.fruits.service.upload.UploadService;
+import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -40,6 +43,9 @@ public class SpuController {
     @Autowired
     private SpuAdminModuleService adminModuleService;
 
+    @Autowired
+    private UploadService uploadService;
+
 
     @GetMapping(value = "/spu")
     @ApiOperation("列表页-spu")
@@ -56,13 +62,14 @@ public class SpuController {
 
     @PostMapping(value = "/spu", headers = "content-type=multipart/form-data")
     @ApiOperation(value = "添加-spu")
-    public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) {
+    public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
         Spu spu = new Spu();
         BeanUtils.copyProperties(addSpuRequest, spu);
 
-        file.isEmpty();
-        file.getOriginalFilename();
-//        adminModuleService.add(spu);
+        //图片处理
+        String path = uploadService.uploadBySpu(file);
+        spu.setImage(path);
+        adminModuleService.add(spu);
         return Result.success("成功");
     }
 
