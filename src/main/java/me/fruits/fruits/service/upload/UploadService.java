@@ -31,33 +31,33 @@ public class UploadService {
     @Value("${fruits.upload.visit-domain}")
     private String  visitDomain;
 
-
-    /**
-     * 返回imageVO
-     */
-    public void imageVo(String url){
-        if(url == null || url.length() == 0){
-//            return null;
-            return;
-        }
-
-        ImageVO imageVO = new ImageVO();
-        imageVO.setUrl(url);
-
-        if(url.startsWith("http://",0) || url.startsWith("https://",0)){
-            //外链url直接复制
-            imageVO.setFullUrl(url);
-        }else{
-            //自己系统的
-            String join = String.format("%s/%s",visitDomain,url);
-            imageVO.setFullUrl(join);
-        }
-
-        imageVO.setFileType("image");
-
-
-//        return imageVO;
-    }
+//
+//    /**
+//     * 返回imageVO
+//     */
+//    public void imageVo(String url){
+//        if(url == null || url.length() == 0){
+////            return null;
+//            return;
+//        }
+//
+//        ImageVO imageVO = new ImageVO();
+//        imageVO.setUrl(url);
+//
+//        if(url.startsWith("http://",0) || url.startsWith("https://",0)){
+//            //外链url直接复制
+//            imageVO.setFullUrl(url);
+//        }else{
+//            //自己系统的
+//            String join = String.format("%s/%s",visitDomain,url);
+//            imageVO.setFullUrl(join);
+//        }
+//
+//        imageVO.setFileType("image");
+//
+//
+////        return imageVO;
+//    }
 
 
     /**
