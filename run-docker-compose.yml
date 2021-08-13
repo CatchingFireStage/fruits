@@ -10,5 +10,5 @@ services:
     volumes:
       - ./:/usr/src/fruits
       #文件上传路径
-      - /home/xiaoyouyu/fruits/upload:/usr/src/fruits/upload
+      - /fruits/upload:/usr/src/fruits/upload
     command: java -jar ./target/fruits-0.0.1-SNAPSHOT.jar
