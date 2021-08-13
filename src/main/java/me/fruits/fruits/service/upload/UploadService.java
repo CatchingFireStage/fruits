@@ -8,14 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -101,14 +96,12 @@ public class UploadService {
         }
 
 
-        //创建目录成功，授权
-        FileAttribute<Set<PosixFilePermission>> attrs =
-                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx"));
 
         //创建目录
         File dir = new File(uploadFile.getParent());
-        Files.createDirectories(dir.toPath(),attrs);
+        dir.mkdirs();
 
+        Runtime.getRuntime().exec("chmod -R 755 " + dir.getAbsolutePath());
 
         if (!uploadFile.createNewFile()) {
             throw new FruitsException(FruitsException.DEFAULT_ERR, "文件创建失败，稍后重试");
