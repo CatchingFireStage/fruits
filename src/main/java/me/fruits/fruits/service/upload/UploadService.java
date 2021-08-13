@@ -11,9 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -99,20 +100,14 @@ public class UploadService {
             throw new FruitsException(FruitsException.DEFAULT_ERR, "文件已经存在，稍后重试");
         }
 
-        //创建目录
-        File dir = new File(uploadFile.getParent());
-        Path directories = Files.createDirectories(dir.toPath());
 
         //创建目录成功，授权
-        Set<PosixFilePermission> perms = new HashSet<>();
-        perms.add(PosixFilePermission.OWNER_READ);
-        perms.add(PosixFilePermission.OWNER_WRITE);
-        perms.add(PosixFilePermission.OWNER_EXECUTE);
-        perms.add(PosixFilePermission.GROUP_READ);
-        perms.add(PosixFilePermission.GROUP_WRITE);
-        perms.add(PosixFilePermission.GROUP_EXECUTE);
-        perms.add(PosixFilePermission.OTHERS_READ);
-        Files.setPosixFilePermissions(directories, perms);
+        FileAttribute<Set<PosixFilePermission>> attrs =
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx"));
+
+        //创建目录
+        File dir = new File(uploadFile.getParent());
+        Files.createDirectories(dir.toPath(),attrs);
 
 
         if (!uploadFile.createNewFile()) {
