@@ -6,7 +6,9 @@ services:
     ports:
       - 8081:8080
     #工作目录空间
-    working_dir: /usr/src/mymaven
+    working_dir: /usr/src/fruits
     volumes:
-      - ./:/usr/src/mymaven
+      - ./:/usr/src/fruits
+      #文件上传路径
+      - /home/xiaoyouyu/fruits/upload:/usr/src/fruits/upload
     command: java -jar ./target/fruits-0.0.1-SNAPSHOT.jar

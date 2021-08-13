@@ -4,9 +4,9 @@ services:
     container_name: fruits_build
     image: maven:3.8.1-jdk-11
       #工作目录空间
-    working_dir: /usr/src/mymaven
+    working_dir: /usr/src/fruits
     volumes:
-      - ./:/usr/src/mymaven
+      - ./:/usr/src/fruits
       #重用maven库
       - /home/xiaoyouyu/maven/3.8.1-jdk-11/m2:/root/.m2
     command: mvn clean package

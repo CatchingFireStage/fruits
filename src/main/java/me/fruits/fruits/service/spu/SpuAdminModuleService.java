@@ -35,14 +35,7 @@ public class SpuAdminModuleService extends SpuService {
 
         return this.spuMapper.selectPage(new Page<>(p, pageSize), queryWrapper);
     }
-
-    /**
-     * 添加一个spu
-     */
-    public void add(Spu spu) {
-        super.add(spu);
-    }
-
+    
     /**
      * 更新spu的分类、是否有有货
      */

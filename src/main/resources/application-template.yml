@@ -26,3 +26,8 @@ fruits:
   admin:
     username: 后台账号
     password: 后台密码
+  #上传文件
+  upload:
+    root-path: D:/javaProject/fruits/upload
+    visit-domain: http://fruits.com
+

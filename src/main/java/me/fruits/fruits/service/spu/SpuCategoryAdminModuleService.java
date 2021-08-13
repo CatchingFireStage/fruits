@@ -31,6 +31,7 @@ public class SpuCategoryAdminModuleService extends SpuCategoryService {
         return this.spuCategoryMapper.selectPage(new Page<>(p, pageSize), queryWrapper);
     }
 
+
     /**
      * 添加
      */

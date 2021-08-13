@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -28,6 +29,40 @@ public class UploadService {
     @Value("${spring.application.name}")
     private String project;
 
+    @Value("${fruits.upload.visit-domain}")
+    private String  visitDomain;
+
+
+    /**
+     * 返回imageVO
+     */
+    public  ImageVO ImageVo(String url){
+        if(url == null || url.length() == 0){
+            return null;
+        }
+
+        ImageVO imageVO = new ImageVO();
+        imageVO.setUrl(url);
+
+        if(url.startsWith("http://",0) || url.startsWith("https://",0)){
+            //外链url直接复制
+            imageVO.setFullUrl(url);
+        }else{
+            //自己系统的
+            String join = String.format("%s/%s",visitDomain,url);
+            imageVO.setFullUrl(join);
+        }
+
+        imageVO.setFileType("image");
+
+
+        return imageVO;
+    }
+
+
+    /**
+     * 上传文件，spu模块
+     */
     public String uploadBySpu(MultipartFile multipartFile) throws IOException, FruitsException {
         return this.upload("spu", multipartFile);
     }
@@ -50,12 +85,12 @@ public class UploadService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        Path relativePath = Paths.get(project, module, String.format("%d", now.getYear()),
-                String.format("%d", now.getMonth().getValue()),
-                String.format("%d", now.getDayOfMonth()),
-                fileName);
+        String relativePath = String.format("%s/%s/%d/%d/%d/%s",project,module,now.getYear(),now.getMonth().getValue(),now.getDayOfMonth(),fileName);
 
-        Path absPath = Paths.get(uploadRootPath, relativePath.toString());
+
+
+        //绝对路径
+        Path absPath = Paths.get(uploadRootPath, relativePath);
 
         File uploadFile = absPath.toFile();
         if(uploadFile.exists()){
@@ -73,6 +108,13 @@ public class UploadService {
 
         multipartFile.transferTo(uploadFile);
 
-        return relativePath.toString();
+
+        return relativePath;
+    }
+
+    public boolean delete(String uri){
+        Path absPath = Paths.get(uploadRootPath, uri);
+        File file = absPath.toFile();
+        return file.delete();
     }
 }
