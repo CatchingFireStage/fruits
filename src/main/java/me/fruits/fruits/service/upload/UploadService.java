@@ -99,9 +99,11 @@ public class UploadService {
 
         //创建目录
         File dir = new File(uploadFile.getParent());
-        dir.mkdirs();
-        
-        Runtime.getRuntime().exec("chmod -R 755 " + dir.getAbsolutePath());
+        if(!dir.exists()){
+            
+            dir.mkdirs();
+            Runtime.getRuntime().exec("chmod -R 755 " + dir.getAbsolutePath());
+        }
 
         if (!uploadFile.createNewFile()) {
             throw new FruitsException(FruitsException.DEFAULT_ERR, "文件创建失败，稍后重试");
