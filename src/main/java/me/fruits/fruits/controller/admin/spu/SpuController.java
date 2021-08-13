@@ -80,7 +80,7 @@ public class SpuController {
             item.put("id", spu.getId());
             item.put("name", spu.getName());
             item.put("isInventory", spu.getIsInventory());
-//            item.put("image", uploadService.imageVo(spu.getImage()));
+            item.put("image", uploadService.imageVo(spu.getImage()));
             item.put("category", categoryMapKeyIsId.getOrDefault(spu.getCategoryId(), null));
 
             response.add(item);
