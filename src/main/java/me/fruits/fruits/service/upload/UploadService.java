@@ -100,7 +100,7 @@ public class UploadService {
         //创建目录
         File dir = new File(uploadFile.getParent());
         dir.mkdirs();
-
+        
         Runtime.getRuntime().exec("chmod -R 755 " + dir.getAbsolutePath());
 
         if (!uploadFile.createNewFile()) {
