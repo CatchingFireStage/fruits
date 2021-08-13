@@ -101,18 +101,18 @@ public class UploadService {
 
         //创建目录
         File dir = new File(uploadFile.getParent());
-        if (dir.mkdirs()) {
-            //创建目录成功，授权
-            Set<PosixFilePermission> perms = new HashSet<>();
-            perms.add(PosixFilePermission.OWNER_READ);
-            perms.add(PosixFilePermission.OWNER_WRITE);
-            perms.add(PosixFilePermission.OWNER_EXECUTE);
-            perms.add(PosixFilePermission.GROUP_READ);
-            perms.add(PosixFilePermission.GROUP_WRITE);
-            perms.add(PosixFilePermission.GROUP_EXECUTE);
-            perms.add(PosixFilePermission.OTHERS_READ);
-            Files.setPosixFilePermissions(dir.toPath(), perms);
-        }
+        Path directories = Files.createDirectories(dir.toPath());
+
+        //创建目录成功，授权
+        Set<PosixFilePermission> perms = new HashSet<>();
+        perms.add(PosixFilePermission.OWNER_READ);
+        perms.add(PosixFilePermission.OWNER_WRITE);
+        perms.add(PosixFilePermission.OWNER_EXECUTE);
+        perms.add(PosixFilePermission.GROUP_READ);
+        perms.add(PosixFilePermission.GROUP_WRITE);
+        perms.add(PosixFilePermission.GROUP_EXECUTE);
+        perms.add(PosixFilePermission.OTHERS_READ);
+        Files.setPosixFilePermissions(directories, perms);
 
 
         if (!uploadFile.createNewFile()) {
