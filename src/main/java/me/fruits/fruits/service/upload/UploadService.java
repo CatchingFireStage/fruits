@@ -35,7 +35,7 @@ public class UploadService {
     /**
      * 返回imageVO
      */
-    public  ImageVO ImageVo(String url){
+    public  ImageVO imageVo(String url){
         if(url == null || url.length() == 0){
             return null;
         }
