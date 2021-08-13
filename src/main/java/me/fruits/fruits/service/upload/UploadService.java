@@ -1,6 +1,7 @@
 package me.fruits.fruits.service.upload;
 
 import lombok.extern.slf4j.Slf4j;
+import me.fruits.fruits.service.upload.vo.ImageVO;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class UploadService {
     /**
      * 返回imageVO
      */
-    public  ImageVO imageVo(String url){
+    public ImageVO imageVo(String url){
         if(url == null || url.length() == 0){
             return null;
         }
