@@ -8,9 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -29,26 +33,26 @@ public class UploadService {
     private String project;
 
     @Value("${fruits.upload.visit-domain}")
-    private String  visitDomain;
+    private String visitDomain;
 
 
     /**
      * 返回imageVO
      */
-    public ImageVO imageVo(String url){
-        if(url == null || url.length() == 0){
+    public ImageVO imageVo(String url) {
+        if (url == null || url.length() == 0) {
             return null;
         }
 
         ImageVO imageVO = new ImageVO();
         imageVO.setUrl(url);
 
-        if(url.startsWith("http://",0) || url.startsWith("https://",0)){
+        if (url.startsWith("http://", 0) || url.startsWith("https://", 0)) {
             //外链url直接复制
             imageVO.setFullUrl(url);
-        }else{
+        } else {
             //自己系统的
-            String join = String.format("%s/%s",visitDomain,url);
+            String join = String.format("%s/%s", visitDomain, url);
             imageVO.setFullUrl(join);
         }
 
@@ -84,25 +88,35 @@ public class UploadService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        String relativePath = String.format("%s/%s/%d/%d/%d/%s",project,module,now.getYear(),now.getMonth().getValue(),now.getDayOfMonth(),fileName);
-
+        String relativePath = String.format("%s/%s/%d/%d/%d/%s", project, module, now.getYear(), now.getMonth().getValue(), now.getDayOfMonth(), fileName);
 
 
         //绝对路径
         Path absPath = Paths.get(uploadRootPath, relativePath);
 
         File uploadFile = absPath.toFile();
-        if(uploadFile.exists()){
-            throw new FruitsException(FruitsException.DEFAULT_ERR,"文件已经存在，稍后重试");
+        if (uploadFile.exists()) {
+            throw new FruitsException(FruitsException.DEFAULT_ERR, "文件已经存在，稍后重试");
         }
 
         //创建目录
         File dir = new File(uploadFile.getParent());
-        dir.mkdirs();
+        if (dir.mkdirs()) {
+            //创建目录成功，授权
+            Set<PosixFilePermission> perms = new HashSet<>();
+            perms.add(PosixFilePermission.OWNER_READ);
+            perms.add(PosixFilePermission.OWNER_WRITE);
+            perms.add(PosixFilePermission.OWNER_EXECUTE);
+            perms.add(PosixFilePermission.GROUP_READ);
+            perms.add(PosixFilePermission.GROUP_WRITE);
+            perms.add(PosixFilePermission.GROUP_EXECUTE);
+            perms.add(PosixFilePermission.OTHERS_READ);
+            Files.setPosixFilePermissions(dir.toPath(), perms);
+        }
 
 
-        if(!uploadFile.createNewFile()){
-            throw new FruitsException(FruitsException.DEFAULT_ERR,"文件创建失败，稍后重试");
+        if (!uploadFile.createNewFile()) {
+            throw new FruitsException(FruitsException.DEFAULT_ERR, "文件创建失败，稍后重试");
         }
 
         multipartFile.transferTo(uploadFile);
@@ -111,7 +125,7 @@ public class UploadService {
         return relativePath;
     }
 
-    public boolean delete(String uri){
+    public boolean delete(String uri) {
         Path absPath = Paths.get(uploadRootPath, uri);
         File file = absPath.toFile();
         return file.delete();
