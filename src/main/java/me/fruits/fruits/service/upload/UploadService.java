@@ -35,9 +35,9 @@ public class UploadService {
     /**
      * 返回imageVO
      */
-    public ImageVO imageVo(String url){
+    public void imageVo(String url){
         if(url == null || url.length() == 0){
-            return null;
+            return ;
         }
 
         ImageVO imageVO = new ImageVO();
@@ -55,7 +55,8 @@ public class UploadService {
         imageVO.setFileType("image");
 
 
-        return imageVO;
+//        return imageVO;
+        return;
     }
 
 
