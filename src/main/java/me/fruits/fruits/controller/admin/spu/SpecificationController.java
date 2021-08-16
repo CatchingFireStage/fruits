@@ -1,5 +1,6 @@
 package me.fruits.fruits.controller.admin.spu;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -9,6 +10,7 @@ import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationRequest;
 import me.fruits.fruits.mapper.po.Specification;
 import me.fruits.fruits.service.spu.SpecificationAdminModuleService;
 import me.fruits.fruits.utils.FruitsException;
+import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +32,28 @@ public class SpecificationController {
     private SpecificationAdminModuleService specificationAdminModuleService;
 
 
+    @GetMapping(value = "/specifications")
+    @ApiOperation("规格-列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "规格名", example = "")
+    })
+    public Result specifications(
+            @RequestParam(required = false) String keyword,
+            PageVo pageVo
+    ) {
+
+        IPage<Specification> specifications = specificationAdminModuleService.getSpecifications(keyword, pageVo);
+
+        return Result.success(specifications.getTotal(),specifications.getPages(),specifications.getRecords());
+    }
+
+
     @GetMapping(value = "/search")
     @ApiOperation("规格-搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "规格名", example = "")
     })
-    public Result<List<Specification>> search(String keyword) throws IOException {
+    public Result<List<Specification>> search(@RequestParam String keyword) throws IOException {
 
         return Result.success(specificationAdminModuleService.getSpecifications(keyword));
     }
