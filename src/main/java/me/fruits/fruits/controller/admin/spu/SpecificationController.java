@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/spu")
@@ -34,7 +35,7 @@ public class SpecificationController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "规格名", example = "")
     })
-    public Result<List<Specification>> search(String keyword) {
+    public Result<List<Specification>> search(String keyword) throws IOException {
 
         return Result.success(specificationAdminModuleService.getSpecifications(keyword));
     }

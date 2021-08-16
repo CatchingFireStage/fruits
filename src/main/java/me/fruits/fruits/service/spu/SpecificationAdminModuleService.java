@@ -9,7 +9,11 @@ import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.wltea.analyzer.core.IKSegmenter;
+import org.wltea.analyzer.core.Lexeme;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
 @Service
@@ -19,9 +23,14 @@ public class SpecificationAdminModuleService extends SpecificationService {
     private SpecificationMapper specificationMapper;
 
 
-    public List<Specification> getSpecifications(String keyword) {
+    public List<Specification> getSpecifications(String keyword) throws IOException {
         QueryWrapper<Specification> queryWrapper = new QueryWrapper<>();
         if (keyword != null && !keyword.trim().equals("")) {
+            IKSegmenter ikSegmenter = new IKSegmenter(new StringReader(keyword), true);
+            Lexeme lex = null;
+            while ((lex = ikSegmenter.next()) != null) {
+                queryWrapper.like("name",lex.getLexemeText()).or();
+            }
             queryWrapper.like("name", keyword.trim());
         }
 
@@ -30,7 +39,6 @@ public class SpecificationAdminModuleService extends SpecificationService {
 
         return this.specificationMapper.selectList(queryWrapper);
     }
-
 
 
     public void update(long id, Specification specification) throws FruitsException {

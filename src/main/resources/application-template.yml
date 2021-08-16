@@ -30,4 +30,10 @@ fruits:
   upload:
     root-path: D:/javaProject/fruits/upload
     visit-domain: http://fruits.com
+#日志配置
+logging:
+  config: classpath:logback-spring.xml
+  #文件路径
+  file:
+    path: D:/javaProject/fruits/log/
 
