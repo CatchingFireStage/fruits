@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @RequestMapping("/spu")
@@ -37,7 +38,7 @@ public class SpecificationController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "规格名", example = "")
     })
-    public Result specifications(
+    public Result<HashMap<String, Object>> specifications(
             @RequestParam(required = false) String keyword,
             PageVo pageVo
     ) {
@@ -51,7 +52,7 @@ public class SpecificationController {
     @GetMapping(value = "/search")
     @ApiOperation("规格-搜索")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "keyword", value = "规格名", example = "")
+            @ApiImplicitParam(name = "keyword", value = "规格名")
     })
     public Result<List<Specification>> search(@RequestParam String keyword) throws IOException {
 
