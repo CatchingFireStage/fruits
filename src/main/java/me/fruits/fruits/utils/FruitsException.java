@@ -20,6 +20,11 @@ public class FruitsException extends Exception {
 
     private int errCode;
 
+    public FruitsException(String err){
+        super(err);
+        this.errCode = DEFAULT_ERR;
+    }
+
     public FruitsException(int errCode, String err) {
         super(err);
         this.errCode = errCode;

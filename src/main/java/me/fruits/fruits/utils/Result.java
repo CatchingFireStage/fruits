@@ -19,6 +19,10 @@ public class Result<T> {
     }
 
 
+    public static Result<String> success(){
+        return new Result<>(0, "","成功了哇");
+    }
+
     public static <T> Result<T> success(T data) {
         return new Result<>(0, "", data);
     }

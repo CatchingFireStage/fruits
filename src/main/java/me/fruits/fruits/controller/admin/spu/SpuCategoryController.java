@@ -9,6 +9,7 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddCategoryRequest;
 import me.fruits.fruits.mapper.po.SpuCategory;
 import me.fruits.fruits.service.spu.SpuCategoryAdminModuleService;
+import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
@@ -52,7 +53,7 @@ public class SpuCategoryController {
         SpuCategory spuCategory = new SpuCategory();
         BeanUtils.copyProperties(addCategoryRequest, spuCategory);
         spuCategoryAdminModuleService.add(spuCategory);
-        return Result.success("成功");
+        return Result.success();
     }
 
     @PutMapping(value = "/category/{id}")
@@ -62,7 +63,15 @@ public class SpuCategoryController {
         SpuCategory spuCategory = new SpuCategory();
         BeanUtils.copyProperties(addCategoryRequest, spuCategory);
         spuCategoryAdminModuleService.update(id, spuCategory);
-        return Result.success("成功");
+        return Result.success();
+    }
+
+
+    @DeleteMapping(value = "/category/{id}")
+    @ApiOperation("商品分类-删除")
+    public Result<String> category(@PathVariable long id) throws FruitsException {
+        spuCategoryAdminModuleService.delete(id);
+        return Result.success();
     }
 
 

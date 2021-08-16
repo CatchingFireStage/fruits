@@ -99,7 +99,7 @@ public class SpuController {
         String path = uploadService.uploadBySpu(file);
         spu.setImage(path);
         spuAdminModuleService.add(spu);
-        return Result.success("成功");
+        return Result.success();
     }
 
     @PutMapping("/spu/{id}")
@@ -111,7 +111,7 @@ public class SpuController {
 
         spuAdminModuleService.update(id, spu);
 
-        return Result.success("成功");
+        return Result.success();
     }
 
     @PatchMapping("/spu/{id}")
@@ -126,7 +126,7 @@ public class SpuController {
             return Result.failed("参数错误");
         }
 
-        return Result.success("成功");
+        return Result.success();
     }
 
 
@@ -136,7 +136,7 @@ public class SpuController {
 
         spuAdminModuleService.delete(id);
 
-        return Result.success("成功");
+        return Result.success();
     }
 
 
