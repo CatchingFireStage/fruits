@@ -20,19 +20,19 @@ public class Result<T> {
 
 
     public static Result<String> success(){
-        return new Result<>(0, "","成功了哇");
+        return new Result<>(0, "成功了哇",null);
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result<>(0, "", data);
+        return new Result<>(0, "成功了哇", data);
     }
 
-    public static <T> Result<T> success(long total, long pages, List<?> list) {
+    public static Result<?> success(long total, long pages, List<?> list) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("pages", pages);
         data.put("list", list);
-        return new Result(0, "", data);
+        return new Result<>(0, "", data);
     }
 
     /**
