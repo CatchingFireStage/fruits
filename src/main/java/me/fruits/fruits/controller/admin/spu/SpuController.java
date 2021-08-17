@@ -98,7 +98,14 @@ public class SpuController {
         return Result.success();
     }
 
-    @PatchMapping("/spu/{id}")
+    @PatchMapping("/spuChangeImg/{id}")
+    @ApiOperation("更新spu的图片")
+    public Result<String> spu(@PathVariable long id,@RequestPart("file") MultipartFile file) throws IOException, FruitsException {
+        spuAdminModuleService.update(id,file);
+        return Result.success();
+    }
+
+    @PatchMapping("/spuChangeIsInventory/{id}")
     @ApiOperation(value = "更新是否有货状态-spu")
     public Result<String> spu(@PathVariable long id, @RequestBody @Valid ChangeIsInventoryRequest changeIsInventoryRequest) {
 
