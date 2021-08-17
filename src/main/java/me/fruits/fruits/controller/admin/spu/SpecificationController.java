@@ -8,7 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationRequest;
 import me.fruits.fruits.mapper.po.Specification;
+import me.fruits.fruits.mapper.po.SpecificationValue;
 import me.fruits.fruits.service.spu.SpecificationAdminModuleService;
+import me.fruits.fruits.service.spu.SpecificationValueAdminModuleService;
 import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
@@ -19,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/spu")
 @RestController(value = "AdminSpecificationController")
@@ -31,6 +33,9 @@ public class SpecificationController {
 
     @Autowired
     private SpecificationAdminModuleService specificationAdminModuleService;
+
+    @Autowired
+    private SpecificationValueAdminModuleService specificationValueAdminModuleService;
 
 
     @GetMapping(value = "/specifications")
@@ -45,7 +50,45 @@ public class SpecificationController {
 
         IPage<Specification> specifications = specificationAdminModuleService.getSpecifications(keyword, pageVo);
 
-        return Result.success(specifications.getTotal(),specifications.getPages(),specifications.getRecords());
+        if (specifications.getRecords().size() == 0) {
+            return Result.success(specifications.getTotal(), specifications.getPages(), null);
+        }
+
+        //填充规格值
+        Set<Long> ids = specifications.getRecords().stream().map(Specification::getId).collect(Collectors.toSet());
+        Map<Long, List<SpecificationValue>> valueMapKeyIsId = specificationValueAdminModuleService.getSpecificationValues(ids).stream().collect(Collectors.groupingBy(SpecificationValue::getSpecificationId));
+
+
+        List<Object> response = new ArrayList<>();
+
+        specifications.getRecords().forEach(specification -> {
+
+            HashMap<String, Object> item = new HashMap<>();
+            item.put("id", specification.getId());
+            item.put("name", specification.getName());
+
+            //规格值
+            item.put("values", null);
+            if (valueMapKeyIsId.containsKey(specification.getId())) {
+                List<Object> values = new ArrayList<>();
+                valueMapKeyIsId.get(specification.getId()).forEach(value -> {
+
+                    HashMap<String, Object> valueItem = new HashMap<>();
+                    valueItem.put("id", value.getId());
+                    valueItem.put("value", value.getValue());
+
+                    values.add(valueItem);
+
+                });
+                item.put("values", values);
+            }
+
+
+            response.add(item);
+
+        });
+
+        return Result.success(specifications.getTotal(), specifications.getPages(), response);
     }
 
 

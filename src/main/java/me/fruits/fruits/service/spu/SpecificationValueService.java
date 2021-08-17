@@ -1,9 +1,13 @@
 package me.fruits.fruits.service.spu;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.fruits.fruits.mapper.SpecificationValueMapper;
 import me.fruits.fruits.mapper.po.SpecificationValue;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Set;
 
 public abstract class SpecificationValueService {
 
@@ -28,5 +32,11 @@ public abstract class SpecificationValueService {
     public boolean delete(long id) {
 
         return this.specificationValueMapper.deleteById(id) > 0;
+    }
+
+    public List<SpecificationValue> getSpecificationValues(Set<Long> ids){
+        QueryWrapper<SpecificationValue> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id",ids);
+        return this.specificationValueMapper.selectList(queryWrapper);
     }
 }
