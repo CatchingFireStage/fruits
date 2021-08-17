@@ -34,7 +34,7 @@ public class SpecificationController {
 
     @Autowired
     private SpecificationAdminModuleService specificationAdminModuleService;
-    
+
     @Autowired
     private WrapperDTOService wrapperDTOService;
 
@@ -55,7 +55,7 @@ public class SpecificationController {
             return Result.success(specifications.getTotal(), specifications.getPages(), null);
         }
 
-        List<SpecificationDTO> response = wrapperDTOService.wrapperSpecificationValues(specifications.getRecords());
+        List<SpecificationDTO> response = wrapperDTOService.wrapperSpecifications(specifications.getRecords());
 
         return Result.success(specifications.getTotal(), specifications.getPages(), response);
     }

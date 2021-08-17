@@ -29,7 +29,7 @@ public class WrapperDTOService {
      * @param specifications
      * @return
      */
-    public List<SpecificationDTO> wrapperSpecificationValues(List<Specification> specifications) {
+    public List<SpecificationDTO> wrapperSpecifications(List<Specification> specifications) {
 
         if (specifications == null || specifications.size() == 0) {
             return new ArrayList<>();
