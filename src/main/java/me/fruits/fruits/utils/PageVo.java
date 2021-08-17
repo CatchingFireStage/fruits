@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 public class PageVo {
 
     @ApiModelProperty(name = "p", value = "第几页", example = "1", notes = "第几页")
-    private Integer p;
+    private Integer p = 1;
 
     @ApiModelProperty(name = "pageSize", value = "每页多少条", example = "50", notes = "每页多少条")
-    private Integer pageSize;
+    private Integer pageSize = 50;
 }
