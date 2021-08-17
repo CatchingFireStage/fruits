@@ -7,9 +7,9 @@ import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
 import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
 import me.fruits.fruits.mapper.enums.IsInventoryEnum;
 import me.fruits.fruits.mapper.po.Spu;
-import me.fruits.fruits.mapper.po.SpuCategory;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
-import me.fruits.fruits.service.spu.SpuCategoryAdminModuleService;
+import me.fruits.fruits.service.spu.WrapperDTOService;
+import me.fruits.fruits.service.spu.dto.SpuDTO;
 import me.fruits.fruits.service.upload.UploadService;
 import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.PageVo;
@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * GET（SELECT）：从服务器取出资源（一项或多项）。
@@ -47,10 +46,10 @@ public class SpuController {
     private SpuAdminModuleService spuAdminModuleService;
 
     @Autowired
-    private SpuCategoryAdminModuleService spuCategoryAdminModuleService;
+    private UploadService uploadService;
 
     @Autowired
-    private UploadService uploadService;
+    private WrapperDTOService wrapperDTOService;
 
 
     @GetMapping(value = "/spu")
@@ -58,7 +57,7 @@ public class SpuController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "spu商品名搜索", example = "")
     })
-    public Result<HashMap<String, Object>> spu(
+    public Result<List<SpuDTO>> spu(
             @RequestParam(defaultValue = "") String keyword,
             PageVo pageVo
     ) {
@@ -69,24 +68,9 @@ public class SpuController {
             return Result.success(0, 0, null);
         }
 
-        Set<Long> categoryIds = spUs.getRecords().stream().map(Spu::getCategoryId).collect(Collectors.toSet());
-        Map<Long, SpuCategory> categoryMapKeyIsId = spuCategoryAdminModuleService.getSpuCategories(categoryIds).stream().collect(Collectors.toMap(SpuCategory::getId, spuCategory -> spuCategory));
+        List<SpuDTO> spuDTOS = wrapperDTOService.wrapperSPUs(spUs.getRecords());
 
-
-        List<Object> response = new ArrayList<>();
-
-        spUs.getRecords().forEach(spu -> {
-            Map<String, Object> item = new HashMap<>();
-            item.put("id", spu.getId());
-            item.put("name", spu.getName());
-            item.put("isInventory", spu.getIsInventory());
-            item.put("image", uploadService.imageVo(spu.getImage()));
-            item.put("category", categoryMapKeyIsId.getOrDefault(spu.getCategoryId(), null));
-
-            response.add(item);
-        });
-
-        return Result.success(spUs.getTotal(), spUs.getPages(), response);
+        return Result.success(spUs.getTotal(), spUs.getPages(), spuDTOS);
     }
 
     @PostMapping(value = "/spu", headers = "content-type=multipart/form-data")

@@ -8,9 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationRequest;
 import me.fruits.fruits.mapper.po.Specification;
-import me.fruits.fruits.mapper.po.SpecificationValue;
 import me.fruits.fruits.service.spu.SpecificationAdminModuleService;
-import me.fruits.fruits.service.spu.SpecificationValueAdminModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpecificationDTO;
 import me.fruits.fruits.utils.FruitsException;
@@ -44,7 +42,7 @@ public class SpecificationController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "规格名", example = "")
     })
-    public Result<HashMap<String, Object>> specifications(
+    public Result<List<SpecificationDTO>> specifications(
             @RequestParam(required = false) String keyword,
             PageVo pageVo
     ) {
@@ -61,7 +59,7 @@ public class SpecificationController {
     }
 
 
-    @GetMapping(value = "/search")
+    @GetMapping(value = "/specificationSearch")
     @ApiOperation("规格-搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "规格名")

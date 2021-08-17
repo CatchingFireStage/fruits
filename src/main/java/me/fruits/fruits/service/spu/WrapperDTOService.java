@@ -3,15 +3,17 @@ package me.fruits.fruits.service.spu;
 
 import me.fruits.fruits.mapper.po.Specification;
 import me.fruits.fruits.mapper.po.SpecificationValue;
+import me.fruits.fruits.mapper.po.Spu;
+import me.fruits.fruits.mapper.po.SpuCategory;
 import me.fruits.fruits.service.spu.dto.SpecificationDTO;
 import me.fruits.fruits.service.spu.dto.SpecificationValueDTO;
+import me.fruits.fruits.service.spu.dto.SpuCategoryDTO;
+import me.fruits.fruits.service.spu.dto.SpuDTO;
+import me.fruits.fruits.service.upload.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,10 +26,56 @@ public class WrapperDTOService {
     @Autowired
     private SpecificationValueService specificationValueService;
 
+
+    @Autowired
+    private SpuCategoryService spuCategoryService;
+
+    @Autowired
+    private UploadService uploadService;
+
+
     /**
-     * 包装一下
-     * @param specifications
-     * @return
+     * 包装spu
+     */
+    public List<SpuDTO> wrapperSPUs(List<Spu> spus){
+
+        if(spus == null || spus.size() == 0){
+            return new ArrayList<>();
+        }
+
+
+        Set<Long> categoryIds = spus.stream().map(Spu::getCategoryId).collect(Collectors.toSet());
+        Map<Long, SpuCategory> categoryMapKeyIsId = spuCategoryService.getSpuCategories(categoryIds).stream().collect(Collectors.toMap(SpuCategory::getId, spuCategory -> spuCategory));
+
+
+        List<SpuDTO> response = new ArrayList<>();
+
+        spus.forEach(spu -> {
+            SpuDTO item = new SpuDTO();
+            item.setId(spu.getId());
+            item.setName(spu.getName());
+            item.setImage(uploadService.imageVo(spu.getImage()));
+            item.setIsInventory(spu.getIsInventory());
+
+            //分类
+            item.setCategory(null);
+            if(categoryMapKeyIsId.containsKey(spu.getCategoryId())){
+
+                SpuCategoryDTO spuCategoryDTO = new SpuCategoryDTO();
+                spuCategoryDTO.setId(categoryMapKeyIsId.get(spu.getCategoryId()).getId());
+                spuCategoryDTO.setName(categoryMapKeyIsId.get(spu.getCategoryId()).getName());
+
+                item.setCategory(spuCategoryDTO);
+            }
+
+            response.add(item);
+        });
+
+        return response;
+    }
+
+    /**
+     * 包装规格
      */
     public List<SpecificationDTO> wrapperSpecifications(List<Specification> specifications) {
 
