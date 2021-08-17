@@ -6,8 +6,7 @@ import me.fruits.fruits.mapper.SpecificationValueMapper;
 import me.fruits.fruits.mapper.po.SpecificationValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class SpecificationValueService {
 
@@ -34,9 +33,9 @@ public abstract class SpecificationValueService {
         return this.specificationValueMapper.deleteById(id) > 0;
     }
 
-    public List<SpecificationValue> getSpecificationValues(Set<Long> ids){
+    public List<SpecificationValue> getSpecificationValues(Set<Long> ids) {
         QueryWrapper<SpecificationValue> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("id",ids);
+        queryWrapper.in("id", ids);
         return this.specificationValueMapper.selectList(queryWrapper);
     }
 }
