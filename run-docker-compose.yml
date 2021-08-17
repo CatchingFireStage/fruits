@@ -9,7 +9,4 @@ services:
     working_dir: /usr/src/fruits
     volumes:
       - ./:/usr/src/fruits
-      #文件上传路径
-      - /fruits/upload:/usr/src/fruits/upload
-      - /fruits/log:/usr/src/fruits/log
     command: java -jar ./target/fruits-0.0.1-SNAPSHOT.jar
