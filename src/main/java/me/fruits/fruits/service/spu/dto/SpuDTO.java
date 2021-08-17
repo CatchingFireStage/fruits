@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import me.fruits.fruits.service.upload.ImageVO;
 
+import java.util.List;
+
 @Data
 @ApiModel("SpuDTO")
 public class SpuDTO {
@@ -24,5 +26,9 @@ public class SpuDTO {
 
     @ApiModelProperty(name = "imag", value = "商品图片")
     private ImageVO image;
+
+
+    @ApiModelProperty(name = "specifications",value = "规格列表")
+    private List<SpecificationDTO> specifications;
 
 }
