@@ -23,7 +23,8 @@ public abstract class SpecificationValueService {
 
         updateWrapper.eq("id", id);
         updateWrapper.set("specification_id", specificationValue.getSpecificationId())
-                .set("value", specificationValue.getValue());
+                .set("value", specificationValue.getValue())
+                .set("money", specificationValue.getMoney());
 
         return this.specificationValueMapper.update(null, updateWrapper) > 0;
     }

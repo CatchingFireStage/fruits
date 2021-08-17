@@ -16,24 +16,24 @@ public class Spu implements Serializable {
     private static final long serialVersionUID = 851089217851082768L;
 
     @TableId(type = IdType.AUTO)
-    @ApiModelProperty("唯一标识")
+    @ApiModelProperty(value = "唯一标识")
     private Long id;
 
-    @ApiModelProperty("商品名字")
+    @ApiModelProperty(value = "商品名字")
     private String name;
 
-    @ApiModelProperty("商品分类id")
+    @ApiModelProperty(value = "商品分类id")
     private Long categoryId;
 
-    @ApiModelProperty("是否有货：0没有货：1有货")
+    @ApiModelProperty(value = "是否有货：0没有货：1有货")
     private Integer isInventory;
 
-    @ApiModelProperty("商品图片")
+    @ApiModelProperty(value = "商品图片")
     private String image;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
-    @ApiModelProperty("更新时间")
+    @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 }

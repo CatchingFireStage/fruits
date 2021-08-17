@@ -7,6 +7,7 @@ import me.fruits.fruits.service.spu.dto.SpecificationValueDTO;
 import me.fruits.fruits.service.spu.dto.SpuCategoryDTO;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
 import me.fruits.fruits.service.upload.UploadService;
+import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -138,6 +139,7 @@ public class WrapperDTOService {
                     SpecificationValueDTO specificationValueDTO = new SpecificationValueDTO();
                     specificationValueDTO.setId(value.getId());
                     specificationValueDTO.setValue(value.getValue());
+                    specificationValueDTO.setMoney(MoneyUtils.fenChangeYuan(value.getMoney()));
 
                     values.add(specificationValueDTO);
 

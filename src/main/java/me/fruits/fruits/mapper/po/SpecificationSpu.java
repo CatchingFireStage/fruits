@@ -15,12 +15,12 @@ public class SpecificationSpu implements Serializable {
 
 
     @TableId(type = IdType.AUTO)
-    @ApiModelProperty("唯一标识")
+    @ApiModelProperty(value = "唯一标识")
     private Long id;
 
-    @ApiModelProperty("spuId")
+    @ApiModelProperty(value = "spuId")
     private Long spuId;
 
-    @ApiModelProperty("规格id")
+    @ApiModelProperty(value = "规格id")
     private Long specificationId;
 }

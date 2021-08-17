@@ -8,9 +8,12 @@ import lombok.Data;
 @ApiModel("规格值dto")
 public class SpecificationValueDTO {
 
-    @ApiModelProperty(name = "id",value = "规格值唯一id")
+    @ApiModelProperty(name = "id", value = "规格值唯一id")
     private Long id;
 
-    @ApiModelProperty(name = "value",value = "规格值")
+    @ApiModelProperty(name = "value", value = "规格值")
     private String value;
+
+    @ApiModelProperty(name = "money", value = "单位元")
+    private String money;
 }

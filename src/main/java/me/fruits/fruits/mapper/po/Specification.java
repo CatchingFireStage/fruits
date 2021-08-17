@@ -15,9 +15,9 @@ public class Specification implements Serializable {
     private static final long serialVersionUID = -7716047697982578798L;
 
     @TableId(type = IdType.AUTO)
-    @ApiModelProperty("唯一标识")
+    @ApiModelProperty(value = "唯一标识")
     private Long id;
 
-    @ApiModelProperty("规格名")
+    @ApiModelProperty(value = "规格名")
     private String name;
 }

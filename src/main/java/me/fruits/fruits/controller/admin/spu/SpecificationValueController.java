@@ -8,6 +8,7 @@ import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationValueRequest;
 import me.fruits.fruits.mapper.po.SpecificationValue;
 import me.fruits.fruits.service.spu.SpecificationValueAdminModuleService;
 import me.fruits.fruits.utils.FruitsException;
+import me.fruits.fruits.utils.MoneyUtils;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class SpecificationValueController {
         SpecificationValue specificationValue = new SpecificationValue();
         BeanUtils.copyProperties(addSpecificationValueRequest, specificationValue);
 
+        //元的单位转化为分
+        if (addSpecificationValueRequest.getMoney() != null && !addSpecificationValueRequest.getMoney().equals("")) {
+            specificationValue.setMoney(MoneyUtils.yuanChangeFen(addSpecificationValueRequest.getMoney()));
+        }
+
         specificationValueAdminModuleService.add(specificationValue);
 
         return Result.success();
@@ -45,6 +51,12 @@ public class SpecificationValueController {
 
         SpecificationValue specificationValue = new SpecificationValue();
         BeanUtils.copyProperties(addSpecificationValueRequest, specificationValue);
+
+        //元的单位转化为分
+        if (addSpecificationValueRequest.getMoney() != null && !addSpecificationValueRequest.getMoney().equals("")) {
+            specificationValue.setMoney(MoneyUtils.yuanChangeFen(addSpecificationValueRequest.getMoney()));
+        }
+
 
         specificationValueAdminModuleService.update(id, specificationValue);
 
