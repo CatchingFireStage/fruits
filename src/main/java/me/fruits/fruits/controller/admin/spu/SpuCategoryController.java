@@ -18,7 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 @RequestMapping("/spu")
 @RestController(value = "AdminSpuCategoryController")
@@ -44,6 +46,18 @@ public class SpuCategoryController {
         IPage<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(pageVo.getP(), pageVo.getPageSize(), keyword);
 
         return Result.success(spuCategories.getTotal(), spuCategories.getPages(), spuCategories.getRecords());
+    }
+
+    @GetMapping(value = "/categoriesSearch")
+    @ApiOperation("商品分类-搜索")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "商品分类搜索名", example = "夏日倾情", required = true)
+    })
+    public Result<List<SpuCategory>> search(@RequestParam String keyword) throws IOException {
+
+        List<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(keyword);
+        return Result.success(spuCategories);
+        
     }
 
     @PostMapping(value = "/category")

@@ -11,8 +11,13 @@ import me.fruits.fruits.mapper.po.SpuCategory;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.wltea.analyzer.core.IKSegmenter;
+import org.wltea.analyzer.core.Lexeme;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SpuCategoryAdminModuleService extends SpuCategoryService {
@@ -21,6 +26,28 @@ public class SpuCategoryAdminModuleService extends SpuCategoryService {
 
     @Autowired
     private SpuMapper spuMapper;
+
+
+    /**
+     * 搜索
+     */
+    public List<SpuCategory> getSpuCategories(String keyword) throws IOException {
+
+        QueryWrapper<SpuCategory> queryWrapper = new QueryWrapper<>();
+        if (keyword != null && !keyword.trim().equals("")) {
+            IKSegmenter ikSegmenter = new IKSegmenter(new StringReader(keyword), true);
+            Lexeme lex;
+            while ((lex = ikSegmenter.next()) != null) {
+                queryWrapper.like("name", lex.getLexemeText()).or();
+            }
+            queryWrapper.like("name", keyword.trim());
+        }
+
+        queryWrapper.last("limit 100");
+
+
+        return this.spuCategoryMapper.selectList(queryWrapper);
+    }
 
 
     /**
