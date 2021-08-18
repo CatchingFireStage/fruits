@@ -7,8 +7,6 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
-import me.fruits.fruits.service.order.state.Context;
-import me.fruits.fruits.service.order.state.OrderState;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -39,17 +37,7 @@ public class OrderController {
     @PostMapping("/orderAdd")
     public Result<String> orderAdd(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
-        //生成订单详情
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
-
-        //构建上下文文件
-        Context context = new Context(this.orderAdminModuleService, null,inputOrderDescriptionDTO);
-
-
-        //执行生成下单状态的流程
-        OrderState orderState = new OrderState();
-        orderState.doAction(context);
-
+        orderAdminModuleService.add(inputOrderDescriptionVO);
 
         return Result.success();
     }

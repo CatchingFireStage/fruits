@@ -2,6 +2,8 @@ package me.fruits.fruits.service.order;
 
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.po.*;
@@ -14,6 +16,7 @@ import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -155,29 +158,58 @@ public abstract class OrderService {
     }
 
 
-    public Orders getOrder(long id){
+    public Orders getOrder(long id) {
         return this.orderMapper.selectById(id);
     }
+
 
     /**
      * 创建订单
      */
     @Transactional
-    public void add(Orders orders) {
+    public void add(InputOrderDescriptionVO inputOrderDescriptionVO) {
 
-
-        //todo: 创建三方的支付订单
+        //生成订单详情
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
 
 
         //创建订单
-        this.orderMapper.insert(orders);
+        Orders orders = new Orders();
+        orders.setPayMoney(MoneyUtils.yuanChangeFen(inputOrderDescriptionDTO.getPayAmount()));
+        orders.setCreateTime(LocalDateTime.now());
+        orders.setUserId(inputOrderDescriptionDTO.getUserId());
+        //下单状态
+        orders.setState(0);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            //订单详情
+            String description = objectMapper.writeValueAsString(inputOrderDescriptionDTO);
+            orders.setDescription(description);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            throw new FruitsRuntimeException("下单失败，序列化失败");
+        }
+
+
+        //订单入库
+
+
+        //todo: 创建三方的支付订单、三方订单入库
+
+
+        //订单入库
+        this.orderMapper.insert(orders);
     }
+
 
     /**
      * 更新订单状态为关闭
-     * 注意：！！！！！不阅读注释一定扑街
-     * 什么时候才会调用这个updateStatusToClose方法请看 {@link me.fruits.fruits.service.order.state.CloseState}
+     * 微信 以下情况需要调用关单接口：
+     * 1、商户订单支付失败需要生成新单号重新发起支付，要对原订单号调用关单，避免重复支付；
+     * 2、系统下单后，用户支付超时，系统退出不再受理，避免用户继续，请调用关单接口。
+     * 总结： 支付未成功的，可以调用关闭订单接口；监听微信支付通知，可以知道是否支付成功
      */
     public void updateStatusToClose(long id) {
 
@@ -187,8 +219,8 @@ public abstract class OrderService {
         //更新订单状态为关闭,下单状态 才能切换到 已关闭状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-        .eq("status",0)
-        .set("status", 2);
+                .eq("status", 0)
+                .set("status", 2);
 
         this.orderMapper.update(null, updateWrapper);
     }
