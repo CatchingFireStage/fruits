@@ -12,6 +12,7 @@ import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
 import me.fruits.fruits.service.upload.UploadService;
 import me.fruits.fruits.utils.FruitsException;
+import me.fruits.fruits.utils.MoneyUtils;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
@@ -82,6 +83,10 @@ public class SpuController {
         //图片处理
         String path = uploadService.uploadBySpu(file);
         spu.setImage(path);
+
+        //金额处理
+        spu.setMoney(MoneyUtils.yuanChangeFen(addSpuRequest.getMoney()));
+
         spuAdminModuleService.add(spu);
         return Result.success();
     }
@@ -92,6 +97,9 @@ public class SpuController {
 
         Spu spu = new Spu();
         BeanUtils.copyProperties(addSpuRequest, spu);
+
+        //金额处理
+        spu.setMoney(MoneyUtils.yuanChangeFen(addSpuRequest.getMoney()));
 
         spuAdminModuleService.update(id, spu);
 

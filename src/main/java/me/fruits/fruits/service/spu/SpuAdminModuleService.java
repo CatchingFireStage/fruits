@@ -44,7 +44,7 @@ public class SpuAdminModuleService extends SpuService {
 
         return this.spuMapper.selectPage(new Page<>(p, pageSize), queryWrapper);
     }
-    
+
     /**
      * 更新spu的分类、是否有有货
      */
@@ -53,6 +53,7 @@ public class SpuAdminModuleService extends SpuService {
         updateWrapper.eq("id", id);
         updateWrapper.set("category_id", spu.getCategoryId())
                 .set("is_inventory", spu.getIsInventory())
+                .set("money", spu.getMoney())
                 .set("update_time", LocalDateTime.now());
         this.spuMapper.update(null, updateWrapper);
     }
@@ -83,7 +84,7 @@ public class SpuAdminModuleService extends SpuService {
 
         UpdateWrapper<Spu> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id);
-        updateWrapper.set("image",newImage);
+        updateWrapper.set("image", newImage);
         this.spuMapper.update(null, updateWrapper);
 
     }

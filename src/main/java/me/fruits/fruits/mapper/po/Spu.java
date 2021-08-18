@@ -31,6 +31,9 @@ public class Spu implements Serializable {
     @ApiModelProperty(value = "商品图片")
     private String image;
 
+    @ApiModelProperty(value = "金额，单位元")
+    private Integer money;
+
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
