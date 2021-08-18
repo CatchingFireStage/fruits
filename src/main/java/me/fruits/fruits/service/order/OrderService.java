@@ -13,6 +13,8 @@ import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Slf4j
@@ -38,6 +40,9 @@ public abstract class OrderService {
         InputOrderDescriptionDTO inputOrderDescriptionDTO = new InputOrderDescriptionDTO();
 
         inputOrderDescriptionDTO.setOrderDescription(new ArrayList<>());
+
+        //规格唯一验证
+        Set<String> specificationUniq = new HashSet<>();
 
         //构建每一条数据
         inputOrderDescriptionVO.getOrder().forEach(orderDescriptionVo -> {
@@ -82,6 +87,15 @@ public abstract class OrderService {
                 }
 
 
+                //规格唯一验证
+                String specificationUniqKey = String.format("spuId:%d,specificationId:%d", orderDescriptionVo.getSpuId(), specification.getId());
+
+                if(!specificationUniq.add(specificationUniqKey)){
+                    //添加失败,同类规格出现重复，抛出异常
+                    throw new FruitsRuntimeException(String.format("存在同种类型的规格:%s", specification.getName()));
+                }
+
+
                 //输出的spu规格设置
                 InputOrderDescriptionDTO.SpuSpecificationValue spuSpecificationValueDTO = new InputOrderDescriptionDTO.SpuSpecificationValue();
 
@@ -102,18 +116,17 @@ public abstract class OrderService {
         });
 
 
-
         //总金额
         int payAmount = 0;
 
-        for(int i=0; i< inputOrderDescriptionDTO.getOrderDescription().size(); i++){
+        for (int i = 0; i < inputOrderDescriptionDTO.getOrderDescription().size(); i++) {
 
             //spu的价格
             payAmount += inputOrderDescriptionDTO.getOrderDescription().get(i).getSpu().getMoney();
 
             //spu规格的价格
-            for(int j = 0; j <  inputOrderDescriptionDTO.getOrderDescription().get(i).getSpuSpecificationValue().size(); j++){
-                payAmount +=  inputOrderDescriptionDTO.getOrderDescription().get(i).getSpuSpecificationValue().get(j).getMoney();
+            for (int j = 0; j < inputOrderDescriptionDTO.getOrderDescription().get(i).getSpuSpecificationValue().size(); j++) {
+                payAmount += inputOrderDescriptionDTO.getOrderDescription().get(i).getSpuSpecificationValue().get(j).getMoney();
             }
         }
 
