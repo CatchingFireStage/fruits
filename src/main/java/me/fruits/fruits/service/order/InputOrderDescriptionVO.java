@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class InputOrderDescriptionVO {
 
-    @ApiModelProperty(value = "下单数据")
+    @ApiModelProperty(value = "下单数据", required = true)
     private List<OrderDescriptionVo> order;
 
 
@@ -22,10 +22,10 @@ public class InputOrderDescriptionVO {
     @Data
     static class OrderDescriptionVo {
 
-        @ApiModelProperty(value = "spuId")
+        @ApiModelProperty(value = "spuId唯一标识")
         private Long spuId;
 
-        @ApiModelProperty(value = "规格值")
+        @ApiModelProperty(value = "规格值唯一标识")
         private List<Long> specificationValueIds;
     }
 

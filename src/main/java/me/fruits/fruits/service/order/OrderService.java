@@ -8,6 +8,7 @@ import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
+import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public abstract class OrderService {
 
     @Autowired
     private SpecificationValueService specificationValueService;
+
 
     @Autowired
     private SpecificationService specificationService;
@@ -98,7 +100,25 @@ public abstract class OrderService {
 
         });
 
-        
+
+
+        //总金额
+        int payAmount = 0;
+
+        for(int i=0; i< inputOrderDescriptionDTO.getOrderDescription().size(); i++){
+
+            //spu的价格
+            payAmount += inputOrderDescriptionDTO.getOrderDescription().get(i).getSpu().getMoney();
+
+            //spu规格的价格
+            for(int j = 0; j <  inputOrderDescriptionDTO.getOrderDescription().get(i).getSpuSpecificationValue().size(); j++){
+                payAmount +=  inputOrderDescriptionDTO.getOrderDescription().get(i).getSpuSpecificationValue().get(j).getMoney();
+            }
+        }
+
+
+        inputOrderDescriptionDTO.setPayAmount(MoneyUtils.fenChangeYuan(payAmount));
+
         return inputOrderDescriptionDTO;
     }
 }
