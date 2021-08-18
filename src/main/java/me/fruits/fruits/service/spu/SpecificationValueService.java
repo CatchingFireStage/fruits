@@ -39,4 +39,8 @@ public abstract class SpecificationValueService {
         queryWrapper.in("id", ids);
         return this.specificationValueMapper.selectList(queryWrapper);
     }
+
+    public SpecificationValue getSpecificationValue(long id){
+        return this.specificationValueMapper.selectById(id);
+    }
 }

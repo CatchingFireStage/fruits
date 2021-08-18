@@ -4,15 +4,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 
 @ApiModel("下单数据")
 @Data
 public class InputOrderDescriptionVO {
 
-    @ApiModelProperty(name = "order", value = "下单数据")
-    private OrderDescriptionVo[] order;
-
-
+    @ApiModelProperty(value = "下单数据")
+    private List<OrderDescriptionVo> order;
 
 
     /**
@@ -20,13 +20,13 @@ public class InputOrderDescriptionVO {
      */
     @ApiModel("用户输入订单的元数据")
     @Data
-    static class OrderDescriptionVo{
+    static class OrderDescriptionVo {
 
-        @ApiModelProperty(name = "spuId", value = "spuId")
+        @ApiModelProperty(value = "spuId")
         private Long spuId;
 
-        @ApiModelProperty(name = "values", value = "规格值")
-        private Long[] values;
+        @ApiModelProperty(value = "规格值")
+        private List<Long> specificationValueIds;
     }
 
 }

@@ -24,4 +24,9 @@ abstract public class SpecificationService {
 
         return this.specificationMapper.selectList(queryWrapper);
     }
+
+
+    public Specification getSpecification(long id){
+        return this.specificationMapper.selectById(id);
+    }
 }

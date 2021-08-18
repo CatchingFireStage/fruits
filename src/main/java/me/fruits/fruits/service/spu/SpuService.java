@@ -19,6 +19,11 @@ abstract public class SpuService {
     @Autowired
     private UploadService uploadService;
 
+
+    public Spu getSpu(long id) {
+        return this.spuMapper.selectById(id);
+    }
+
     /**
      * 添加一个spu
      */
@@ -34,10 +39,10 @@ abstract public class SpuService {
      * 删除一个spu
      */
     @Transactional
-    public void delete(long id){
+    public void delete(long id) {
 
         QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",id);
+        queryWrapper.eq("id", id);
 
         Spu spu = this.spuMapper.selectOne(queryWrapper);
 
