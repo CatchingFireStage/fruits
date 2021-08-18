@@ -42,18 +42,12 @@ public class OrderController {
         return Result.success();
     }
 
-//    @PatchMapping("/orderAdd/{id}")
-//    @ApiOperation("订单-关闭")
-//    public Result<String> orderClose(@PathVariable long id){
-//
-//        Order order = this.orderAdminModuleService.getOrder(id);
-//
-//        //构建上下文文件
-//        Context context = new Context(this.orderAdminModuleService, order,null);
-//
-//        CloseState closeState = new CloseState();
-//        closeState.doAction(context);
-//
-//        return Result.success();
-//    }
+    @PatchMapping("/orderFulfill/{id}")
+    @ApiOperation("订单-制作完成")
+    public Result<String> orderFulfill(@PathVariable long id){
+
+        this.orderAdminModuleService.updateStatusToFulfill(id);
+
+        return Result.success();
+    }
 }
