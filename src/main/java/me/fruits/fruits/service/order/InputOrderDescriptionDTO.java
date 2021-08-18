@@ -17,6 +17,9 @@ public class InputOrderDescriptionDTO {
     @ApiModelProperty(value = "支付总金额")
     private String payAmount;
 
+    @ApiModelProperty(value = "用户id")
+    private Long userId;
+
 
     @ApiModel("存到数据库中的订单格式元数据")
     @Data

@@ -31,8 +31,17 @@ public class OrderController {
     @PostMapping("/orderPreview")
     public Result<InputOrderDescriptionDTO> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.buildOrder(inputOrderDescriptionVO);
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
 
         return Result.success(inputOrderDescriptionDTO);
+    }
+
+    @ApiOperation("订单-创建")
+    @PostMapping("/orderAdd")
+    public Result<String> orderAdd(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+
+        orderAdminModuleService.add(inputOrderDescriptionVO);
+
+        return Result.success();
     }
 }

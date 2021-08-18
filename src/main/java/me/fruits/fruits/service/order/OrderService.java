@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.po.Specification;
 import me.fruits.fruits.mapper.po.SpecificationValue;
 import me.fruits.fruits.mapper.po.Spu;
+import me.fruits.fruits.mapper.po.User;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
+import me.fruits.fruits.service.user.UserService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +33,27 @@ public abstract class OrderService {
     @Autowired
     private SpecificationService specificationService;
 
+    @Autowired
+    private UserService userService;
+
 
     /**
-     * 构建生成订单信息
+     * 构建生成订单详情
      */
-    public InputOrderDescriptionDTO buildOrder(InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public InputOrderDescriptionDTO buildInputOrderDescriptionDTO(InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         InputOrderDescriptionDTO inputOrderDescriptionDTO = new InputOrderDescriptionDTO();
 
         inputOrderDescriptionDTO.setOrderDescription(new ArrayList<>());
+
+        //用户验证
+        User user = userService.getUser(inputOrderDescriptionVO.getUserId());
+        if (user == null) {
+            log.warn("用户不存在");
+            throw new FruitsRuntimeException("用户不存在");
+        }
+
+        inputOrderDescriptionDTO.setUserId(user.getId());
 
         //规格唯一验证
         Set<String> specificationUniq = new HashSet<>();
@@ -83,14 +97,14 @@ public abstract class OrderService {
 
                 Specification specification = specificationService.getSpecification(specificationValue.getSpecificationId());
                 if (specification == null) {
-                    String warn = String.format("商品id:%d;规格值id:%d的规格 不存在",  inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(),  inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
+                    String warn = String.format("商品id:%d;规格值id:%d的规格 不存在", inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
                     log.warn(warn);
                     throw new FruitsRuntimeException(warn);
                 }
 
 
                 //规格唯一验证
-                String specificationUniqKey = String.format("index:%d,spuId:%d,specificationId:%d", curIndex,  inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), specification.getId());
+                String specificationUniqKey = String.format("index:%d,spuId:%d,specificationId:%d", curIndex, inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), specification.getId());
 
                 if (!specificationUniq.add(specificationUniqKey)) {
                     //添加失败,同类规格出现重复，抛出异常
@@ -135,5 +149,23 @@ public abstract class OrderService {
         inputOrderDescriptionDTO.setPayAmount(MoneyUtils.fenChangeYuan(payAmount));
 
         return inputOrderDescriptionDTO;
+    }
+
+    /**
+     * 下单
+     */
+    public void add(InputOrderDescriptionVO inputOrderDescriptionVO) {
+
+        //生成订单详情
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
+
+        //构建上下文文件
+        Context context = new Context(this);
+        context.setInputOrderDescriptionDTO(inputOrderDescriptionDTO);
+
+
+        //执行生成下单状态的流程
+        OrderState orderState = new OrderState();
+        orderState.doAction(context);
     }
 }

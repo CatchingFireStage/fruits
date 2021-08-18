@@ -14,6 +14,9 @@ public class InputOrderDescriptionVO {
     @ApiModelProperty(value = "下单数据", required = true)
     private List<OrderDescriptionVo> order;
 
+    @ApiModelProperty(value = "下单的用户",required = true)
+    private Long userId;
+
 
     /**
      * 用户输入的订单元数据
