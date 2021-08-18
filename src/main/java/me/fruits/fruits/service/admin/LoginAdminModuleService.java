@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.utils.AdminModuleRequestHolder;
+import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +68,7 @@ public class LoginAdminModuleService {
     public void injectJwtTokenContext() throws FruitsException {
         String accessTokenAdmin = request.getHeader("access-token-admin");
         if(accessTokenAdmin == null){
-            throw new FruitsException(FruitsException.TOKEN_ERR, "token异常");
+            throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
         }
         try {
             DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(accessTokenAdmin);
@@ -78,7 +79,7 @@ public class LoginAdminModuleService {
             adminDTO.setName(username.asString());
             AdminModuleRequestHolder.set(adminDTO);
         } catch (JWTVerificationException e) {
-            throw new FruitsException(FruitsException.TOKEN_ERR, "token异常");
+            throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
         }
     }
 }

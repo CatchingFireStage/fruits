@@ -16,7 +16,7 @@ public class AdminModuleRequestHolder {
     public static AdminDTO get() throws FruitsException {
         AdminDTO adminDTO = threadLocal.get();
         if (ObjectUtils.isEmpty(adminDTO)) {
-            throw new FruitsException(FruitsException.TOKEN_ERR, "获取不到当前登录的用户");
+            throw new FruitsException(ErrCode.TOKEN_ERR, "获取不到当前登录的用户");
         }
         return adminDTO;
     }

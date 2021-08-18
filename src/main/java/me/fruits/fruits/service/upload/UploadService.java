@@ -1,6 +1,7 @@
 package me.fruits.fruits.service.upload;
 
 import lombok.extern.slf4j.Slf4j;
+import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,7 @@ public class UploadService {
 
         File uploadFile = absPath.toFile();
         if (uploadFile.exists()) {
-            throw new FruitsException(FruitsException.DEFAULT_ERR, "文件已经存在，稍后重试");
+            throw new FruitsException(ErrCode.DEFAULT_ERR, "文件已经存在，稍后重试");
         }
 
 
@@ -106,7 +107,7 @@ public class UploadService {
         }
 
         if (!uploadFile.createNewFile()) {
-            throw new FruitsException(FruitsException.DEFAULT_ERR, "文件创建失败，稍后重试");
+            throw new FruitsException(ErrCode.DEFAULT_ERR, "文件创建失败，稍后重试");
         }
 
         multipartFile.transferTo(uploadFile);

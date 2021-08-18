@@ -13,16 +13,12 @@ import lombok.Data;
 
 public class FruitsException extends Exception {
 
-    //错误码，token异常
-    public final static int TOKEN_ERR = 3000;
-
-    public final static int DEFAULT_ERR = 4000;
 
     private int errCode;
 
     public FruitsException(String err){
         super(err);
-        this.errCode = DEFAULT_ERR;
+        this.errCode = ErrCode.DEFAULT_ERR;
     }
 
     public FruitsException(int errCode, String err) {

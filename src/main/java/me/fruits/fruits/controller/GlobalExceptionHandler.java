@@ -2,6 +2,7 @@ package me.fruits.fruits.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.utils.FruitsException;
+import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.Result;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<String> FruitsExceptionHandler(HttpServletRequest request, FruitsException ex) {
         return Result.failed(ex);
+    }
+
+    @ExceptionHandler(FruitsRuntimeException.class)
+    @ResponseBody
+    public Result<String> FruitsRuntimeExceptionHandler(HttpServletRequest request, FruitsRuntimeException ex){
+        return Result.failed(ex.getMessage());
     }
 
 

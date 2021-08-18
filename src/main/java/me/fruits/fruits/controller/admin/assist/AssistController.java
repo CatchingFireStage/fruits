@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.admin.assist.vo.LoginRequest;
 import me.fruits.fruits.service.admin.LoginAdminModuleService;
+import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class AssistController {
 
         String jwt = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
         if (jwt == null) {
-            throw new FruitsException(FruitsException.DEFAULT_ERR, "账号或者密码不对");
+            throw new FruitsException(ErrCode.DEFAULT_ERR, "账号或者密码不对");
         }
 
         return Result.success(jwt);

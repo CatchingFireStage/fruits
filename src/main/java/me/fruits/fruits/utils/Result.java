@@ -43,6 +43,6 @@ public class Result<T> {
     }
 
     public static Result<String> failed(String err) {
-        return new Result<>(FruitsException.DEFAULT_ERR, err, null);
+        return new Result<>(ErrCode.DEFAULT_ERR, err, null);
     }
 }

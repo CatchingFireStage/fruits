@@ -8,6 +8,7 @@ import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
+import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -52,7 +53,7 @@ public abstract class OrderService {
             if (spu == null) {
                 String warn = String.format("商品id:%d 不存在", orderDescriptionVo.getSpuId());
                 log.warn(warn);
-                throw new RuntimeException(warn);
+                throw new FruitsRuntimeException(warn);
             }
 
             //输出的spu设置
@@ -70,14 +71,14 @@ public abstract class OrderService {
                 if (specificationValue == null) {
                     String warn = String.format("商品id:%d;规格值id:%d 不存在", orderDescriptionVo.getSpuId(), specificationValueId);
                     log.warn(warn);
-                    throw new RuntimeException(warn);
+                    throw new FruitsRuntimeException(warn);
                 }
 
                 Specification specification = specificationService.getSpecification(specificationValue.getSpecificationId());
                 if (specification == null) {
                     String warn = String.format("商品id:%d;规格值id:%d的规格 不存在", orderDescriptionVo.getSpuId(), specificationValueId);
                     log.warn(warn);
-                    throw new RuntimeException(warn);
+                    throw new FruitsRuntimeException(warn);
                 }
 
 
