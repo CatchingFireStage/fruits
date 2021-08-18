@@ -44,8 +44,10 @@ public abstract class OrderService {
         //规格唯一验证
         Set<String> specificationUniq = new HashSet<>();
 
+
         //构建每一条数据
-        inputOrderDescriptionVO.getOrder().forEach(orderDescriptionVo -> {
+
+        for (int curIndex = 0; curIndex < inputOrderDescriptionVO.getOrder().size(); curIndex++) {
 
 
             InputOrderDescriptionDTO.OrderDescriptionDTO orderDescriptionDTO = new InputOrderDescriptionDTO.OrderDescriptionDTO();
@@ -54,9 +56,9 @@ public abstract class OrderService {
 
 
             //获取商品
-            Spu spu = spuService.getSpu(orderDescriptionVo.getSpuId());
+            Spu spu = spuService.getSpu(inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId());
             if (spu == null) {
-                String warn = String.format("商品id:%d 不存在", orderDescriptionVo.getSpuId());
+                String warn = String.format("商品id:%d 不存在", inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId());
                 log.warn(warn);
                 throw new FruitsRuntimeException(warn);
             }
@@ -70,27 +72,27 @@ public abstract class OrderService {
 
 
             //获取商品的规格
-            orderDescriptionVo.getSpecificationValueIds().forEach(specificationValueId -> {
+            for (int valueIdsCurIndex = 0; valueIdsCurIndex < inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().size(); valueIdsCurIndex++) {
 
-                SpecificationValue specificationValue = specificationValueService.getSpecificationValue(specificationValueId);
+                SpecificationValue specificationValue = specificationValueService.getSpecificationValue(inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
                 if (specificationValue == null) {
-                    String warn = String.format("商品id:%d;规格值id:%d 不存在", orderDescriptionVo.getSpuId(), specificationValueId);
+                    String warn = String.format("商品id:%d;规格值id:%d 不存在", inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
                     log.warn(warn);
                     throw new FruitsRuntimeException(warn);
                 }
 
                 Specification specification = specificationService.getSpecification(specificationValue.getSpecificationId());
                 if (specification == null) {
-                    String warn = String.format("商品id:%d;规格值id:%d的规格 不存在", orderDescriptionVo.getSpuId(), specificationValueId);
+                    String warn = String.format("商品id:%d;规格值id:%d的规格 不存在",  inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(),  inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
                     log.warn(warn);
                     throw new FruitsRuntimeException(warn);
                 }
 
 
                 //规格唯一验证
-                String specificationUniqKey = String.format("spuId:%d,specificationId:%d", orderDescriptionVo.getSpuId(), specification.getId());
+                String specificationUniqKey = String.format("index:%d,spuId:%d,specificationId:%d", curIndex,  inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), specification.getId());
 
-                if(!specificationUniq.add(specificationUniqKey)){
+                if (!specificationUniq.add(specificationUniqKey)) {
                     //添加失败,同类规格出现重复，抛出异常
                     throw new FruitsRuntimeException(String.format("存在同种类型的规格:%s", specification.getName()));
                 }
@@ -108,12 +110,11 @@ public abstract class OrderService {
 
 
                 orderDescriptionDTO.getSpuSpecificationValue().add(spuSpecificationValueDTO);
-            });
 
+            }
 
             inputOrderDescriptionDTO.getOrderDescription().add(orderDescriptionDTO);
-
-        });
+        }
 
 
         //总金额
