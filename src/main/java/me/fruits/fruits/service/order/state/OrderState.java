@@ -3,7 +3,7 @@ package me.fruits.fruits.service.order.state;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.po.Order;
+import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
@@ -27,11 +27,12 @@ public class OrderState implements State {
 
 
         //创建订单
-        Order order = new Order();
+        Orders order = new Orders();
         order.setPayMoney(MoneyUtils.yuanChangeFen(inputOrderDescriptionDTO.getPayAmount()));
         order.setCreateTime(LocalDateTime.now());
+        order.setUserId(inputOrderDescriptionDTO.getUserId());
         //下单状态
-        order.setStatus(0);
+        order.setState(0);
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {

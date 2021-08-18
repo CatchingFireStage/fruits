@@ -3,10 +3,8 @@ package me.fruits.fruits.service.order;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.OrderMapper;
+import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.po.*;
-import me.fruits.fruits.service.order.state.Context;
-import me.fruits.fruits.service.order.state.OrderState;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
@@ -39,7 +37,7 @@ public abstract class OrderService {
     private UserService userService;
 
     @Autowired
-    private OrderMapper orderMapper;
+    private OrdersMapper orderMapper;
 
 
     /**
@@ -157,7 +155,7 @@ public abstract class OrderService {
     }
 
 
-    public Order getOrder(long id){
+    public Orders getOrder(long id){
         return this.orderMapper.selectById(id);
     }
 
@@ -165,14 +163,14 @@ public abstract class OrderService {
      * 创建订单
      */
     @Transactional
-    public void add(Order order) {
+    public void add(Orders orders) {
 
 
         //todo: 创建三方的支付订单
 
 
         //创建订单
-        this.orderMapper.insert(order);
+        this.orderMapper.insert(orders);
 
     }
 
@@ -187,7 +185,7 @@ public abstract class OrderService {
 
 
         //更新订单状态为关闭
-        UpdateWrapper<Order> updateWrapper = new UpdateWrapper<>();
+        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id);
         updateWrapper.set("status", 2);
 

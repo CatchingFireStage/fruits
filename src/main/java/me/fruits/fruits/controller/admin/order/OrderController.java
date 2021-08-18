@@ -4,11 +4,9 @@ package me.fruits.fruits.controller.admin.order;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
-import me.fruits.fruits.mapper.po.Order;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
-import me.fruits.fruits.service.order.state.CloseState;
 import me.fruits.fruits.service.order.state.Context;
 import me.fruits.fruits.service.order.state.OrderState;
 import me.fruits.fruits.utils.Result;
@@ -56,18 +54,18 @@ public class OrderController {
         return Result.success();
     }
 
-    @PatchMapping("/orderAdd/{id}")
-    @ApiOperation("订单-关闭")
-    public Result<String> orderClose(@PathVariable long id){
-
-        Order order = this.orderAdminModuleService.getOrder(id);
-
-        //构建上下文文件
-        Context context = new Context(this.orderAdminModuleService, order,null);
-
-        CloseState closeState = new CloseState();
-        closeState.doAction(context);
-
-        return Result.success();
-    }
+//    @PatchMapping("/orderAdd/{id}")
+//    @ApiOperation("订单-关闭")
+//    public Result<String> orderClose(@PathVariable long id){
+//
+//        Order order = this.orderAdminModuleService.getOrder(id);
+//
+//        //构建上下文文件
+//        Context context = new Context(this.orderAdminModuleService, order,null);
+//
+//        CloseState closeState = new CloseState();
+//        closeState.doAction(context);
+//
+//        return Result.success();
+//    }
 }

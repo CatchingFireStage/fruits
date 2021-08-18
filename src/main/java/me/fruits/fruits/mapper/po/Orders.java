@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@TableName(value = "order")
-public class Order implements Serializable {
+@TableName(value = "orders")
+public class Orders implements Serializable {
     private static final long serialVersionUID = 4947804699476359257L;
 
     @TableId(type = IdType.AUTO)
@@ -25,7 +25,10 @@ public class Order implements Serializable {
     private String description;
 
     @ApiModelProperty(value = "订单状态")
-    private Integer status;
+    private Integer State;
+
+    @ApiModelProperty(value = "下单的用户")
+    private Long userId;
 
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;

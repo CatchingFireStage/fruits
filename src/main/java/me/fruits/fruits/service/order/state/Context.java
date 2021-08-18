@@ -1,7 +1,7 @@
 package me.fruits.fruits.service.order.state;
 
 
-import me.fruits.fruits.mapper.po.Order;
+import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.service.order.state.State;
@@ -20,23 +20,23 @@ public class Context {
 
 
     //数据库中的订单
-    private Order order;
+    private Orders orders;
 
     //订单详情
     private InputOrderDescriptionDTO inputOrderDescriptionDTO;
 
 
 
-    public Context(OrderService orderService, Order order, InputOrderDescriptionDTO inputOrderDescriptionDTO) {
+    public Context(OrderService orderService, Orders orders, InputOrderDescriptionDTO inputOrderDescriptionDTO) {
         state = null;
         this.orderService = orderService;
-        this.order = order;
+        this.orders = orders;
         this.inputOrderDescriptionDTO = inputOrderDescriptionDTO;
     }
 
 
-    public Order getOrder() {
-        return order;
+    public Orders getOrder() {
+        return orders;
     }
 
     public InputOrderDescriptionDTO getInputOrderDescriptionDTO() {
