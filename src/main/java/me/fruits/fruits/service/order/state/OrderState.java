@@ -7,6 +7,7 @@ import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -47,5 +48,6 @@ public class OrderState implements State {
 
         //创建下单
         context.getOrderService().add(order);
+
     }
 }
