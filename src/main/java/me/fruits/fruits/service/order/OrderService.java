@@ -184,10 +184,11 @@ public abstract class OrderService {
         //todo: 关闭三方的支付订单
 
 
-        //更新订单状态为关闭
+        //更新订单状态为关闭,下单状态 才能切换到 已关闭状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("status", 2);
+        updateWrapper.eq("id", id)
+        .eq("status",0)
+        .set("status", 2);
 
         this.orderMapper.update(null, updateWrapper);
     }
