@@ -1,11 +1,12 @@
 package me.fruits.fruits.service.order;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.po.Specification;
-import me.fruits.fruits.mapper.po.SpecificationValue;
-import me.fruits.fruits.mapper.po.Spu;
-import me.fruits.fruits.mapper.po.User;
+import me.fruits.fruits.mapper.OrderMapper;
+import me.fruits.fruits.mapper.po.*;
+import me.fruits.fruits.service.order.state.Context;
+import me.fruits.fruits.service.order.state.OrderState;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
@@ -13,6 +14,7 @@ import me.fruits.fruits.service.user.UserService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,6 +37,9 @@ public abstract class OrderService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrderMapper orderMapper;
 
 
     /**
@@ -151,21 +156,41 @@ public abstract class OrderService {
         return inputOrderDescriptionDTO;
     }
 
+
+    public Order getOrder(long id){
+        return this.orderMapper.selectById(id);
+    }
+
     /**
-     * 下单
+     * 创建订单
      */
-    public void add(InputOrderDescriptionVO inputOrderDescriptionVO) {
-
-        //生成订单详情
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
-
-        //构建上下文文件
-        Context context = new Context(this);
-        context.setInputOrderDescriptionDTO(inputOrderDescriptionDTO);
+    @Transactional
+    public void add(Order order) {
 
 
-        //执行生成下单状态的流程
-        OrderState orderState = new OrderState();
-        orderState.doAction(context);
+        //todo: 创建三方的支付订单
+
+
+        //创建订单
+        this.orderMapper.insert(order);
+
+    }
+
+    /**
+     * 更新订单状态为关闭
+     * 注意：！！！！！不阅读注释一定扑街
+     * 什么时候才会调用这个updateStatusToClose方法请看 {@link me.fruits.fruits.service.order.state.CloseState}
+     */
+    public void updateStatusToClose(long id) {
+
+        //todo: 关闭三方的支付订单
+
+
+        //更新订单状态为关闭
+        UpdateWrapper<Order> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id);
+        updateWrapper.set("status", 2);
+
+        this.orderMapper.update(null, updateWrapper);
     }
 }

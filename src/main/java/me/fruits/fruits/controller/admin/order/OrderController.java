@@ -4,16 +4,17 @@ package me.fruits.fruits.controller.admin.order;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
+import me.fruits.fruits.mapper.po.Order;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
+import me.fruits.fruits.service.order.state.CloseState;
+import me.fruits.fruits.service.order.state.Context;
+import me.fruits.fruits.service.order.state.OrderState;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -40,7 +41,32 @@ public class OrderController {
     @PostMapping("/orderAdd")
     public Result<String> orderAdd(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
-        orderAdminModuleService.add(inputOrderDescriptionVO);
+        //生成订单详情
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
+
+        //构建上下文文件
+        Context context = new Context(this.orderAdminModuleService, null,inputOrderDescriptionDTO);
+
+
+        //执行生成下单状态的流程
+        OrderState orderState = new OrderState();
+        orderState.doAction(context);
+
+
+        return Result.success();
+    }
+
+    @PatchMapping("/orderAdd/{id}")
+    @ApiOperation("订单-关闭")
+    public Result<String> orderClose(@PathVariable long id){
+
+        Order order = this.orderAdminModuleService.getOrder(id);
+
+        //构建上下文文件
+        Context context = new Context(this.orderAdminModuleService, order,null);
+
+        CloseState closeState = new CloseState();
+        closeState.doAction(context);
 
         return Result.success();
     }
