@@ -44,10 +44,33 @@ public class OrderController {
 
     @PatchMapping("/orderFulfill/{id}")
     @ApiOperation("订单-制作完成")
-    public Result<String> orderFulfill(@PathVariable long id){
+    public Result<String> orderFulfill(@PathVariable long id) {
 
         this.orderAdminModuleService.updateStatusToFulfill(id);
 
+        return Result.success();
+    }
+
+    @PatchMapping("/orderFulfill/{id}")
+    @ApiOperation("订单-已经送达")
+    public Result<String> orderDelivery(@PathVariable long id) {
+        this.orderAdminModuleService.updateStatusToDelivery(id);
+        return Result.success();
+    }
+
+
+    @PatchMapping("/orderPay/{id}")
+    @ApiOperation("订单-已支付；注意：不需要对接，开发阶段测试用！开发完会删除")
+    public Result<String> orderPay(@PathVariable long id){
+        this.orderAdminModuleService.updateStatusToPay(id);
+        return Result.success();
+    }
+
+
+    @PatchMapping("/orderPay/{id}")
+    @ApiOperation("订单-已支付；注意：不需要对接，开发阶段测试用！开发完会删除")
+    public Result<String> orderClose(@PathVariable long id){
+        this.orderAdminModuleService.updateStatusToClose(id);
         return Result.success();
     }
 }

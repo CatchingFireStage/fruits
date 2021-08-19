@@ -205,6 +205,19 @@ public abstract class OrderService {
 
 
     /**
+     * 更新订单状态为已支付； 下单 才能切换到 已支付
+     */
+    public void updateStatusToPay(long id) {
+        //更新订单状态为完成制作, 已支付 才能切换到 完成状态
+        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id)
+                .eq("status", 0)
+                .set("status", 1);
+
+        this.orderMapper.update(null, updateWrapper);
+    }
+
+    /**
      * 更新订单状态为完成制作, 已支付 才能切换到 完成状态
      */
     public void updateStatusToFulfill(long id) {
@@ -222,7 +235,7 @@ public abstract class OrderService {
     /**
      * 更新订单状态为送达, 制作完成 才能切换到 送达
      */
-    public void updateStatusToDelivery(long id){
+    public void updateStatusToDelivery(long id) {
 
         //更新订单状态为送达, 制作完成 才能切换到 送达
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
@@ -239,7 +252,7 @@ public abstract class OrderService {
      * 微信 以下情况需要调用关单接口：
      * 1、商户订单支付失败需要生成新单号重新发起支付，要对原订单号调用关单，避免重复支付；
      * 2、系统下单后，用户支付超时，系统退出不再受理，避免用户继续，请调用关单接口。
-     *
+     * <p>
      * 需要定时的主动查询订单状态，如果发现支付失败了，关闭订单。
      */
     public void updateStatusToClose(long id) {
