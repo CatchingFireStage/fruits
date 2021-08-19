@@ -2,6 +2,9 @@ package me.fruits.fruits.controller.admin.order;
 
 
 import lombok.extern.slf4j.Slf4j;
+import me.fruits.fruits.service.order.OrderService;
+import me.fruits.fruits.service.order.websocket.message.Event;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -16,6 +19,10 @@ import java.util.Map;
 @Slf4j
 public class OrderWebSocket extends TextWebSocketHandler {
 
+
+    @Autowired
+    private OrderService orderService;
+
     //保存所有在线socket链接
     private static Map<String, WebSocketSession> webSocketMap = new LinkedHashMap<>();
 
@@ -26,8 +33,13 @@ public class OrderWebSocket extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         webSocketMap.put(session.getId(), session);
 
-        //广播消息
-        session.sendMessage(new TextMessage("欢迎"));
+
+        //支付订单列表事件
+        session.sendMessage(new TextMessage(orderService.buildWebsocketPayOrderListEvent()));
+
+        //发送制作完成订单列表事件
+        session.sendMessage(new TextMessage(orderService.buildWebsocketFulfillOrderListEvent()));
+
         log.info("新的连接加入:{}", session.getId());
     }
 
@@ -55,7 +67,7 @@ public class OrderWebSocket extends TextWebSocketHandler {
         log.info("有链接断开:{}", session.getId());
     }
 
-    
+
     //广播消息
     private void broadcast(String message) {
         webSocketMap.forEach((k, v) -> {

@@ -28,7 +28,7 @@ public class OrderController {
     @PostMapping("/orderPreview")
     public Result<InputOrderDescriptionDTO> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
 
         return Result.success(inputOrderDescriptionDTO);
     }

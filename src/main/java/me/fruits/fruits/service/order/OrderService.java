@@ -1,12 +1,15 @@
 package me.fruits.fruits.service.order;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.po.*;
+import me.fruits.fruits.service.order.websocket.message.Event;
+import me.fruits.fruits.service.order.websocket.message.EventType;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
@@ -17,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Slf4j
@@ -40,13 +41,15 @@ public abstract class OrderService {
     private UserService userService;
 
     @Autowired
-    private OrdersMapper orderMapper;
+    private OrdersMapper ordersMapper;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * 构建生成订单详情
      */
-    public InputOrderDescriptionDTO buildInputOrderDescriptionDTO(InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public InputOrderDescriptionDTO encodeInputOrderDescriptionDTO(InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         InputOrderDescriptionDTO inputOrderDescriptionDTO = new InputOrderDescriptionDTO();
 
@@ -157,9 +160,13 @@ public abstract class OrderService {
         return inputOrderDescriptionDTO;
     }
 
+    public InputOrderDescriptionDTO decodeInputOrderDescriptionDTO(String json) throws JsonProcessingException {
+        return objectMapper.readValue(json, InputOrderDescriptionDTO.class);
+    }
+
 
     public Orders getOrder(long id) {
-        return this.orderMapper.selectById(id);
+        return this.ordersMapper.selectById(id);
     }
 
 
@@ -170,7 +177,7 @@ public abstract class OrderService {
     public void add(InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = buildInputOrderDescriptionDTO(inputOrderDescriptionVO);
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
 
 
         //创建订单
@@ -200,7 +207,7 @@ public abstract class OrderService {
 
 
         //订单入库
-        this.orderMapper.insert(orders);
+        this.ordersMapper.insert(orders);
     }
 
 
@@ -214,7 +221,7 @@ public abstract class OrderService {
                 .eq("state", 0)
                 .set("state", 1);
 
-        this.orderMapper.update(null, updateWrapper);
+        this.ordersMapper.update(null, updateWrapper);
     }
 
     /**
@@ -228,7 +235,7 @@ public abstract class OrderService {
                 .eq("state", 1)
                 .set("state", 3);
 
-        this.orderMapper.update(null, updateWrapper);
+        this.ordersMapper.update(null, updateWrapper);
     }
 
 
@@ -243,7 +250,7 @@ public abstract class OrderService {
                 .eq("state", 3)
                 .set("state", 4);
 
-        this.orderMapper.update(null, updateWrapper);
+        this.ordersMapper.update(null, updateWrapper);
 
     }
 
@@ -266,6 +273,64 @@ public abstract class OrderService {
                 .eq("state", 0)
                 .set("state", 2);
 
-        this.orderMapper.update(null, updateWrapper);
+        this.ordersMapper.update(null, updateWrapper);
+    }
+
+
+    /**
+     * 获取所有状态为已支付的订单
+     */
+    private List<Map<String, Object>> getOrdersByPayStateOrFulfillState(int state) {
+
+        if (state != 1 && state != 3) {
+            throw new FruitsRuntimeException("该方法只能获取已支付或者完整制作的订单");
+        }
+
+        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("state", state);
+        List<Orders> orders = this.ordersMapper.selectList(queryWrapper);
+
+
+        List<Map<String, Object>> response = new ArrayList<>();
+        orders.forEach(order -> {
+            try {
+                response.add(buildWebsocketEventDataItem(order));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                log.error(String.format("InputOrderDescriptionDTO反序列化失败,订单id:%d", order.getId()));
+            }
+        });
+
+        return response;
+    }
+
+
+    private Map<String, Object> buildWebsocketEventDataItem(Orders order) throws JsonProcessingException {
+        Map<String, Object> item = new HashMap<>();
+        item.put("id", order.getId());
+        item.put("description", decodeInputOrderDescriptionDTO(order.getDescription()));
+        return item;
+    }
+
+
+    /**
+     * websocket 获取支付订单列表事件
+     */
+    public String buildWebsocketPayOrderListEvent() throws JsonProcessingException {
+
+        Event event = new Event();
+        event.setEventType(EventType.PAY_ORDER_LIST);
+        event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(1)));
+        return this.objectMapper.writeValueAsString(event);
+    }
+
+    /**
+     * websocket 获取制作完成订单列表事件
+     */
+    public String buildWebsocketFulfillOrderListEvent() throws JsonProcessingException {
+        Event event = new Event();
+        event.setEventType(EventType.FULFILL_ORDER_LIST);
+        event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(3)));
+        return this.objectMapper.writeValueAsString(event);
     }
 }
