@@ -218,12 +218,29 @@ public abstract class OrderService {
         this.orderMapper.update(null, updateWrapper);
     }
 
+
+    /**
+     * 更新订单状态为送达, 制作完成 才能切换到 送达
+     */
+    public void updateStatusToDelivery(long id){
+
+        //更新订单状态为送达, 制作完成 才能切换到 送达
+        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id)
+                .eq("status", 3)
+                .set("status", 4);
+
+        this.orderMapper.update(null, updateWrapper);
+
+    }
+
     /**
      * 更新订单状态为关闭,下单状态 才能切换到 已关闭状态
      * 微信 以下情况需要调用关单接口：
      * 1、商户订单支付失败需要生成新单号重新发起支付，要对原订单号调用关单，避免重复支付；
      * 2、系统下单后，用户支付超时，系统退出不再受理，避免用户继续，请调用关单接口。
-     * 总结： 支付未成功的，可以调用关闭订单接口；监听微信支付通知，可以知道是否支付成功
+     *
+     * 需要定时的主动查询订单状态，如果发现支付失败了，关闭订单。
      */
     public void updateStatusToClose(long id) {
 
