@@ -211,8 +211,8 @@ public abstract class OrderService {
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("status", 0)
-                .set("status", 1);
+                .eq("state", 0)
+                .set("state", 1);
 
         this.orderMapper.update(null, updateWrapper);
     }
@@ -225,8 +225,8 @@ public abstract class OrderService {
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("status", 1)
-                .set("status", 3);
+                .eq("state", 1)
+                .set("state", 3);
 
         this.orderMapper.update(null, updateWrapper);
     }
@@ -240,8 +240,8 @@ public abstract class OrderService {
         //更新订单状态为送达, 制作完成 才能切换到 送达
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("status", 3)
-                .set("status", 4);
+                .eq("state", 3)
+                .set("state", 4);
 
         this.orderMapper.update(null, updateWrapper);
 
@@ -263,8 +263,8 @@ public abstract class OrderService {
         //更新订单状态为关闭,下单状态 才能切换到 已关闭状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("status", 0)
-                .set("status", 2);
+                .eq("state", 0)
+                .set("state", 2);
 
         this.orderMapper.update(null, updateWrapper);
     }
