@@ -70,14 +70,26 @@ public class LoginAdminModuleService {
         if(accessTokenAdmin == null){
             throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
         }
+        //token验证
+        AdminDTO adminDTO = verifyToken(accessTokenAdmin);
+
+        //context注入
+        AdminModuleRequestHolder.set(adminDTO);
+
+    }
+
+    /**
+     * token验证
+     */
+    public AdminDTO verifyToken(String token) throws FruitsException {
         try {
-            DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(accessTokenAdmin);
+            DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
             Claim adminId = verify.getClaim("adminId");
             Claim username = verify.getClaim("username");
             AdminDTO adminDTO = new AdminDTO();
             adminDTO.setId(adminId.asLong());
             adminDTO.setName(username.asString());
-            AdminModuleRequestHolder.set(adminDTO);
+            return adminDTO;
         } catch (JWTVerificationException e) {
             throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
         }
