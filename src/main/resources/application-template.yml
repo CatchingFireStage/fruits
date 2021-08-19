@@ -37,3 +37,20 @@ logging:
   file:
     path: D:/javaProject/fruits/log/
 
+#微信配置
+wx:
+  #微信支付
+  pay:
+    app-id: 123
+    mch-id: 123
+    mch-key: 123
+    sub-app-id: 111
+    sub-mch-id: 111
+    key-path: dddd
+  #微信小程序
+  miniapp:
+    appid: appid
+    secret: secret
+    token: token
+    aes-key: aesKey
+
