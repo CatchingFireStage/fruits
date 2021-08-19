@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@ServerEndpoint("/orderWs")
+@ServerEndpoint("/admin/order/orderWs")
 @Component
 @Slf4j
 public class OrderWebSocket {
