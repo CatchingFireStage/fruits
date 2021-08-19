@@ -7,6 +7,13 @@ spring:
     password: 密码
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson: GMT+8
+  #定时任务
+  task:
+    execution:
+      pool:
+        #任务队列已满100时，线程池增加到最多16个线程
+        max-size: 16
+        queue-capacity: 100
 
 #http服务配置
 server:
