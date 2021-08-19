@@ -83,6 +83,28 @@ public class SwaggerConfiguration {
                 .apiInfo(apiInfo());
     }
 
+
+    @Bean
+    public Docket notifyApi(TypeResolver typeResolver){
+        ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/notify.*");
+
+        return commentApiSelectorBuilder
+                .build()
+                .pathMapping("/")
+                .groupName("三方通知api")
+                .directModelSubstitute(LocalDate.class, String.class)
+                .genericModelSubstitutes(ResponseEntity.class)
+                .alternateTypeRules(
+                        newRule(typeResolver.resolve(DeferredResult.class,
+                                typeResolver.resolve(ResponseEntity.class, WildcardType.class)),
+                                typeResolver.resolve(WildcardType.class)))
+                .useDefaultResponseMessages(false)
+                .securitySchemes(singletonList(apiKey()))
+                .securityContexts(singletonList(securityContext()))
+//                .enableUrlTemplating(true)
+                .apiInfo(apiInfo());
+    }
+
     /**
      * 获取公共的设置
      * @param apiPrefix
