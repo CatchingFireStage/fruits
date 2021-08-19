@@ -19,9 +19,4 @@ public class OrderTask {
     public void testOrderPayAndOrderClose(){
         log.info("使用FixedDelay  testOrderPayAndOrderClose 线程名称：{}",Thread.currentThread().getName());
     }
-
-    @Scheduled(fixedDelay = 3 * 1000)
-    public void testOrderPayAndOrderClose2(){
-        log.info("使用FixedDelay  testOrderPayAndOrderClose2 线程名称：{}",Thread.currentThread().getName());
-    }
 }
