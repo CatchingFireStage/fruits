@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddCategoryRequest;
 import me.fruits.fruits.mapper.po.SpuCategory;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import java.util.List;
 @Api(tags = "SPU-分类")
 @AdminLogin
 @Validated
+@Slf4j
 public class SpuCategoryController {
 
 
@@ -44,6 +47,10 @@ public class SpuCategoryController {
     ) {
 
         IPage<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(pageVo.getP(), pageVo.getPageSize(), keyword);
+
+        spuCategories.getRecords().forEach(spuCategory -> {
+            log.info("创建时间{}",spuCategory.getCreateTime().atZone(ZoneId.systemDefault()));
+        });
 
         return Result.success(spuCategories.getTotal(), spuCategories.getPages(), spuCategories.getRecords());
     }

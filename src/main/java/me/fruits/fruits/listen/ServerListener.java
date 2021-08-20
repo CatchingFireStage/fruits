@@ -5,6 +5,8 @@ import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import java.util.TimeZone;
+
 
 /**
  * web服务器启动完整之后的监听器
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class ServerListener implements ApplicationListener<WebServerInitializedEvent> {
     @Override
     public void onApplicationEvent(WebServerInitializedEvent webServerInitializedEvent) {
-        log.info("当前程序启动监听的端口:{}",webServerInitializedEvent.getWebServer().getPort());
+        log.info("当前程序启动监听的端口:{}", webServerInitializedEvent.getWebServer().getPort());
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+        log.info("设置系统的TimeZone:{}", "Asia/Shanghai");
     }
 }
