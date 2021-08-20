@@ -30,7 +30,7 @@ public class OrderTask {
 
     //fixedDelay和fixedRate，单位是毫秒
     //cron是格式
-    @Scheduled(fixedDelay = 5 * 1000)
+    @Scheduled(fixedDelay = 60 * 60 * 1000)
     //@Async和Scheduled配置使用才能开启多线程;开启多线程，要保证函数里面的任务一定要线程安全！
     @Async
     public void testOrderPayAndOrderClose() {
