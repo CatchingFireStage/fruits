@@ -10,8 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @MapperScan("me.fruits.fruits.mapper")
-//开始异步task
+//开启多线程
 @EnableAsync
+//开启定时任务
 @EnableScheduling
 public class FruitsApplication {
 

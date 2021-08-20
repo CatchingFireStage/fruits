@@ -17,7 +17,6 @@ import java.util.Random;
  * 定时任务
  */
 @Component
-@Async
 @Slf4j
 public class OrderTask {
 
@@ -32,6 +31,8 @@ public class OrderTask {
     //fixedDelay和fixedRate，单位是毫秒
     //cron是格式
     @Scheduled(fixedDelay = 5 * 1000)
+    //@Async和Scheduled配置使用才能开启多线程;开启多线程，要保证函数里面的任务一定要线程安全！
+    @Async
     public void testOrderPayAndOrderClose() {
 
         QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
@@ -47,9 +48,10 @@ public class OrderTask {
                 orderService.updateStatusToClose(order.getId());
             } else {
                 //支付成功
-                orderService.updateStatusToPay(order.getId());
+                orderService.updateStatusToPay(order);
             }
         });
+
 
     }
 }

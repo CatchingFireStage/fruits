@@ -3,7 +3,6 @@ package me.fruits.fruits.controller.admin.order;
 
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.service.order.OrderService;
-import me.fruits.fruits.service.order.websocket.message.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -22,6 +21,7 @@ public class OrderWebSocket extends TextWebSocketHandler {
 
     @Autowired
     private OrderService orderService;
+
 
     //保存所有在线socket链接
     private static Map<String, WebSocketSession> webSocketMap = new LinkedHashMap<>();

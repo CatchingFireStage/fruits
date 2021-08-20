@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.po.*;
+import me.fruits.fruits.service.order.websocket.EventHandler;
 import me.fruits.fruits.service.order.websocket.message.Event;
 import me.fruits.fruits.service.order.websocket.message.EventType;
 import me.fruits.fruits.service.spu.SpecificationService;
@@ -45,6 +46,9 @@ public abstract class OrderService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private EventHandler eventHandler;
 
     /**
      * 构建生成订单详情
@@ -211,23 +215,48 @@ public abstract class OrderService {
     }
 
 
+    public void updateStatusToPay(Orders orders) {
+
+        if (!this.updateStatusToPay(orders.getId())) {
+            //更新失败，结束
+            return;
+        }
+
+        //更新成功触发一些事件
+        eventHandler.producerNewPayOrderNotify(orders);
+    }
+
     /**
      * 更新订单状态为已支付； 下单 才能切换到 已支付
      */
-    public void updateStatusToPay(long id) {
+    private boolean updateStatusToPay(long id) {
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
                 .eq("state", 0)
                 .set("state", 1);
 
-        this.ordersMapper.update(null, updateWrapper);
+        return this.ordersMapper.update(null, updateWrapper) > 0;
+    }
+
+
+    public void updateStatusToFulfill(Long id) {
+
+        Orders orders = this.ordersMapper.selectById(id);
+
+        if (!updateStatusToFulfill(orders.getId().longValue())) {
+            //更新失败
+            return;
+        }
+
+        //更新成功触发一些事件
+        this.eventHandler.producerNewFulfillOrderNotify(orders);
     }
 
     /**
      * 更新订单状态为完成制作, 已支付 才能切换到 完成状态
      */
-    public void updateStatusToFulfill(long id) {
+    private boolean updateStatusToFulfill(long id) {
 
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
@@ -235,7 +264,7 @@ public abstract class OrderService {
                 .eq("state", 1)
                 .set("state", 3);
 
-        this.ordersMapper.update(null, updateWrapper);
+        return this.ordersMapper.update(null, updateWrapper) > 0;
     }
 
 
@@ -321,6 +350,38 @@ public abstract class OrderService {
         Event event = new Event();
         event.setEventType(EventType.PAY_ORDER_LIST);
         event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(1)));
+        return this.objectMapper.writeValueAsString(event);
+    }
+
+    /**
+     * websocket 获取支付订单事件
+     */
+    public String buildWebsocketPayOrderEvent(Orders orders) throws JsonProcessingException {
+
+        if (!orders.getState().equals(1)) {
+            throw new FruitsRuntimeException("必须要状态为1，已支付才行");
+        }
+
+        Event event = new Event();
+        event.setEventType(EventType.PAY_ORDER);
+        event.setEvent(this.objectMapper.writeValueAsString(buildWebsocketEventDataItem(orders)));
+
+        return this.objectMapper.writeValueAsString(event);
+    }
+
+
+    /**
+     * websocket 获取制作完成订单事件
+     */
+    public String buildWebsocketFulfillOrderEvent(Orders orders) throws JsonProcessingException {
+        if (!orders.getState().equals(3)) {
+            throw new FruitsRuntimeException("必须要状态为3，完成制作才行");
+        }
+
+        Event event = new Event();
+        event.setEventType(EventType.FULFILL_ORDER);
+        event.setEvent(this.objectMapper.writeValueAsString(buildWebsocketEventDataItem(orders)));
+
         return this.objectMapper.writeValueAsString(event);
     }
 
