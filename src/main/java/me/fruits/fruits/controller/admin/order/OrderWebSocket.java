@@ -29,6 +29,8 @@ public class OrderWebSocket extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
+        log.info("websocket的传输大小是:{}",session.getTextMessageSizeLimit());
+
         webSocketSessionManage.put(session);
 
 
@@ -47,7 +49,7 @@ public class OrderWebSocket extends TextWebSocketHandler {
      */
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         log.info("收到消息:{}", message);
-        
+
         //广播消息
         webSocketSessionManage.broadcast("服务器目前不接受客户端任何消息的处理，只有服务端推送");
     }

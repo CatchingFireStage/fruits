@@ -46,7 +46,7 @@ public class EventHandler {
             } catch (InterruptedException exception) {
 
                 //抛出中断异常，释放占用的线程
-                exception.printStackTrace();
+//                exception.printStackTrace();
                 return;
             }
         }
@@ -73,7 +73,7 @@ public class EventHandler {
                 //广播消息
                 webSocketSessionManage.broadcast(msg);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 return;
             }
         }
