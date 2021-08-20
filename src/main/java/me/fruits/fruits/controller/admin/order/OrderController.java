@@ -36,7 +36,7 @@ public class OrderController {
 
     @ApiOperation("支付-订单-Native下单API")
     @PostMapping("/payOrderByNative")
-    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) throws WxPayException {
+    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
 
