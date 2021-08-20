@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.po.*;
 import me.fruits.fruits.service.order.websocket.EventHandler;
 import me.fruits.fruits.service.order.websocket.message.Event;
 import me.fruits.fruits.service.order.websocket.message.EventType;
+import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
@@ -49,6 +51,9 @@ public abstract class OrderService {
 
     @Autowired
     private EventHandler eventHandler;
+
+    @Autowired
+    private PayService payService;
 
     /**
      * 构建生成订单详情
@@ -178,7 +183,7 @@ public abstract class OrderService {
      * 创建订单
      */
     @Transactional
-    public void add(InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public void addOrderByNative(InputOrderDescriptionVO inputOrderDescriptionVO) throws WxPayException {
 
         //生成订单详情
         InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
@@ -204,14 +209,13 @@ public abstract class OrderService {
         }
 
 
-        //订单入库
 
+        //订单入库
+        int orderId = this.ordersMapper.insert(orders);
 
         //todo: 创建三方的支付订单、三方订单入库
+        payService.orderNative(orderId,orders);
 
-
-        //订单入库
-        this.ordersMapper.insert(orders);
     }
 
 

@@ -1,6 +1,7 @@
 package me.fruits.fruits.controller.admin.order;
 
 
+import com.github.binarywang.wxpay.exception.WxPayException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
@@ -33,11 +34,11 @@ public class OrderController {
         return Result.success(inputOrderDescriptionDTO);
     }
 
-    @ApiOperation("订单-创建")
-    @PostMapping("/orderAdd")
-    public Result<String> orderAdd(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+    @ApiOperation("支付-订单-Native下单API")
+    @PostMapping("/payOrderByNative")
+    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) throws WxPayException {
 
-        orderAdminModuleService.add(inputOrderDescriptionVO);
+        orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
 
         return Result.success();
     }
