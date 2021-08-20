@@ -22,6 +22,9 @@ public class EventHandler {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private WebSocketSessionManage webSocketSessionManage;
+
     //有新的支付订单，LinkedBlockingDeque，默认值容量值是int类型最大值，初始化为100个容量，，防止消费者更不上生产者，导致内存满了，然后程序挂掉了
     private static LinkedBlockingDeque<String> newPayOrderNotifyQueue = new LinkedBlockingDeque<>(100);
 
@@ -38,7 +41,8 @@ public class EventHandler {
             //会阻塞
             try {
                 String msg = newPayOrderNotifyQueue.take();
-                //todo 消费信息
+                //广播消息
+                webSocketSessionManage.broadcast(msg);
             } catch (InterruptedException exception) {
 
                 //抛出中断异常，释放占用的线程
@@ -66,8 +70,8 @@ public class EventHandler {
             try {
 
                 String msg = newFulfillOrderNotifyQueue.take();
-                //todo 消费信息
-
+                //广播消息
+                webSocketSessionManage.broadcast(msg);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return;

@@ -358,9 +358,6 @@ public abstract class OrderService {
      */
     public String buildWebsocketPayOrderEvent(Orders orders) throws JsonProcessingException {
 
-        if (!orders.getState().equals(1)) {
-            throw new FruitsRuntimeException("必须要状态为1，已支付才行");
-        }
 
         Event event = new Event();
         event.setEventType(EventType.PAY_ORDER);
@@ -374,9 +371,6 @@ public abstract class OrderService {
      * websocket 获取制作完成订单事件
      */
     public String buildWebsocketFulfillOrderEvent(Orders orders) throws JsonProcessingException {
-        if (!orders.getState().equals(3)) {
-            throw new FruitsRuntimeException("必须要状态为3，完成制作才行");
-        }
 
         Event event = new Event();
         event.setEventType(EventType.FULFILL_ORDER);

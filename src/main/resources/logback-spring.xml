@@ -175,9 +175,9 @@
     <!--开发环境:打印控制台-->
     <springProfile name="prod">
         <!--        打印sql-->
-<!--        <logger name="me.fruits.fruits.mapper" level="DEBUG">-->
-<!--            <appender-ref ref="CONSOLE"/>-->
-<!--        </logger>-->
+        <logger name="me.fruits.fruits.mapper" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
 
     </springProfile>
 
