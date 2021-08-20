@@ -2,7 +2,7 @@ spring:
   application:
     name: fruits
   datasource:
-    url: jdbc:mysql://IP地址:端口/数据库?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true
+    url: jdbc:mysql://IP地址:端口/数据库?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true
     username: 账号
     password: 密码
     driver-class-name: com.mysql.cj.jdbc.Driver
