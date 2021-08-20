@@ -20,6 +20,7 @@ public class PayService {
 
         WxPayUnifiedOrderV3Request wxPayUnifiedOrderV3Request = new WxPayUnifiedOrderV3Request();
 
+
         //商品描述
         wxPayUnifiedOrderV3Request.setDescription(orders.getDescription());
 
@@ -35,7 +36,7 @@ public class PayService {
         wxPayUnifiedOrderV3Request.setAmount(amount);
 
         //设置通知地址
-//        wxPayUnifiedOrderV3Request.setNotifyUrl();
+//        wxPayUnifiedOrderV3Request.setNotifyUrl("https://www.baidu.com");
 
         Object orderV3 = wxPayService.createOrderV3(TradeTypeEnum.NATIVE, wxPayUnifiedOrderV3Request);
     }
