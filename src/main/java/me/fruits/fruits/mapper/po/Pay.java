@@ -20,7 +20,10 @@ public class Pay implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "商户系统的订单号")
-    private Long ordersId;
+    private Long merchantTransactionId;
+
+    @ApiModelProperty(value = "商户系统的订单号类型 0:order表,1:充值记录")
+    private Integer merchantTransactionType;
 
     @ApiModelProperty(value = "商品描述")
     private String description;

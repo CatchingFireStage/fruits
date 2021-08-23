@@ -183,7 +183,7 @@ public abstract class OrderService {
      * 创建订单
      */
     @Transactional
-    public void addOrderByNative(InputOrderDescriptionVO inputOrderDescriptionVO)  {
+    public void addOrderByNative(InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
         InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
@@ -209,15 +209,14 @@ public abstract class OrderService {
         }
 
 
-
         //订单入库
-        int orderId = this.ordersMapper.insert(orders);
+        int merchantTransactionId = this.ordersMapper.insert(orders);
 
-        try{
+        try {
 
             //todo: 创建三方的支付订单、三方订单入库
-            payService.orderNative(orderId,orders);
-        }catch ( WxPayException e){
+            payService.orderNative(merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
+        } catch (WxPayException e) {
             e.printStackTrace();
             throw new FruitsRuntimeException("下单失败,三方失败");
         }
