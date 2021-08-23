@@ -38,8 +38,8 @@ fruits:
     root-path: D:/javaProject/fruits/upload
     visit-domain: http://fruits.com
   merchant:
-    start-time: "2021-08-23: 23:59:00"
-    end-time: "2021-08-23: 23:59:00"
+    start-time: "2021-08-23 23:59:00"
+    end-time: "2021-08-23 23:59:00"
     is-24-hours: false
     is-close: true
 #日志配置
