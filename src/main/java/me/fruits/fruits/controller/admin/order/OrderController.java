@@ -8,12 +8,16 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
+import me.fruits.fruits.utils.QRCodeUtil;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequestMapping("/order")
 @RestController(value = "AdminOrderController")
@@ -36,11 +40,23 @@ public class OrderController {
 
     @ApiOperation("支付-订单-Native下单API")
     @PostMapping("/payOrderByNative")
-    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public void addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO, HttpServletResponse response) {
 
-        orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
+        //下单
+//        orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
 
-        return Result.success();
+
+        //返回二维码
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            response.setContentType("image/png");
+            QRCodeUtil.getQRCode("http://www.baidu.com", outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @PatchMapping("/orderFulfill/{id}")
