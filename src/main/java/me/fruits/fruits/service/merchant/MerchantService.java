@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Service
 @Slf4j
-public class Merchant {
+public class MerchantService {
 
     //营业开始时间
     @Value("${fruits.merchant.start-time}")
