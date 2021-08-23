@@ -1,7 +1,6 @@
 package me.fruits.fruits.controller.admin.order;
 
 
-import com.github.binarywang.wxpay.exception.WxPayException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
@@ -14,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RequestMapping("/order")
 @RestController(value = "AdminOrderController")
@@ -40,23 +37,16 @@ public class OrderController {
 
     @ApiOperation("支付-订单-Native下单API")
     @PostMapping("/payOrderByNative")
-    public void addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO, HttpServletResponse response) {
+    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO, HttpServletResponse response) {
 
         //下单
 //        orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
 
 
         //返回二维码
-        try {
-            ServletOutputStream outputStream = response.getOutputStream();
-            response.setContentType("image/png");
-            QRCodeUtil.getQRCode("http://www.baidu.com", outputStream);
-            outputStream.flush();
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String base64QRCode = QRCodeUtil.getBase64QRCode("http://www.baidu.com");
 
+        return Result.success(base64QRCode);
     }
 
     @PatchMapping("/orderFulfill/{id}")

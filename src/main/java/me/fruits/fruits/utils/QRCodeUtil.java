@@ -1,13 +1,11 @@
 package me.fruits.fruits.utils;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
+import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -18,11 +16,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Base64;
 import java.util.HashMap;
 
-/**
- * 二维码生成
- */
+
+
 @Slf4j
 @UtilityClass
 public class QRCodeUtil {
@@ -95,11 +93,13 @@ public class QRCodeUtil {
         BufferedImage bufferedImage = crateQRCode(content, width, height, logoUrl, logoWidth, logoHeight);
         try {
             ImageIO.write(bufferedImage, IMAGE_FORMAT, os);
+            os.flush();
+            os.close();
         } catch (IOException e) {
             log.error("[生成二维码，错误{}]", e);
         }
         // 转出即可直接使用
-        return String.format(BASE64_IMAGE, Base64.encode(os.toByteArray()));
+        return  String.format(BASE64_IMAGE, Base64.getEncoder().encodeToString(os.toByteArray()));
     }
 
 
