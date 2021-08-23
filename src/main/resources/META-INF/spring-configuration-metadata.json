@@ -5,6 +5,9 @@
     },
     {
       "name": "fruits.upload"
+    },
+    {
+      "name": "fruits.merchant"
     }
   ],
   "properties": [
@@ -27,7 +30,54 @@
       "name": "fruits.upload.visit-domain",
       "type": "java.lang.String",
       "description": "静态资源访问域名"
+    },
+    {
+      "name": "fruits.merchant.start-time",
+      "type": "java.time.LocalDateTime",
+      "description": "营业开始时间"
+    },
+    {
+      "name": "fruits.merchant.end-time",
+      "type": "java.time.LocalDateTime",
+      "description": "营业结束时间"
+    },
+    {
+      "name": "fruits.merchant.is-24-hours",
+      "type": "java.lang.Boolean",
+      "description": "是否24小时营业"
+    },
+    {
+      "name": "fruits.merchant.is-close",
+      "type": "java.lang.Boolean",
+      "description": "是否关门休息"
     }
   ],
-  "hints": []
+  "hints": [
+    {
+      "name": "fruits.merchant.is-24-hours",
+      "values": [
+        {
+          "value": false,
+          "description": "不是24小时营业"
+        },
+        {
+          "value": true,
+          "description": "24小时营业"
+        }
+      ]
+    },
+    {
+      "name": "fruits.merchant.is-close",
+      "values": [
+        {
+          "value": false,
+          "description": "不休息"
+        },
+        {
+          "value": true,
+          "description": "休息"
+        }
+      ]
+    }
+  ]
 }
