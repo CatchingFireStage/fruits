@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RequestMapping("/order")
@@ -37,7 +36,7 @@ public class OrderController {
 
     @ApiOperation("支付-订单-Native下单API")
     @PostMapping("/payOrderByNative")
-    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO, HttpServletResponse response) {
+    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //下单
 //        orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
