@@ -38,6 +38,19 @@ public class SpecificationSpuController {
     }
 
 
+    @PutMapping("/specificationSpu/{id}")
+    @ApiOperation("规格与spu-改变是否必填")
+    public Result<String> specificationSpu(@PathVariable long id, @RequestBody @Valid AddSpecificationSpuRequest addSpecificationSpuRequest) {
+
+        SpecificationSpu specificationSpu = new SpecificationSpu();
+        BeanUtils.copyProperties(addSpecificationSpuRequest, specificationSpu);
+
+        specificationAdminModuleSpuService.update(id, specificationSpu.getRequired());
+
+        return Result.success();
+    }
+
+
     @DeleteMapping("/specificationSpu/{id}")
     @ApiOperation("规格与spu-关联解除")
     public Result<String> specificationSpu(@PathVariable long id) {

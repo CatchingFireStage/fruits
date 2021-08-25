@@ -23,4 +23,7 @@ public class SpecificationSpu implements Serializable {
 
     @ApiModelProperty(value = "规格id")
     private Long specificationId;
+
+    @ApiModelProperty(value = "是否必选,0不是必选，1必选")
+    private Integer required;
 }
