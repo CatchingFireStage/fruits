@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationSpuRequest;
+import me.fruits.fruits.controller.admin.spu.vo.ChangeSpecificationSpuRequiredRequest;
 import me.fruits.fruits.mapper.po.SpecificationSpu;
 import me.fruits.fruits.service.spu.SpecificationAdminModuleSpuService;
 import me.fruits.fruits.utils.Result;
@@ -40,12 +41,10 @@ public class SpecificationSpuController {
 
     @PutMapping("/specificationSpu/{id}")
     @ApiOperation("规格与spu-改变是否必填")
-    public Result<String> specificationSpu(@PathVariable long id, @RequestBody @Valid AddSpecificationSpuRequest addSpecificationSpuRequest) {
+    public Result<String> specificationSpu(@PathVariable long id, @RequestBody @Valid ChangeSpecificationSpuRequiredRequest changeSpecificationSpuRequiredRequest) {
 
-        SpecificationSpu specificationSpu = new SpecificationSpu();
-        BeanUtils.copyProperties(addSpecificationSpuRequest, specificationSpu);
 
-        specificationAdminModuleSpuService.update(id, specificationSpu.getRequired());
+        specificationAdminModuleSpuService.update(id, changeSpecificationSpuRequiredRequest.getRequired());
 
         return Result.success();
     }
