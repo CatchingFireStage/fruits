@@ -2,7 +2,7 @@ package me.fruits.fruits.service.spu;
 
 
 import me.fruits.fruits.mapper.po.*;
-import me.fruits.fruits.service.spu.dto.SpecificationDTO;
+import me.fruits.fruits.service.spu.dto.SpecificationSpuDTO;
 import me.fruits.fruits.service.spu.dto.SpecificationValueDTO;
 import me.fruits.fruits.service.spu.dto.SpuCategoryDTO;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
@@ -60,7 +60,7 @@ public class WrapperDTOService {
         List<SpecificationSpu> specificationSpuList = specificationSpuService.getSpecificationSpuBySpuId(ids);
         Map<Long, List<SpecificationSpu>> specificationSpuMapKeyIsSpuId = specificationSpuList.stream().collect(Collectors.groupingBy(SpecificationSpu::getSpuId));
 
-        Map<Long, List<SpecificationDTO>> SpecificationDTOMapKeyIsSpuId = new HashMap<>();
+        Map<Long, List<SpecificationSpuDTO>> SpecificationDTOMapKeyIsSpuId = new HashMap<>();
 
         specificationSpuMapKeyIsSpuId.forEach((spuId, SpecificationSpuList) -> {
 
@@ -69,7 +69,8 @@ public class WrapperDTOService {
                 Set<Long> specificationIds = specificationSpuList.stream().map(SpecificationSpu::getSpecificationId).collect(Collectors.toSet());
                 List<Specification> specifications = specificationService.getSpecifications(specificationIds);
                 //包装成dto
-                List<SpecificationDTO> specificationDTOS = wrapperSpecifications(specifications);
+                List<SpecificationSpuDTO> specificationDTOS = wrapperSpecifications(specifications, spuId);
+
 
                 SpecificationDTOMapKeyIsSpuId.put(spuId, specificationDTOS);
             } catch (RuntimeException ignored) {
@@ -80,6 +81,7 @@ public class WrapperDTOService {
 
         List<SpuDTO> response = new ArrayList<>();
 
+        //构建每一项
         spus.forEach(spu -> {
             SpuDTO item = new SpuDTO();
             item.setId(spu.getId());
@@ -99,18 +101,38 @@ public class WrapperDTOService {
             }
 
             //规格dto
-            item.setSpecifications(SpecificationDTOMapKeyIsSpuId.getOrDefault(spu.getId(), null));
+            item.setSpecificationSPUs(SpecificationDTOMapKeyIsSpuId.getOrDefault(spu.getId(), null));
 
             response.add(item);
         });
 
+
         return response;
+    }
+
+
+    private List<SpecificationSpuDTO> wrapperSpecifications(List<Specification> specifications, long spuId) {
+
+        List<SpecificationSpuDTO> specificationSpuDTOS = wrapperSpecifications(specifications);
+
+        //获取spu必选的规格
+        List<SpecificationSpu> specificationSpuRequiredList = specificationSpuService.getSpecificationSpuRequiredBySpuId(spuId);
+
+        Set<Long> requiredSpecificationSpu = specificationSpuRequiredList.stream().map(SpecificationSpu::getSpecificationId).collect(Collectors.toSet());
+
+        specificationSpuDTOS.forEach(specificationSpuDTO -> {
+
+            //设置规格是否为必选的
+            specificationSpuDTO.setRequired(requiredSpecificationSpu.contains(specificationSpuDTO.getId()));
+        });
+
+        return specificationSpuDTOS;
     }
 
     /**
      * 包装规格
      */
-    public List<SpecificationDTO> wrapperSpecifications(List<Specification> specifications) {
+    public List<SpecificationSpuDTO> wrapperSpecifications(List<Specification> specifications) {
 
         if (specifications == null || specifications.size() == 0) {
             return new ArrayList<>();
@@ -121,13 +143,14 @@ public class WrapperDTOService {
         Map<Long, List<SpecificationValue>> valueMapKeyIsId = specificationValueService.getSpecificationValues(ids).stream().collect(Collectors.groupingBy(SpecificationValue::getSpecificationId));
 
 
-        List<SpecificationDTO> response = new ArrayList<>();
+        List<SpecificationSpuDTO> response = new ArrayList<>();
 
         specifications.forEach(specification -> {
 
-            SpecificationDTO item = new SpecificationDTO();
+            SpecificationSpuDTO item = new SpecificationSpuDTO();
             item.setId(specification.getId());
             item.setName(specification.getName());
+            item.setRequired(null);
 
             //规格值
             item.setValues(null);

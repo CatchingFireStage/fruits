@@ -28,7 +28,7 @@ public class SpuDTO {
     private ImageVO image;
 
 
-    @ApiModelProperty(name = "specifications",value = "规格列表")
-    private List<SpecificationDTO> specifications;
+    @ApiModelProperty(name = "specificationSPUs",value = "规格列表")
+    private List<SpecificationSpuDTO> specificationSPUs;
 
 }

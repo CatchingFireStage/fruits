@@ -13,10 +13,14 @@ public abstract class SpecificationSpuService {
     @Autowired
     private SpecificationSpuMapper specificationSpuMapper;
 
+    /**
+     * 通过spuid，获取spu必选的规格
+     */
+    public List<SpecificationSpu> getSpecificationSpuRequiredBySpuId(long spuId) {
 
-    public List<SpecificationSpu> getSpecificationSpuBySpuId(long spuId) {
         QueryWrapper<SpecificationSpu> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("spu_id", spuId);
+        queryWrapper.eq("required", 1);
 
         return this.specificationSpuMapper.selectList(queryWrapper);
     }

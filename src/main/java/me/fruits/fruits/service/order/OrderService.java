@@ -14,6 +14,7 @@ import me.fruits.fruits.service.order.websocket.message.Event;
 import me.fruits.fruits.service.order.websocket.message.EventType;
 import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.service.spu.SpecificationService;
+import me.fruits.fruits.service.spu.SpecificationSpuService;
 import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
 import me.fruits.fruits.service.user.UserService;
@@ -54,6 +55,9 @@ public abstract class OrderService {
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private SpecificationSpuService specificationSpuService;
 
     /**
      * 构建生成订单详情
@@ -103,9 +107,21 @@ public abstract class OrderService {
             orderDescriptionDTO.setSpu(spuDTO);
 
 
+            //获取spu必选的规格
+            List<SpecificationSpu> specificationSpuRequired = specificationSpuService.getSpecificationSpuRequiredBySpuId(spu.getId());
+            Set<Long> requiredSpecificationIds = new HashSet<>();
+            specificationSpuRequired.forEach(specificationSpu -> {
+                requiredSpecificationIds.add(specificationSpu.getSpecificationId());
+            });
+
+            //单个spu中验证是否都选了必填项
+            int orderItemRequiredNumber = 0;
+
+
             //获取商品的规格
             for (int valueIdsCurIndex = 0; valueIdsCurIndex < inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().size(); valueIdsCurIndex++) {
 
+                //规格值
                 SpecificationValue specificationValue = specificationValueService.getSpecificationValue(inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
                 if (specificationValue == null) {
                     String warn = String.format("商品id:%d;规格值id:%d 不存在", inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
@@ -113,6 +129,7 @@ public abstract class OrderService {
                     throw new FruitsRuntimeException(warn);
                 }
 
+                //规格
                 Specification specification = specificationService.getSpecification(specificationValue.getSpecificationId());
                 if (specification == null) {
                     String warn = String.format("商品id:%d;规格值id:%d的规格 不存在", inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), inputOrderDescriptionVO.getOrder().get(curIndex).getSpecificationValueIds().get(valueIdsCurIndex));
@@ -120,8 +137,13 @@ public abstract class OrderService {
                     throw new FruitsRuntimeException(warn);
                 }
 
+                //必选规格验证
+                if (requiredSpecificationIds.contains(specification.getId())) {
+                    orderItemRequiredNumber++;
+                }
 
-                //规格唯一验证
+
+                //同种规格唯一验证
                 String specificationUniqKey = String.format("index:%d,spuId:%d,specificationId:%d", curIndex, inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId(), specification.getId());
 
                 if (!specificationUniq.add(specificationUniqKey)) {
@@ -143,6 +165,11 @@ public abstract class OrderService {
 
                 orderDescriptionDTO.getSpuSpecificationValue().add(spuSpecificationValueDTO);
 
+            }
+
+
+            if (orderItemRequiredNumber != requiredSpecificationIds.size()) {
+                throw new FruitsRuntimeException("缺少必选规格");
             }
 
             inputOrderDescriptionDTO.getOrderDescription().add(orderDescriptionDTO);
