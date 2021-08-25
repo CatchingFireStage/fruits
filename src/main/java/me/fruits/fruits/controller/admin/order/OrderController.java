@@ -39,11 +39,11 @@ public class OrderController {
     public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //下单
-//        orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
+        String payQRCode = orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
 
 
         //返回二维码
-        String base64QRCode = QRCodeUtil.getBase64QRCode("http://www.baidu.com");
+        String base64QRCode = QRCodeUtil.getBase64QRCode(payQRCode);
 
         return Result.success(base64QRCode);
     }

@@ -210,7 +210,7 @@ public abstract class OrderService {
      * 创建订单
      */
     @Transactional
-    public void addOrderByNative(InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public String addOrderByNative(InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
         InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
@@ -239,15 +239,16 @@ public abstract class OrderService {
         //订单入库
         int merchantTransactionId = this.ordersMapper.insert(orders);
 
-        try {
+//        try {
+//
+//            //todo: 创建三方的支付订单、三方订单入库
+//            payService.orderNative(merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
+//        } catch (WxPayException e) {
+//            e.printStackTrace();
+//            throw new FruitsRuntimeException("下单失败,三方失败");
+//        }
 
-            //todo: 创建三方的支付订单、三方订单入库
-            payService.orderNative(merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
-        } catch (WxPayException e) {
-            e.printStackTrace();
-            throw new FruitsRuntimeException("下单失败,三方失败");
-        }
-
+        return "http://www.baidu.com";
     }
 
 
