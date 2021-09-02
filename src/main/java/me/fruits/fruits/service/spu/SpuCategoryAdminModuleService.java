@@ -20,12 +20,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class SpuCategoryAdminModuleService extends SpuCategoryService {
+public class SpuCategoryAdminModuleService {
     @Autowired
     private SpuCategoryMapper spuCategoryMapper;
 
+
     @Autowired
-    private SpuMapper spuMapper;
+    private SpuCategoryService spuCategoryService;
 
 
     /**
@@ -69,7 +70,8 @@ public class SpuCategoryAdminModuleService extends SpuCategoryService {
      * 添加
      */
     public void add(SpuCategory spuCategory) {
-        super.add(spuCategory);
+
+        spuCategoryService.add(spuCategory);
     }
 
     /**
@@ -77,25 +79,15 @@ public class SpuCategoryAdminModuleService extends SpuCategoryService {
      */
     public void update(long id, SpuCategory spuCategory) {
 
-        UpdateWrapper<SpuCategory> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("name", spuCategory.getName()).set("update_time", LocalDateTime.now());
-
-        this.spuCategoryMapper.update(null, updateWrapper);
+        this.spuCategoryService.update(id, spuCategory.getName());
     }
 
     /**
      * 删除
+     *
      * @param id
      */
-    public void delete(long id) throws FruitsException {
-
-        QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("category_id",id);
-        if(this.spuMapper.selectCount(queryWrapper) > 0){
-            throw new FruitsException("删除分类下所有商品才能删除分类");
-        }
-
-        this.spuCategoryMapper.deleteById(id);
+    public void delete(long id) {
+        this.spuCategoryService.delete(id);
     }
 }

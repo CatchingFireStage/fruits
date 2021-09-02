@@ -49,7 +49,7 @@ public class SpuCategoryController {
         IPage<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(pageVo.getP(), pageVo.getPageSize(), keyword);
 
         spuCategories.getRecords().forEach(spuCategory -> {
-            log.info("创建时间{}",spuCategory.getCreateTime().atZone(ZoneId.systemDefault()));
+            log.info("创建时间{}", spuCategory.getCreateTime().atZone(ZoneId.systemDefault()));
         });
 
         return Result.success(spuCategories.getTotal(), spuCategories.getPages(), spuCategories.getRecords());
@@ -64,7 +64,7 @@ public class SpuCategoryController {
 
         List<SpuCategory> spuCategories = this.spuCategoryAdminModuleService.getSpuCategories(keyword);
         return Result.success(spuCategories);
-        
+
     }
 
     @PostMapping(value = "/category")
@@ -90,7 +90,7 @@ public class SpuCategoryController {
 
     @DeleteMapping(value = "/category/{id}")
     @ApiOperation("商品分类-删除")
-    public Result<String> category(@PathVariable long id) throws FruitsException {
+    public Result<String> category(@PathVariable long id) {
         spuCategoryAdminModuleService.delete(id);
         return Result.success();
     }
