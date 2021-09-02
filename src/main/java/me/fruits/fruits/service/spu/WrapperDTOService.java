@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 包装的dto的service
+ * 包装的dto的前后台公共service
  */
 @Service
 public class WrapperDTOService {
