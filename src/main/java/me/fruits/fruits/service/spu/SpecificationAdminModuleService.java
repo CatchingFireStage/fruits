@@ -1,16 +1,13 @@
 package me.fruits.fruits.service.spu;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.SpecificationMapper;
 import me.fruits.fruits.mapper.po.Specification;
-import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
@@ -21,9 +18,12 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SpecificationAdminModuleService extends SpecificationService {
+public class SpecificationAdminModuleService {
     @Autowired
     private SpecificationMapper specificationMapper;
+
+    @Autowired
+    private SpecificationService specificationService;
 
 
     /**
@@ -74,16 +74,16 @@ public class SpecificationAdminModuleService extends SpecificationService {
     }
 
 
-    public void update(long id, Specification specification) throws FruitsException {
+    public void add(Specification specification) {
 
-        UpdateWrapper<Specification> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("name", specification.getName());
-
-        try {
-            this.specificationMapper.update(null, updateWrapper);
-        } catch (DuplicateKeyException e) {
-            throw new FruitsException("规格名已存在");
-        }
+        this.specificationService.add(specification);
     }
+
+
+    public void update(long id, Specification specification) {
+
+        this.specificationService.update(id, specification.getName());
+    }
+
+
 }

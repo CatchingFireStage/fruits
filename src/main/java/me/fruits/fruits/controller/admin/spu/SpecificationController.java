@@ -11,7 +11,6 @@ import me.fruits.fruits.mapper.po.Specification;
 import me.fruits.fruits.service.spu.SpecificationAdminModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpecificationSpuDTO;
-import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.BeanUtils;
@@ -83,7 +82,7 @@ public class SpecificationController {
 
     @PutMapping("/specification/{id}")
     @ApiOperation("规格-修改")
-    public Result<String> specification(@PathVariable long id, @RequestBody @Valid AddSpecificationRequest addSpecificationRequest) throws FruitsException {
+    public Result<String> specification(@PathVariable long id, @RequestBody @Valid AddSpecificationRequest addSpecificationRequest) {
 
         Specification specification = new Specification();
         BeanUtils.copyProperties(addSpecificationRequest, specification);
