@@ -8,18 +8,15 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.po.User;
-import me.fruits.fruits.service.admin.AdminDTO;
 import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
-import me.fruits.fruits.utils.FruitsRuntimeException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Service
+@Service(value="apiLoginService")
 @Slf4j
 public class LoginService {
 
