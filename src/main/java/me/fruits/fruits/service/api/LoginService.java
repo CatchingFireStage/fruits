@@ -8,7 +8,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.po.User;
 import me.fruits.fruits.utils.ApiModuleRequestHolder;
 import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
