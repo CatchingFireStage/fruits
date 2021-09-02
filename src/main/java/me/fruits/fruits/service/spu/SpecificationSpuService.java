@@ -1,14 +1,17 @@
 package me.fruits.fruits.service.spu;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.fruits.fruits.mapper.SpecificationSpuMapper;
 import me.fruits.fruits.mapper.po.SpecificationSpu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 
-public abstract class SpecificationSpuService {
+@Service
+public  class SpecificationSpuService {
 
     @Autowired
     private SpecificationSpuMapper specificationSpuMapper;
@@ -39,5 +42,17 @@ public abstract class SpecificationSpuService {
 
     public void delete(long id) {
         specificationSpuMapper.deleteById(id);
+    }
+
+
+
+    public void update(long id, int required) {
+
+        UpdateWrapper<SpecificationSpu> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id);
+        updateWrapper.set("required", required);
+
+        this.specificationSpuMapper.update(null, updateWrapper);
+
     }
 }
