@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class OrderAdminModuleService extends OrderService {
+public class OrderAdminModuleService {
 
     @Autowired
     private OrderService orderService;
@@ -45,6 +45,14 @@ public class OrderAdminModuleService extends OrderService {
     public String buildWebsocketPayOrderListEvent() throws JsonProcessingException {
 
         return orderService.buildWebsocketPayOrderListEvent();
+    }
+
+    /**
+     * websocket 获取制作完成订单列表事件
+     */
+    public String buildWebsocketFulfillOrderListEvent() throws JsonProcessingException {
+
+        return orderService.buildWebsocketFulfillOrderListEvent();
     }
 
 }
