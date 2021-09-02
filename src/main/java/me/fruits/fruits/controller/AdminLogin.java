@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-//@Login
+@Login
 public @interface AdminLogin {
-    //admin模块的接口是否需要登录
-    boolean isNeedLogin() default true;
+//    //admin模块的接口是否需要登录
+//    boolean isNeedLogin() default true;
 }
