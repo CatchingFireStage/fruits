@@ -1,7 +1,7 @@
 package me.fruits.fruits.controller.admin.order.websocket.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.service.admin.LoginAdminModuleService;
+import me.fruits.fruits.service.admin.LoginService;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.ServerHttpRequest;
@@ -19,7 +19,7 @@ public class AdminLoginInterceptor implements HandshakeInterceptor {
 
 
     @Autowired
-    private LoginAdminModuleService loginAdminModuleService;
+    private LoginService loginService;
 
     /**
      * 握手前
@@ -39,7 +39,7 @@ public class AdminLoginInterceptor implements HandshakeInterceptor {
 
         String token = protocols.get(0);
         try {
-            loginAdminModuleService.verifyToken(token);
+            loginService.verifyToken(token);
 
             //告诉客户端，支持改协议
             serverHttpResponse.getHeaders().set("sec-websocket-protocol",token);

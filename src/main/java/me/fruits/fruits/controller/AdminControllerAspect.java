@@ -1,7 +1,7 @@
 package me.fruits.fruits.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import me.fruits.fruits.service.admin.LoginAdminModuleService;
+import me.fruits.fruits.service.admin.LoginService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -20,7 +20,7 @@ public class AdminControllerAspect {
 
 
     @Autowired
-    private LoginAdminModuleService loginAdminModuleService;
+    private LoginService loginService;
 
 
     /**
@@ -66,7 +66,7 @@ public class AdminControllerAspect {
 
         if(needLogin){
             //todo:登录的token验证
-            loginAdminModuleService.injectJwtTokenContext();
+            loginService.injectJwtTokenContext();
         }
 
         // 方法运行之前

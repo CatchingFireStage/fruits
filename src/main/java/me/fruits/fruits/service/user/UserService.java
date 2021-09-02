@@ -3,8 +3,10 @@ package me.fruits.fruits.service.user;
 import me.fruits.fruits.mapper.UserMapper;
 import me.fruits.fruits.mapper.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public abstract class UserService {
+@Service
+public  class UserService {
 
     @Autowired
     private UserMapper userMapper;
