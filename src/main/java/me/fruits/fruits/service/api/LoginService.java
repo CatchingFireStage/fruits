@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import me.fruits.fruits.mapper.po.User;
 import me.fruits.fruits.utils.ApiModuleRequestHolder;
 import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
@@ -30,7 +31,6 @@ public class LoginService {
 
     @Autowired
     private HttpServletRequest request;
-
 
 
     private String encodeToken(UserDTO userDTO) {
@@ -82,7 +82,7 @@ public class LoginService {
      *
      * @return jwt
      */
-    private String login(long userId) {
+    public String login(long userId) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(userId);
         return encodeToken(userDTO);
