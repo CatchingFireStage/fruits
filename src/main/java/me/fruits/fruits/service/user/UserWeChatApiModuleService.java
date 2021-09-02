@@ -51,14 +51,14 @@ public class UserWeChatApiModuleService {
      *
      * @return 登录的token
      */
-    public String loginMiniProgram(long userId, String phone) {
+    public String loginMiniProgram(long id, String phone) {
 
         //获取用户
-        UserWeChat userWeChat = userWeChatService.getUserWeChatByMiniProgram(userId);
+        UserWeChat userWeChat = userWeChatService.getUserWeChatByMiniProgram(id);
 
         //更新用户的手机号
         userService.update(userWeChat.getUserId(), phone);
 
-        return loginService.login(userId);
+        return loginService.login(userWeChat.getUserId());
     }
 }

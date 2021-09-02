@@ -27,6 +27,7 @@ public class UserWeChatService {
 
         //创建一个用户
         User user = new User();
+        user.setPhone("");
         long userId = userService.add(user);
 
         UserWeChat userWeChat = new UserWeChat();
@@ -58,13 +59,10 @@ public class UserWeChatService {
 
     /**
      * 获取用户，渠道来源于微信小程序
-     * @param userId
+     * @param id
      */
-    public UserWeChat getUserWeChatByMiniProgram(long userId){
-        QueryWrapper<UserWeChat> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("carrier", 0);
-        queryWrapper.eq("user_id", userId);
-        return userWeChatMapper.selectOne(queryWrapper);
+    public UserWeChat getUserWeChatByMiniProgram(long id){
+        return userWeChatMapper.selectById(id);
     }
 
 

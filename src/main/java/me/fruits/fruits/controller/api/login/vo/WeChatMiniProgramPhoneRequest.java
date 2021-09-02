@@ -11,9 +11,9 @@ import javax.validation.constraints.NotNull;
 @ApiModel("微信小程序手机号登录")
 public class WeChatMiniProgramPhoneRequest {
 
-    @ApiModelProperty(name = "userId",value = "用户id")
+    @ApiModelProperty(name = "id",value = "user_we_chat表的id")
     @NotNull
-    private Long userId;
+    private Long id;
 
 
     @ApiModelProperty(name = "encryptedData",value = "包括敏感数据在内的完整用户信息的加密数据")

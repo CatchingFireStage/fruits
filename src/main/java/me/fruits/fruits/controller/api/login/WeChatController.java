@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/login")
 @RestController(value = "apiWeChatController")
-@Api(tags = "登录-微信登录")
+@Api(tags = "登录-微信")
 @Validated
 public class WeChatController {
 
@@ -51,7 +51,7 @@ public class WeChatController {
 
 
         return Result.success(
-                userWeChatApiModuleService.loginMiniProgram(weChatMiniProgramPhoneRequest.getUserId(), phone)
+                userWeChatApiModuleService.loginMiniProgram(weChatMiniProgramPhoneRequest.getId(), phone)
         );
     }
 }
