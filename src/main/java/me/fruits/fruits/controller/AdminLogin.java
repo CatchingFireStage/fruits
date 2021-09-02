@@ -10,6 +10,4 @@ import java.lang.annotation.*;
 @Documented
 @Login
 public @interface AdminLogin {
-//    //admin模块的接口是否需要登录
-//    boolean isNeedLogin() default true;
 }

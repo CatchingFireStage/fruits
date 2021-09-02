@@ -53,15 +53,15 @@ public class AdminControllerAspect {
         Annotation annotationType = signature.getDeclaringType().getAnnotation(AdminLogin.class);
         if(!ObjectUtils.isEmpty(annotationType)){
             //类中存在AdminLogin注解
-            AdminLogin adminLoginType = (AdminLogin) annotationType;
-            Login annotation = adminLoginType.annotationType().getAnnotation(Login.class);
+            AdminLogin adminLogin = (AdminLogin) annotationType;
+            Login annotation = adminLogin.annotationType().getAnnotation(Login.class);
             needLogin = annotation.isNeedLogin();
         }else{
             //类中不存在AdminLogin注解，查看当前调用的方法上是否存在注解
             MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
-            AdminLogin adminLoginMethod = methodSignature.getMethod().getAnnotation(AdminLogin.class);
-            if(!ObjectUtils.isEmpty(adminLoginMethod)){
-                Login annotation = adminLoginMethod.annotationType().getAnnotation(Login.class);
+            AdminLogin adminLogin = methodSignature.getMethod().getAnnotation(AdminLogin.class);
+            if(!ObjectUtils.isEmpty(adminLogin)){
+                Login annotation = adminLogin.annotationType().getAnnotation(Login.class);
                 needLogin = annotation.isNeedLogin();
             }
         }
