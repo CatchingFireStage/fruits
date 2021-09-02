@@ -13,4 +13,9 @@ public abstract class UserService {
     public User getUser(long id) {
         return this.userMapper.selectById(id);
     }
+
+    public void add(User user) {
+
+        this.userMapper.insert(user);
+    }
 }

@@ -18,4 +18,7 @@ public class User implements Serializable {
     @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "唯一标识")
     private Long id;
+
+    @ApiModelProperty(value = "手机号")
+    private String phone;
 }
