@@ -2,7 +2,7 @@ package me.fruits.fruits.controller.admin.order;
 
 
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.service.order.OrderService;
+import me.fruits.fruits.service.order.OrderAdminModuleService;
 import me.fruits.fruits.service.order.websocket.WebSocketSessionManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class OrderWebSocket extends TextWebSocketHandler {
 
 
     @Autowired
-    private OrderService orderService;
+    private OrderAdminModuleService orderAdminModuleService;
 
     @Autowired
     private WebSocketSessionManage webSocketSessionManage;
@@ -35,10 +35,10 @@ public class OrderWebSocket extends TextWebSocketHandler {
 
 
         //支付订单列表事件
-        session.sendMessage(new TextMessage(orderService.buildWebsocketPayOrderListEvent()));
+        session.sendMessage(new TextMessage(orderAdminModuleService.buildWebsocketPayOrderListEvent()));
 
         //发送制作完成订单列表事件
-        session.sendMessage(new TextMessage(orderService.buildWebsocketFulfillOrderListEvent()));
+        session.sendMessage(new TextMessage(orderAdminModuleService.buildWebsocketFulfillOrderListEvent()));
 
         log.info("新的连接加入:{}", session.getId());
     }

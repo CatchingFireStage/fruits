@@ -21,6 +21,7 @@ import me.fruits.fruits.service.user.UserService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -28,7 +29,8 @@ import java.util.*;
 
 
 @Slf4j
-public abstract class OrderService {
+@Service
+public class OrderService {
 
 
     @Autowired
