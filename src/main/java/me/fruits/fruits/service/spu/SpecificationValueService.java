@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.fruits.fruits.mapper.SpecificationValueMapper;
 import me.fruits.fruits.mapper.po.SpecificationValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-public abstract class SpecificationValueService {
+@Service
+public class SpecificationValueService {
 
     @Autowired
     private SpecificationValueMapper specificationValueMapper;
