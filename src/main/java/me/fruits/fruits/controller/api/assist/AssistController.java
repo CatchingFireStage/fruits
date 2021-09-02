@@ -1,4 +1,4 @@
-package me.fruits.fruits.controller.api;
+package me.fruits.fruits.controller.api.assist;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @RequestMapping("/assist")
-@RestController(value = "MiniAssistController")
+@RestController(value = "ApiAssistController")
 @Api(tags = "打辅助")
 public class AssistController {
     
