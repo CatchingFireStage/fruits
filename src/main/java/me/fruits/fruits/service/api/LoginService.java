@@ -8,10 +8,13 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import me.fruits.fruits.utils.ApiModuleRequestHolder;
 import me.fruits.fruits.utils.ErrCode;
 import me.fruits.fruits.utils.FruitsException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -20,7 +23,14 @@ import java.util.Date;
 @Slf4j
 public class LoginService {
 
+
+    public static final  String HEADER_TOKEN = "access-token-api";
+
     private static final String SECRET = "456fruits654";
+
+    @Autowired
+    private HttpServletRequest request;
+
 
 
     private String encodeToken(UserDTO userDTO) {
@@ -40,7 +50,7 @@ public class LoginService {
     }
 
 
-    private UserDTO decodeToken(String token) throws FruitsException {
+    private UserDTO verifyToken(String token) throws FruitsException {
         try {
             DecodedJWT verify = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
             Claim id = verify.getClaim("id");
@@ -53,7 +63,18 @@ public class LoginService {
     }
 
 
-    public void injectJwtTokenContext() {
+
+    public void injectJwtTokenContext() throws FruitsException {
+        String accessTokenApi = request.getHeader(HEADER_TOKEN);
+
+        if(accessTokenApi == null){
+            throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
+        }
+        //token验证
+        UserDTO userDTO = verifyToken(accessTokenApi);
+
+        //context注入
+        ApiModuleRequestHolder.set(userDTO);
     }
 
     /**

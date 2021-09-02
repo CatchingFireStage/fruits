@@ -23,6 +23,9 @@ import java.util.Date;
 @Slf4j
 public class LoginService {
 
+
+    public static final  String HEADER_TOKEN = "access-token-admin";
+
     @Value("${fruits.admin.username}")
     private String username;
 
@@ -66,7 +69,7 @@ public class LoginService {
      * 注入jwtToken
      */
     public void injectJwtTokenContext() throws FruitsException {
-        String accessTokenAdmin = request.getHeader("access-token-admin");
+        String accessTokenAdmin = request.getHeader(HEADER_TOKEN);
         if(accessTokenAdmin == null){
             throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
         }

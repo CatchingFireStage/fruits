@@ -1,6 +1,7 @@
 package me.fruits.fruits.configuration;
 
 import com.fasterxml.classmate.TypeResolver;
+import me.fruits.fruits.service.admin.LoginService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class SwaggerConfiguration {
 
         //全局添加参数
         List<RequestParameter> pars = new ArrayList<>();
-        pars.add(new RequestParameterBuilder().name("access-token-admin").description("前台登录的token").required(true).in(ParameterType.HEADER).build());
+        pars.add(new RequestParameterBuilder().name(LoginService.HEADER_TOKEN).description("前台登录的token").required(true).in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()
@@ -56,18 +57,18 @@ public class SwaggerConfiguration {
 
 
     @Bean
-    public Docket miniApi(TypeResolver typeResolver){
+    public Docket apiApi(TypeResolver typeResolver) {
         ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/api.*");
 
 
         //全局添加参数
         List<RequestParameter> pars = new ArrayList<>();
-        pars.add(new RequestParameterBuilder().name("access-token-api").description("登录的token").in(ParameterType.HEADER).build());
+        pars.add(new RequestParameterBuilder().name(me.fruits.fruits.service.api.LoginService.HEADER_TOKEN).description("登录的token").in(ParameterType.HEADER).build());
 
         return commentApiSelectorBuilder
                 .build()
                 .pathMapping("/")
-                .groupName("小程序api")
+                .groupName("客户端api")
                 .directModelSubstitute(LocalDate.class, String.class)
                 .genericModelSubstitutes(ResponseEntity.class)
                 .alternateTypeRules(
@@ -85,7 +86,7 @@ public class SwaggerConfiguration {
 
 
     @Bean
-    public Docket notifyApi(TypeResolver typeResolver){
+    public Docket notifyApi(TypeResolver typeResolver) {
         ApiSelectorBuilder commentApiSelectorBuilder = this.getCommentApiSelectorBuilder("/notify.*");
 
         return commentApiSelectorBuilder
@@ -107,17 +108,16 @@ public class SwaggerConfiguration {
 
     /**
      * 获取公共的设置
+     *
      * @param apiPrefix
      */
-    private ApiSelectorBuilder getCommentApiSelectorBuilder(String apiPrefix){
+    private ApiSelectorBuilder getCommentApiSelectorBuilder(String apiPrefix) {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 //paths和groupName搭配使用，可以进行多模块配置
                 .paths(PathSelectors.regex(apiPrefix));
     }
-
-
 
 
     private ApiKey apiKey() {
