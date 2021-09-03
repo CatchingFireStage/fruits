@@ -2,6 +2,8 @@ package me.fruits.fruits.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import me.fruits.fruits.service.admin.LoginService;
+import me.fruits.fruits.utils.ErrCode;
+import me.fruits.fruits.utils.FruitsException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -10,7 +12,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 
 @Aspect
@@ -68,7 +74,15 @@ public class AdminControllerAspect {
 
         if(needLogin){
             //todo:登录的token验证
-            loginService.injectJwtTokenContext();
+            boolean isLogin = loginService.injectJwtTokenContext();
+            if(!isLogin){
+                //登录失败
+                //获取当前线程的servlet
+                ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+                HttpServletResponse response = servletRequestAttributes.getResponse();
+                response.setStatus(401);
+                return null;
+            }
         }
 
         // 方法运行之前

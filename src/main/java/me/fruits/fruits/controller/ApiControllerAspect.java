@@ -11,7 +11,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 
 @Aspect
@@ -68,7 +71,14 @@ public class ApiControllerAspect {
 
         if(needLogin){
             //todo:登录的token验证
-            loginService.injectJwtTokenContext();
+           boolean isLogin =  loginService.injectJwtTokenContext();
+           if(!isLogin){
+               //获取当前线程的servlet
+               ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+               HttpServletResponse response = servletRequestAttributes.getResponse();
+               response.setStatus(401);
+               return null;
+           }
         }
 
         // 方法运行之前

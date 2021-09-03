@@ -63,17 +63,24 @@ public class LoginService {
 
 
 
-    public void injectJwtTokenContext() throws FruitsException {
+    public boolean injectJwtTokenContext()  {
         String accessTokenApi = request.getHeader(HEADER_TOKEN);
 
         if(accessTokenApi == null){
-            throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
+           return false;
         }
-        //token验证
-        UserDTO userDTO = verifyToken(accessTokenApi);
+        try{
+            //token验证
+            UserDTO userDTO = verifyToken(accessTokenApi);
+            //context注入
+            ApiModuleRequestHolder.set(userDTO);
 
-        //context注入
-        ApiModuleRequestHolder.set(userDTO);
+            return true;
+        }catch (FruitsException fruitsException){
+
+            return false;
+        }
+
     }
 
     /**

@@ -68,17 +68,22 @@ public class LoginService {
     /**
      * 注入jwtToken
      */
-    public void injectJwtTokenContext() throws FruitsException {
+    public boolean injectJwtTokenContext()  {
         String accessTokenAdmin = request.getHeader(HEADER_TOKEN);
         if(accessTokenAdmin == null){
-            throw new FruitsException(ErrCode.TOKEN_ERR, "token异常");
+            return false;
         }
-        //token验证
-        AdminDTO adminDTO = verifyToken(accessTokenAdmin);
+        try{
 
-        //context注入
-        AdminModuleRequestHolder.set(adminDTO);
+            //token验证
+            AdminDTO adminDTO = verifyToken(accessTokenAdmin);
+            //context注入
+            AdminModuleRequestHolder.set(adminDTO);
 
+            return true;
+        }catch (FruitsException fruitsException){
+            return false;
+        }
     }
 
     /**
