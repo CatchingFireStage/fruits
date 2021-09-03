@@ -28,7 +28,7 @@ fruits:
     password: ${FRUITS_PASSWORD}
   upload:
     root-path: /usr/src/fruits/upload
-    visit-domain: http://fruits.com
+    visit-domain: ${UPLOAD_VISIT_DOMAIN}
   merchant:
     start-time: "2021-08-23 23:59:00"
     end-time: "2021-08-23 23:59:00"
