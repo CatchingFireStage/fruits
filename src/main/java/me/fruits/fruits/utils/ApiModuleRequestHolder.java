@@ -11,10 +11,10 @@ public class ApiModuleRequestHolder {
         threadLocal.set(userDTO);
     }
 
-    public static UserDTO get() throws FruitsException {
+    public static UserDTO get() {
         UserDTO userDTO = threadLocal.get();
         if (ObjectUtils.isEmpty(userDTO)) {
-            throw new FruitsException(ErrCode.TOKEN_ERR, "获取不到当前登录的用户");
+            throw new FruitsRuntimeException("获取不到当前登录的用户");
         }
         return userDTO;
     }

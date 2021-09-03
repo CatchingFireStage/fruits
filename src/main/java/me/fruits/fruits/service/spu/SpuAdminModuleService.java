@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.SpuMapper;
-import me.fruits.fruits.mapper.enums.IsInventoryEnum;
+import me.fruits.fruits.mapper.enums.BooleanEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +68,8 @@ public class SpuAdminModuleService {
     /**
      * 改变是否有货
      */
-    public void update(long id, IsInventoryEnum isInventoryEnum) {
-        this.spuService.update(id, isInventoryEnum);
+    public void update(long id, BooleanEnum booleanEnum) {
+        this.spuService.update(id, booleanEnum);
     }
 
     /**

@@ -5,7 +5,7 @@ import io.swagger.annotations.*;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
 import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
-import me.fruits.fruits.mapper.enums.IsInventoryEnum;
+import me.fruits.fruits.mapper.enums.BooleanEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
@@ -108,8 +108,8 @@ public class SpuController {
 
     @PatchMapping("/spuChangeImg/{id}")
     @ApiOperation("更新spu的图片")
-    public Result<String> spu(@PathVariable long id,@RequestPart("file") MultipartFile file) throws IOException, FruitsException {
-        spuAdminModuleService.update(id,file);
+    public Result<String> spu(@PathVariable long id, @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
+        spuAdminModuleService.update(id, file);
         return Result.success();
     }
 
@@ -117,10 +117,10 @@ public class SpuController {
     @ApiOperation(value = "更新是否有货状态-spu")
     public Result<String> spu(@PathVariable long id, @RequestBody @Valid ChangeIsInventoryRequest changeIsInventoryRequest) {
 
-        if (changeIsInventoryRequest.getIsInventory().equals(IsInventoryEnum.ON_INVENTORY.getValue())) {
-            spuAdminModuleService.update(id, IsInventoryEnum.ON_INVENTORY);
-        } else if (changeIsInventoryRequest.getIsInventory().equals(IsInventoryEnum.OFF_INVENTORY.getValue())) {
-            spuAdminModuleService.update(id, IsInventoryEnum.OFF_INVENTORY);
+        if (changeIsInventoryRequest.getIsInventory().equals(BooleanEnum.TRUE.getValue())) {
+            spuAdminModuleService.update(id, BooleanEnum.FALSE);
+        } else if (changeIsInventoryRequest.getIsInventory().equals(BooleanEnum.FALSE.getValue())) {
+            spuAdminModuleService.update(id, BooleanEnum.TRUE);
         } else {
             return Result.failed("参数错误");
         }
