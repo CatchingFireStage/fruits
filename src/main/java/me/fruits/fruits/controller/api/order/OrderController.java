@@ -2,11 +2,15 @@ package me.fruits.fruits.controller.api.order;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.controller.ApiLogin;
 import me.fruits.fruits.mapper.po.Orders;
+import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.OrderApiModuleService;
+import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.utils.ApiModuleRequestHolder;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
@@ -26,10 +30,14 @@ import java.util.Map;
 @Api(tags = "订单-订单模块")
 @Validated
 @ApiLogin
+@Slf4j
 public class OrderController {
 
     @Autowired
     private OrderApiModuleService orderApiModuleService;
+
+    @Autowired
+    private OrderService orderService;
 
     @ApiOperation(value = "我的订单")
     @GetMapping("/orders")
@@ -38,8 +46,8 @@ public class OrderController {
         //获取我的订单
         IPage<Orders> myOrders = orderApiModuleService.getMyOrders(ApiModuleRequestHolder.get().getId(), pageVo);
 
-        if(myOrders.getRecords().size() == 0){
-            return Result.success(myOrders.getTotal(),myOrders.getPages(),null);
+        if (myOrders.getRecords().size() == 0) {
+            return Result.success(myOrders.getTotal(), myOrders.getPages(), null);
         }
 
 
@@ -47,17 +55,23 @@ public class OrderController {
 
         myOrders.getRecords().forEach(orders -> {
 
-            Map<String,Object> item = new HashMap<>();
+            Map<String, Object> item = new HashMap<>();
 
-            item.put("id",orders.getId());
-            item.put("payMoney",orders.getPayMoney());
-
-
+            item.put("id", orders.getId());
+            item.put("payMoney", orders.getPayMoney());
+            item.put("stateText", orderApiModuleService.changeStateToText(orders.getState()));
+            try {
+                item.put("description", orderService.decodeInputOrderDescriptionDTO(orders.getDescription()));
+            } catch (JsonProcessingException e) {
+                //跳过这条数据
+                log.info("订单id：{}，DescriptionDTO json解码失败", orders.getId());
+                return;
+            }
 
             response.add(item);
         });
 
 
-        return Result.success(myOrders.getTotal(),myOrders.getPages(),response);
+        return Result.success(myOrders.getTotal(), myOrders.getPages(), response);
     }
 }
