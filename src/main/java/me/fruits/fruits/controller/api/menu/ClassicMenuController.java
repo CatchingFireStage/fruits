@@ -1,12 +1,11 @@
 package me.fruits.fruits.controller.api.menu;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.ApiLogin;
-import me.fruits.fruits.mapper.SpuMapper;
 import me.fruits.fruits.mapper.po.Spu;
+import me.fruits.fruits.service.spu.SpuApiModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpuCategoryDTO;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 public class ClassicMenuController {
 
     @Autowired
-    private SpuMapper spuMapper;
+    private SpuApiModuleService spuApiModuleService;
 
     @Autowired
     private WrapperDTOService wrapperDTOService;
@@ -41,11 +40,7 @@ public class ClassicMenuController {
     @GetMapping("/menu")
     public Result<List<Object>> menu() {
 
-
-        QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
-        //有货
-        queryWrapper.eq("is_inventory", 1);
-        List<Spu> spus = spuMapper.selectList(queryWrapper);
+        List<Spu> spus = spuApiModuleService.getClassicMenu();
 
 
         List<SpuDTO> spuDTOS = wrapperDTOService.wrapperSPUs(spus);
@@ -54,8 +49,8 @@ public class ClassicMenuController {
         Map<Long, SpuCategoryDTO> categoryMapKeyIsCategoryId = spuDTOS.stream().map(SpuDTO::getCategory).collect(Collectors.toMap(
                 SpuCategoryDTO::getId, spuCategoryDTO -> spuCategoryDTO,
                 //如果key重复，取后面的值覆盖
-                (last,next) -> next
-                ));
+                (last, next) -> next
+        ));
 
         //获取spu数据，然后按照类别分组
         Map<Long, List<SpuDTO>> goodsMapKeyIsCategoryId = spuDTOS.stream().collect(Collectors.groupingBy(spu -> {
@@ -64,15 +59,15 @@ public class ClassicMenuController {
 
 
         List<Object> response = new ArrayList<>();
-        categoryMapKeyIsCategoryId.forEach((key,value) -> {
+        categoryMapKeyIsCategoryId.forEach((key, value) -> {
 
-            Map<String,Object> item = new HashMap<>();
+            Map<String, Object> item = new HashMap<>();
             //类别数据
-            item.put("id",value.getId());
-            item.put("name",value.getName());
+            item.put("id", value.getId());
+            item.put("name", value.getName());
 
             //类别下的所有商品
-            item.put("goods",goodsMapKeyIsCategoryId.get(value.getId()));
+            item.put("goods", goodsMapKeyIsCategoryId.get(value.getId()));
 
 
             response.add(item);
