@@ -1,0 +1,26 @@
+version: '3.7'
+#线上docker运行脚本，和application-prod.yml配置使用
+services:
+  fruits:
+    container_name: fruits_run
+    image: maven:3.8.1-jdk-11
+    ports:
+      - 8081:8081
+    environment:
+      #数据库账号密码
+      - FRUITS_MYSQL_USERNAME=${FRUITS_MYSQL_USERNAME}
+      - FRUITS_MYSQL_PASSWORD=${FRUITS_MYSQL_PASSWORD}
+      #系统后台的账号密码
+      - FRUITS_USERNAME=${FRUITS_USERNAME}
+      - FRUITS_PASSWORD=${FRUITS_PASSWORD}
+      #系统上传文件访问的域名
+      - UPLOAD_VISIT_DOMAIN=${UPLOAD_VISIT_DOMAIN}
+    #工作目录空间
+    working_dir: /usr/src/fruits
+    volumes:
+      - ./:/usr/src/fruits
+      #上传文件的路径
+      - /home/liangyu/fruits/upload:/usr/src/fruits/upload
+      - /home/liangyu/fruits/log:/usr/src/fruits/log
+      - /home/liangyu/fruits/wechat/:/usr/src/fruits/wechat
+    command: java -jar ./fruits-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod

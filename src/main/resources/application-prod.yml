@@ -27,7 +27,7 @@ fruits:
     username: ${FRUITS_USERNAME}
     password: ${FRUITS_PASSWORD}
   upload:
-    root-path: /home/liangyu/fruits/upload
+    root-path: /usr/src/fruits/upload
     visit-domain: http://fruits.com
   merchant:
     start-time: "2021-08-23 23:59:00"
@@ -37,7 +37,7 @@ fruits:
 logging:
   config: classpath:logback-spring.xml
   file:
-    path: /home/liangyu/fruits/log
+    path: /usr/src/fruits/log
 wx:
   pay:
     app-id: 公众号或者小程序appid
