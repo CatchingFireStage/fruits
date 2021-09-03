@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: fruits
+  datasource:
+    url: jdbc:mysql://rm-wz97860x6cxc103yi.mysql.rds.aliyuncs.com:3306/fruits?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true
+    username: ${FRUITS_MYSQL_USERNAME}
+    password: ${FRUITS_MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson: GMT+8
+  task:
+    execution:
+      pool:
+        max-size: 16
+        queue-capacity: 100
+server:
+  port: 8081
+
+swagger:
+  enable: true
+  application-name: ${spring.application.name}
+  application-version: 1.0
+  application-description: springfox swagger 3.0整合Demo
+  try-host: http://localhost:${server.port}
+
+fruits:
+  admin:
+    username: ${FRUITS_USERNAME}
+    password: ${FRUITS_PASSWORD}
+  upload:
+    root-path: /home/liangyu/fruits/upload
+    visit-domain: http://fruits.com
+  merchant:
+    start-time: "2021-08-23 23:59:00"
+    end-time: "2021-08-23 23:59:00"
+    is-24-hours: false
+    is-close: true
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: /home/liangyu/fruits/log
+wx:
+  pay:
+    app-id: 公众号或者小程序appid
+    mch-id: 商户id
+    apiv3-key: API v3 秘钥
+    private-cert-path: /home/liangyu/fruits/wechat/application-template.yml
+    private-key-path: /home/liangyu/fruits/wechat/application-template.yml
+  miniapp:
+    appid: appid
+    secret: secret
+    token: token
+    aes-key: aesKey
