@@ -100,6 +100,12 @@ public class OrderService {
                 throw new FruitsRuntimeException(warn);
             }
 
+            if(spu.getIsInventory().equals(0)){
+                String warn = String.format("商品id:%d,名字:%s,卖完了,无货",spu.getId(),spu.getName());
+                log.warn(warn);
+                throw new FruitsRuntimeException(warn);
+            }
+
             //输出的spu设置
             InputOrderDescriptionDTO.Spu spuDTO = new InputOrderDescriptionDTO.Spu();
             spuDTO.setMoney(spu.getMoney());
