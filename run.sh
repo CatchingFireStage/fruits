@@ -23,4 +23,4 @@ export -p
 sudo -E docker-compose -f ./prod-docker-compose.yml down
 
 
-sudo -E docker-compose -f ./prod-docker-compose.yml up
+sudo -E docker-compose -f ./prod-docker-compose.yml up -d
