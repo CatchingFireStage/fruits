@@ -15,7 +15,12 @@ export UPLOAD_VISIT_DOMAIN=xxxx5
 #列出当前所有的环境变量
 export -p
 
-sudo docker-compose -f ./prod-docker-compose.yml down
+
+#sudo -E的作用： 当前run.sh是普通用户执行的，所以上面export设置的环境变量，在执行 sudo 的命令前，会被重置到root用户才有的环境变量
+#最终导致，sudo命令中需要依赖的环境变量失效
+#加上sudo -E ， 意思是，执行当前的sudo命令，会引用当前用户所export的环境变量
+
+sudo -E docker-compose -f ./prod-docker-compose.yml down
 
 
-sudo docker-compose -f ./prod-docker-compose.yml up -d
+sudo -E docker-compose -f ./prod-docker-compose.yml up
