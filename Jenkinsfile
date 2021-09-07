@@ -27,5 +27,11 @@ pipeline {
                  sh 'sudo docker-compose -f run-docker-compose.yml up -d'
               }
         }
+        stage('是否上线'){
+             steps {
+                Boolean  isOnLine = onLine
+                echo "是否上线${isOnLine}"
+             }
+        }
     }
 }
