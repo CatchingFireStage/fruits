@@ -9,7 +9,7 @@ pipeline {
         }
         stage('是否上线'){
              steps {
-                _onLine = Boolean.valueOf("true")
+                String _onLine = Boolean.valueOf("true")
                 echo "是否上线${_onLine}"
              }
         }
