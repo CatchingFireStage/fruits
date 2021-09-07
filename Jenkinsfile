@@ -9,8 +9,8 @@ pipeline {
         }
         stage('是否上线'){
              steps {
-                def _onLine = "${onLine}"
-                echo "是否上线${_onLine}"
+                def _onLine = "你好"
+                echo "是否上线${onLine},你好${_onLine}"
              }
         }
     }
