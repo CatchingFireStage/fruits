@@ -29,8 +29,7 @@ pipeline {
         }
         stage('是否上线'){
              steps {
-                Boolean  isOnLine = onLine
-                echo "是否上线${isOnLine}"
+                echo "是否上线${onLine}"
              }
         }
     }
