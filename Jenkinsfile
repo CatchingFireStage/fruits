@@ -9,7 +9,7 @@ pipeline {
         }
         stage('是否上线'){
              steps {
-                _onLine = ${params.onLine}
+                _onLine = params.onLine
                 echo "是否上线${_onLine}"
              }
         }
