@@ -10,7 +10,7 @@ pipeline {
         stage('是否上线'){
              steps {
                 script {
-                  def _onLine = '你好'
+                  Boolean  _onLine = parameters.onLine
                   echo "是否上线${onLine},你好${_onLine}"
                 }
              }
