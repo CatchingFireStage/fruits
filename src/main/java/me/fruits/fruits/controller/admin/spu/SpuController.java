@@ -74,6 +74,24 @@ public class SpuController {
         return Result.success(spUs.getTotal(), spUs.getPages(), spuDTOS);
     }
 
+
+    @GetMapping(value = "/sup/{id}")
+    @ApiOperation(value = "详情页-spu")
+    public Result spu(@PathVariable Long id){
+
+        Spu spu = spuAdminModuleService.getSPU(id);
+        if(spu == null){
+            return Result.failed("找不到spu:" + id);
+        }
+
+        List<Spu> spuList = new ArrayList<>();
+        spuList.add(spu);
+        List<SpuDTO> spuDTOS = wrapperDTOService.wrapperSPUs(spuList);
+
+        return Result.success(spuDTOS.get(0));
+    }
+
+
     @PostMapping(value = "/spu", headers = "content-type=multipart/form-data")
     @ApiOperation(value = "添加-spu")
     public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) throws IOException, FruitsException {

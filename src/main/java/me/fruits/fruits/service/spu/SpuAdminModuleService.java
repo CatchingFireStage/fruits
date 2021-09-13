@@ -41,6 +41,10 @@ public class SpuAdminModuleService {
         return this.spuMapper.selectPage(new Page<>(p, pageSize), queryWrapper);
     }
 
+    public Spu getSPU(long id){
+        return this.spuMapper.selectById(id);
+    }
+
 
     /**
      * 添加一个spu
