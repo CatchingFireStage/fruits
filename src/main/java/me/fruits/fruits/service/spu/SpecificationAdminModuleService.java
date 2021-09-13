@@ -14,7 +14,6 @@ import org.wltea.analyzer.core.Lexeme;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -50,29 +49,6 @@ public class SpecificationAdminModuleService {
 
         return this.specificationMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
-
-    /**
-     * 搜索用
-     *
-     * @param keyword 搜索词
-     */
-    public List<Specification> getSpecifications(String keyword) throws IOException {
-        QueryWrapper<Specification> queryWrapper = new QueryWrapper<>();
-        if (keyword != null && !keyword.trim().equals("")) {
-            IKSegmenter ikSegmenter = new IKSegmenter(new StringReader(keyword), true);
-            Lexeme lex;
-            while ((lex = ikSegmenter.next()) != null) {
-                queryWrapper.like("name", lex.getLexemeText()).or();
-            }
-            queryWrapper.like("name", keyword.trim());
-        }
-
-        queryWrapper.last("limit 100");
-
-
-        return this.specificationMapper.selectList(queryWrapper);
-    }
-
 
     public void add(Specification specification) {
 
