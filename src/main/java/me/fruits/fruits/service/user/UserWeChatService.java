@@ -23,11 +23,11 @@ public class UserWeChatService {
      * 创建用户，渠道来源于微信小程序
      */
     @Transactional
-    public UserWeChat addUserByMiniProgram(String openId, String sessionKey) {
+    public UserWeChat addUserByMiniProgram(String openId,String phone, String sessionKey) {
 
         //创建一个用户
         User user = new User();
-        user.setPhone("");
+        user.setPhone(phone);
         long userId = userService.add(user);
 
         UserWeChat userWeChat = new UserWeChat();
@@ -55,14 +55,6 @@ public class UserWeChatService {
         queryWrapper.eq("open_id", openId);
 
         return userWeChatMapper.selectOne(queryWrapper);
-    }
-
-    /**
-     * 获取用户，渠道来源于微信小程序
-     * @param id
-     */
-    public UserWeChat getUserWeChatByMiniProgram(long id){
-        return userWeChatMapper.selectById(id);
     }
 
 

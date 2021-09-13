@@ -1,6 +1,5 @@
 package me.fruits.fruits.service.user;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.fruits.fruits.mapper.UserMapper;
 import me.fruits.fruits.mapper.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +21,5 @@ public class UserService {
         this.userMapper.insert(user);
 
         return user.getId();
-    }
-
-
-    public void update(long id, String phone) {
-
-        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
-        userUpdateWrapper.eq("id", id);
-        userUpdateWrapper.set("phone", phone);
-
-        userMapper.update(null, userUpdateWrapper);
     }
 }

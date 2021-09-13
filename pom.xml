@@ -115,6 +115,20 @@
             <version>3.3.3</version>
         </dependency>
 
+
+        <!--        缓存-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!--        https://www.ehcache.org/documentation/3.0/getting-started.html 内存缓存-->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 
