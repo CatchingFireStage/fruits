@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
+import me.fruits.fruits.mapper.enums.OrderStateEnum;
 import me.fruits.fruits.mapper.po.*;
 import me.fruits.fruits.service.order.websocket.EventHandler;
 import me.fruits.fruits.service.order.websocket.message.Event;
@@ -229,7 +230,7 @@ public class OrderService {
         orders.setCreateTime(LocalDateTime.now());
         orders.setUserId(inputOrderDescriptionDTO.getUserId());
         //下单状态
-        orders.setState(0);
+        orders.setState(OrderStateEnum.ORDER.getValue());
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -277,8 +278,8 @@ public class OrderService {
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("state", 0)
-                .set("state", 1);
+                .eq("state", OrderStateEnum.ORDER.getValue())
+                .set("state", OrderStateEnum.PAY.getValue());
 
         return this.ordersMapper.update(null, updateWrapper) > 0;
     }
@@ -305,8 +306,8 @@ public class OrderService {
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("state", 1)
-                .set("state", 3);
+                .eq("state", OrderStateEnum.PAY.getValue())
+                .set("state", OrderStateEnum.COMPLETED.getValue());
 
         return this.ordersMapper.update(null, updateWrapper) > 0;
     }
@@ -320,8 +321,8 @@ public class OrderService {
         //更新订单状态为送达, 制作完成 才能切换到 送达
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("state", 3)
-                .set("state", 4);
+                .eq("state",OrderStateEnum.COMPLETED.getValue() )
+                .set("state", OrderStateEnum.DELIVERY.getValue());
 
         this.ordersMapper.update(null, updateWrapper);
 
@@ -343,24 +344,24 @@ public class OrderService {
         //更新订单状态为关闭,下单状态 才能切换到 已关闭状态
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("state", 0)
-                .set("state", 2);
+                .eq("state", OrderStateEnum.ORDER.getValue())
+                .set("state", OrderStateEnum.CLOSE.getValue());
 
         this.ordersMapper.update(null, updateWrapper);
     }
 
 
     /**
-     * 获取所有状态为已支付的订单
+     * 获取已支付的订单或者是完成制作的订单
      */
-    private List<Map<String, Object>> getOrdersByPayStateOrFulfillState(int state) {
+    private List<Map<String, Object>> getOrdersByPayStateOrFulfillState(OrderStateEnum orderStateEnum) {
 
-        if (state != 1 && state != 3) {
+        if (orderStateEnum != OrderStateEnum.PAY && orderStateEnum != OrderStateEnum.COMPLETED) {
             throw new FruitsRuntimeException("该方法只能获取已支付或者完整制作的订单");
         }
 
         QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", state);
+        queryWrapper.eq("state", orderStateEnum.getValue());
         List<Orders> orders = this.ordersMapper.selectList(queryWrapper);
 
 
@@ -393,7 +394,7 @@ public class OrderService {
 
         Event event = new Event();
         event.setEventType(EventType.PAY_ORDER_LIST);
-        event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(1)));
+        event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(OrderStateEnum.PAY)));
         return this.objectMapper.writeValueAsString(event);
     }
 
@@ -429,7 +430,7 @@ public class OrderService {
     public String buildWebsocketFulfillOrderListEvent() throws JsonProcessingException {
         Event event = new Event();
         event.setEventType(EventType.FULFILL_ORDER_LIST);
-        event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(3)));
+        event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(OrderStateEnum.COMPLETED)));
         return this.objectMapper.writeValueAsString(event);
     }
 }
