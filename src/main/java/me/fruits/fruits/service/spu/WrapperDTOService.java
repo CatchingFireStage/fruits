@@ -1,6 +1,7 @@
 package me.fruits.fruits.service.spu;
 
 
+import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.po.*;
 import me.fruits.fruits.service.spu.dto.SpecificationSpuDTO;
 import me.fruits.fruits.service.spu.dto.SpecificationValueDTO;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * 包装的dto的前后台公共service
  */
 @Service
+@Slf4j
 public class WrapperDTOService {
 
 
@@ -76,7 +78,7 @@ public class WrapperDTOService {
 
                 SpecificationDTOMapKeyIsSpuId.put(spuId, specificationSpuDTOS);
             } catch (RuntimeException ignored) {
-
+                ignored.printStackTrace();
             }
         });
 
@@ -123,7 +125,7 @@ public class WrapperDTOService {
         //获取spu所关联的所有规格
         List<SpecificationSpu> specificationSpuRequiredList = specificationSpuService.getSpecificationSpuBySpuId(spuId);
 
-        Map<Long, SpecificationSpu> specificationSpuMapKeysIsSpecificationId = specificationSpuRequiredList.stream().collect(Collectors.toMap(SpecificationSpu::getSpecificationId, specificationSpu -> specificationSpu));
+        Map<Long, SpecificationSpu> specificationSpuMapKeysIsSpecificationId = specificationSpuRequiredList.stream().collect(Collectors.toMap(SpecificationSpu::getSpecificationId, specificationSpu -> specificationSpu,(specificationSpu1,specificationSpu2) -> specificationSpu2));
 
         specificationSpuDTOS.forEach(specificationSpuDTO -> {
 
@@ -140,7 +142,7 @@ public class WrapperDTOService {
 
 
         });
-        
+
     }
 
     /**
