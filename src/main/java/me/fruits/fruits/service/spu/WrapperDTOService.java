@@ -70,10 +70,11 @@ public class WrapperDTOService {
                 List<Specification> specifications = specificationService.getSpecifications(specificationIds);
 
                 //包装成dto
-                List<SpecificationSpuDTO> specificationDTOS = wrapperSpecifications(wrapperSpecifications(specifications), spuId);
+                List<SpecificationSpuDTO> specificationSpuDTOS = wrapperSpecifications(specifications);
+                wrapperSpecifications(specificationSpuDTOS, spuId);
 
 
-                SpecificationDTOMapKeyIsSpuId.put(spuId, specificationDTOS);
+                SpecificationDTOMapKeyIsSpuId.put(spuId, specificationSpuDTOS);
             } catch (RuntimeException ignored) {
 
             }
@@ -116,7 +117,7 @@ public class WrapperDTOService {
     /**
      * 规格与spu之间的关联关系
      */
-    private List<SpecificationSpuDTO> wrapperSpecifications(List<SpecificationSpuDTO> specificationSpuDTOS, long spuId) {
+    private void wrapperSpecifications(List<SpecificationSpuDTO> specificationSpuDTOS, long spuId) {
 
 
         //获取spu所关联的所有规格
@@ -139,8 +140,7 @@ public class WrapperDTOService {
 
 
         });
-
-        return specificationSpuDTOS;
+        
     }
 
     /**
