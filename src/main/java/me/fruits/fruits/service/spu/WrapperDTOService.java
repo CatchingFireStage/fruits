@@ -112,19 +112,32 @@ public class WrapperDTOService {
     }
 
 
+    /**
+     * 规格与spu之间的关联关系
+     */
     private List<SpecificationSpuDTO> wrapperSpecifications(List<Specification> specifications, long spuId) {
 
         List<SpecificationSpuDTO> specificationSpuDTOS = wrapperSpecifications(specifications);
 
-        //获取spu必选的规格
-        List<SpecificationSpu> specificationSpuRequiredList = specificationSpuService.getSpecificationSpuRequiredBySpuId(spuId);
+        //获取spu所关联的所有规格
+        List<SpecificationSpu> specificationSpuRequiredList = specificationSpuService.getSpecificationSpuBySpuId(spuId);
 
-        Set<Long> requiredSpecificationSpu = specificationSpuRequiredList.stream().map(SpecificationSpu::getSpecificationId).collect(Collectors.toSet());
+        Map<Long, SpecificationSpu> specificationSpuMapKeysIsSpecificationId = specificationSpuRequiredList.stream().collect(Collectors.toMap(SpecificationSpu::getSpecificationId, specificationSpu -> specificationSpu));
 
         specificationSpuDTOS.forEach(specificationSpuDTO -> {
 
-            //设置规格是否为必选的
-            specificationSpuDTO.setRequired(requiredSpecificationSpu.contains(specificationSpuDTO.getId()));
+            specificationSpuDTO.setRequired(0);
+            specificationSpuDTO.setSpecificationSpuId(0L);
+            if (specificationSpuMapKeysIsSpecificationId.containsKey(specificationSpuDTO.getId())) {
+
+                //是否必选
+                specificationSpuDTO.setRequired(specificationSpuMapKeysIsSpecificationId.get(specificationSpuDTO.getId()).getRequired());
+                //规格与spu关联的唯一标识
+                specificationSpuDTO.setSpecificationSpuId(specificationSpuMapKeysIsSpecificationId.get(specificationSpuDTO.getId()).getId());
+
+            }
+
+
         });
 
         return specificationSpuDTOS;
@@ -149,9 +162,10 @@ public class WrapperDTOService {
         specifications.forEach(specification -> {
 
             SpecificationSpuDTO item = new SpecificationSpuDTO();
+
+            //规格
             item.setId(specification.getId());
             item.setName(specification.getName());
-            item.setRequired(null);
 
             //规格值
             item.setValues(null);

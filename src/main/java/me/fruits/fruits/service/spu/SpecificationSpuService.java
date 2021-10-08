@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public  class SpecificationSpuService {
+public class SpecificationSpuService {
 
     @Autowired
     private SpecificationSpuMapper specificationSpuMapper;
@@ -25,6 +25,15 @@ public  class SpecificationSpuService {
         queryWrapper.eq("spu_id", spuId);
         queryWrapper.eq("required", 1);
 
+        return this.specificationSpuMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * 通过spuId,获取spu所关联的所有规格
+     */
+    public List<SpecificationSpu> getSpecificationSpuBySpuId(long spuId) {
+        QueryWrapper<SpecificationSpu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("spu_id", spuId);
         return this.specificationSpuMapper.selectList(queryWrapper);
     }
 
@@ -43,7 +52,6 @@ public  class SpecificationSpuService {
     public void delete(long id) {
         specificationSpuMapper.deleteById(id);
     }
-
 
 
     public void update(long id, int required) {
