@@ -112,7 +112,7 @@ public class SpuController {
     public Result<String> spu(
             @PathVariable long id,
             @Valid AddSpuRequest addSpuRequest,
-            @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
+            @RequestPart(value = "file",required = false) MultipartFile file) throws IOException, FruitsException {
 
         Spu spu = new Spu();
         BeanUtils.copyProperties(addSpuRequest, spu);

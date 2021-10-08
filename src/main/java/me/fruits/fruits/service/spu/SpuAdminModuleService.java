@@ -72,7 +72,7 @@ public class SpuAdminModuleService {
         //更新元数据
         this.spuService.update(id, spu);
 
-        if(!file.isEmpty()){
+        if(file != null && !file.isEmpty()){
             //更新图片
             this.spuService.update(id, file);
         }
