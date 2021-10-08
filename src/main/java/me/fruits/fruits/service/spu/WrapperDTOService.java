@@ -68,8 +68,9 @@ public class WrapperDTOService {
                 //获取所关联的规格
                 Set<Long> specificationIds = specificationSpuList.stream().map(SpecificationSpu::getSpecificationId).collect(Collectors.toSet());
                 List<Specification> specifications = specificationService.getSpecifications(specificationIds);
+
                 //包装成dto
-                List<SpecificationSpuDTO> specificationDTOS = wrapperSpecifications(specifications, spuId);
+                List<SpecificationSpuDTO> specificationDTOS = wrapperSpecifications(wrapperSpecifications(specifications), spuId);
 
 
                 SpecificationDTOMapKeyIsSpuId.put(spuId, specificationDTOS);
@@ -115,9 +116,8 @@ public class WrapperDTOService {
     /**
      * 规格与spu之间的关联关系
      */
-    private List<SpecificationSpuDTO> wrapperSpecifications(List<Specification> specifications, long spuId) {
+    private List<SpecificationSpuDTO> wrapperSpecifications(List<SpecificationSpuDTO> specificationSpuDTOS, long spuId) {
 
-        List<SpecificationSpuDTO> specificationSpuDTOS = wrapperSpecifications(specifications);
 
         //获取spu所关联的所有规格
         List<SpecificationSpu> specificationSpuRequiredList = specificationSpuService.getSpecificationSpuBySpuId(spuId);
