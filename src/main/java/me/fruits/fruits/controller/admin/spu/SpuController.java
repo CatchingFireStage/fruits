@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.*;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
-import me.fruits.fruits.controller.admin.spu.vo.ChangeIsInventoryRequest;
-import me.fruits.fruits.mapper.enums.BooleanEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
@@ -77,10 +75,10 @@ public class SpuController {
 
     @GetMapping(value = "/sup/{id}")
     @ApiOperation(value = "详情页-spu")
-    public Result spu(@PathVariable Long id){
+    public Result spu(@PathVariable Long id) {
 
         Spu spu = spuAdminModuleService.getSPU(id);
-        if(spu == null){
+        if (spu == null) {
             return Result.failed("找不到spu:" + id);
         }
 
@@ -109,9 +107,12 @@ public class SpuController {
         return Result.success();
     }
 
-    @PutMapping("/spu/{id}")
+    @PostMapping(value = "/spu/{id}", headers = "content-type=multipart/form-data")
     @ApiOperation(value = "更新-spu")
-    public Result<String> spu(@PathVariable long id, @RequestBody @Valid AddSpuRequest addSpuRequest) {
+    public Result<String> spu(
+            @PathVariable long id,
+            @Valid AddSpuRequest addSpuRequest,
+            @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
 
         Spu spu = new Spu();
         BeanUtils.copyProperties(addSpuRequest, spu);
@@ -119,29 +120,7 @@ public class SpuController {
         //金额处理
         spu.setMoney(MoneyUtils.yuanChangeFen(addSpuRequest.getMoney()));
 
-        spuAdminModuleService.update(id, spu);
-
-        return Result.success();
-    }
-
-    @PatchMapping("/spuChangeImg/{id}")
-    @ApiOperation("更新spu的图片")
-    public Result<String> spu(@PathVariable long id, @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
-        spuAdminModuleService.update(id, file);
-        return Result.success();
-    }
-
-    @PatchMapping("/spuChangeIsInventory/{id}")
-    @ApiOperation(value = "更新是否有货状态-spu")
-    public Result<String> spu(@PathVariable long id, @RequestBody @Valid ChangeIsInventoryRequest changeIsInventoryRequest) {
-
-        if (changeIsInventoryRequest.getIsInventory().equals(BooleanEnum.TRUE.getValue())) {
-            spuAdminModuleService.update(id, BooleanEnum.FALSE);
-        } else if (changeIsInventoryRequest.getIsInventory().equals(BooleanEnum.FALSE.getValue())) {
-            spuAdminModuleService.update(id, BooleanEnum.TRUE);
-        } else {
-            return Result.failed("参数错误");
-        }
+        spuAdminModuleService.update(id, spu, file);
 
         return Result.success();
     }

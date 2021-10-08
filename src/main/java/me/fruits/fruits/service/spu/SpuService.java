@@ -3,7 +3,6 @@ package me.fruits.fruits.service.spu;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.fruits.fruits.mapper.SpuMapper;
-import me.fruits.fruits.mapper.enums.BooleanEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.upload.UploadService;
 import me.fruits.fruits.utils.FruitsException;
@@ -71,17 +70,6 @@ public class SpuService {
                 .set("is_inventory", spu.getIsInventory())
                 .set("money", spu.getMoney())
                 .set("update_time", LocalDateTime.now());
-        this.spuMapper.update(null, updateWrapper);
-    }
-
-    /**
-     * 改变是否有货
-     */
-    public void update(long id, BooleanEnum booleanEnum) {
-
-        UpdateWrapper<Spu> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("is_inventory", booleanEnum.getValue());
         this.spuMapper.update(null, updateWrapper);
     }
 

@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.SpuMapper;
-import me.fruits.fruits.mapper.enums.BooleanEnum;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.utils.FruitsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -61,26 +61,20 @@ public class SpuAdminModuleService {
         this.spuService.delete(id);
     }
 
-
     /**
-     * 更新spu的分类、是否有有货
+     * 更新spu的元数据和图片
+     * @param id 唯一标识
+     * @param spu spu元数据
+     * @param file 新的图片
      */
-    public void update(long id, Spu spu) {
+    @Transactional
+    public void update(long id,Spu spu,MultipartFile file) throws IOException, FruitsException{
+        //更新元数据
         this.spuService.update(id, spu);
-    }
 
-    /**
-     * 改变是否有货
-     */
-    public void update(long id, BooleanEnum booleanEnum) {
-        this.spuService.update(id, booleanEnum);
-    }
-
-    /**
-     * 更变图片
-     */
-    public void update(long id, MultipartFile file) throws IOException, FruitsException {
-        this.spuService.update(id, file);
-
+        if(!file.isEmpty()){
+            //更新图片
+            this.spuService.update(id, file);
+        }
     }
 }
