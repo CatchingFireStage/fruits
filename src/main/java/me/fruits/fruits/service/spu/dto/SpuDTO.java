@@ -27,6 +27,8 @@ public class SpuDTO {
     @ApiModelProperty(name = "imag", value = "商品图片")
     private ImageVO image;
 
+    @ApiModelProperty(name = "money",value = "商品价格，单位元")
+    private String money;
 
     @ApiModelProperty(name = "specificationSPUs",value = "规格列表")
     private List<SpecificationSpuDTO> specificationSPUs;

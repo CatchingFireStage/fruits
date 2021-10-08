@@ -88,6 +88,7 @@ public class WrapperDTOService {
             item.setName(spu.getName());
             item.setImage(uploadService.imageVo(spu.getImage()));
             item.setIsInventory(spu.getIsInventory());
+            item.setMoney(MoneyUtils.fenChangeYuan(spu.getMoney()));
 
             //分类dto
             item.setCategory(null);
