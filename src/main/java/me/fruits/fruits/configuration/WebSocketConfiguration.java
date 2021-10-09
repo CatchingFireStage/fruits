@@ -47,7 +47,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer, ServletConte
         servletContext.addListener(WebAppRootListener.class);
 
         //设置为1m
-        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize", String.format("%d", 1024 * 1024 * 1024));
-        servletContext.setInitParameter("org.apache.tomcat.websocket.binaryBufferSize", String.format("%d", 1024 * 1024 * 1024));
+        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize", String.format("%d", 1024 * 1024));
+        servletContext.setInitParameter("org.apache.tomcat.websocket.binaryBufferSize", String.format("%d", 1024 * 1024));
     }
 }
