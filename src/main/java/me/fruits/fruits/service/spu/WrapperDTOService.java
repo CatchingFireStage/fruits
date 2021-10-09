@@ -125,7 +125,7 @@ public class WrapperDTOService {
         //获取spu所关联的所有规格
         List<SpecificationSpu> specificationSpuRequiredList = specificationSpuService.getSpecificationSpuBySpuId(spuId);
 
-        Map<Long, SpecificationSpu> specificationSpuMapKeysIsSpecificationId = specificationSpuRequiredList.stream().collect(Collectors.toMap(SpecificationSpu::getSpecificationId, specificationSpu -> specificationSpu,(specificationSpu1,specificationSpu2) -> specificationSpu2));
+        Map<Long, SpecificationSpu> specificationSpuMapKeysIsSpecificationId = specificationSpuRequiredList.stream().collect(Collectors.toMap(SpecificationSpu::getSpecificationId, specificationSpu -> specificationSpu, (specificationSpu1, specificationSpu2) -> specificationSpu2));
 
         specificationSpuDTOS.forEach(specificationSpuDTO -> {
 
@@ -141,6 +141,12 @@ public class WrapperDTOService {
             }
 
 
+        });
+
+        //排序
+        specificationSpuDTOS.sort((specificationSpuDTO1, specificationSpuDTO2) -> {
+
+            return (int) (specificationSpuDTO2.getSpecificationSpuId() - specificationSpuDTO1.getSpecificationSpuId());
         });
 
     }
