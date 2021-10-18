@@ -97,6 +97,7 @@ public class OrderController {
 
             item.put("id", order.getId());
             item.put("payMoney", MoneyUtils.fenChangeYuan(order.getPayMoney()));
+            item.put("state", order.getState());
 
             try {
                 item.put("description", orderService.decodeInputOrderDescriptionDTO(order.getDescription()));
