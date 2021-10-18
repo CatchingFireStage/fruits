@@ -20,39 +20,38 @@ import java.util.Random;
 @Slf4j
 public class OrderTask {
 
-    @Autowired
-    private OrdersMapper ordersMapper;
-
-    @Autowired
-    private OrderService orderService;
-
-    private Random random = new Random();
-
-    //fixedDelay和fixedRate，单位是毫秒
-    //cron是格式
+//    @Autowired
+//    private OrdersMapper ordersMapper;
+//
+//    @Autowired
+//    private OrderService orderService;
+//
+//    private Random random = new Random();
+//
+//    //fixedDelay和fixedRate，单位是毫秒
+//    //cron是格式
 //    @Scheduled(fixedDelay = 60 * 60 * 1000)
-    @Scheduled(fixedDelay = 5 * 1000)
-    //@Async和Scheduled配置使用才能开启多线程;开启多线程，要保证函数里面的任务一定要线程安全！
-    @Async
-    public void testOrderPayAndOrderClose() {
-
-        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", 0);
-
-
-        List<Orders> orders = this.ordersMapper.selectList(queryWrapper);
-
-        orders.forEach(order -> {
-
-            if ((random.nextInt() % 5) == 0) {
-                //关闭订单
-                orderService.updateStatusToClose(order.getId());
-            } else {
-                //支付成功
-                orderService.updateStatusToPay(order);
-            }
-        });
-
-
-    }
+//    //@Async和Scheduled配置使用才能开启多线程;开启多线程，要保证函数里面的任务一定要线程安全！
+//    @Async
+//    public void testOrderPayAndOrderClose() {
+//
+//        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("state", 0);
+//
+//
+//        List<Orders> orders = this.ordersMapper.selectList(queryWrapper);
+//
+//        orders.forEach(order -> {
+//
+//            if ((random.nextInt() % 5) == 0) {
+//                //关闭订单
+//                orderService.updateStatusToClose(order.getId());
+//            } else {
+//                //支付成功
+//                orderService.updateStatusToPay(order);
+//            }
+//        });
+//
+//
+//    }
 }
