@@ -161,8 +161,8 @@ public class WrapperDTOService {
         }
 
         //填充规格值
-        Set<Long> ids = specifications.stream().map(Specification::getId).collect(Collectors.toSet());
-        Map<Long, List<SpecificationValue>> valueMapKeyIsId = specificationValueService.getSpecificationValues(ids).stream().collect(Collectors.groupingBy(SpecificationValue::getSpecificationId));
+        Set<Long> specificationIds = specifications.stream().map(Specification::getId).collect(Collectors.toSet());
+        Map<Long, List<SpecificationValue>> valueMapKeyIsId = specificationValueService.getSpecificationValuesBySpecificationId(specificationIds).stream().collect(Collectors.groupingBy(SpecificationValue::getSpecificationId));
 
 
         List<SpecificationSpuDTO> response = new ArrayList<>();

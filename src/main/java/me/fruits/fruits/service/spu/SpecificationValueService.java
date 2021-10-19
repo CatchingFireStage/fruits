@@ -36,9 +36,9 @@ public class SpecificationValueService {
         return this.specificationValueMapper.deleteById(id) > 0;
     }
 
-    public List<SpecificationValue> getSpecificationValues(Set<Long> ids) {
+    public List<SpecificationValue> getSpecificationValuesBySpecificationId(Set<Long> specificationIds) {
         QueryWrapper<SpecificationValue> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("id", ids);
+        queryWrapper.in("specification_id", specificationIds);
         return this.specificationValueMapper.selectList(queryWrapper);
     }
 
