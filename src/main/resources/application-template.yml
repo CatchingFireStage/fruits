@@ -65,4 +65,5 @@ wx:
     secret: secret
     token: token
     aes-key: aesKey
+    msg-data-format: json
 

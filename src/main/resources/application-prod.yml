@@ -46,7 +46,8 @@ wx:
     private-cert-path: /home/liangyu/fruits/wechat/application-template.yml
     private-key-path: /home/liangyu/fruits/wechat/application-template.yml
   miniapp:
-    appid: appid
-    secret: secret
+    appid: ${FRUITS_MINIAPP_APPID}
+    secret: ${FRUITS_MINIAPP_SECRET}
     token: token
     aes-key: aesKey
+    msg-data-format: json

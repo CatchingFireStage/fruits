@@ -13,9 +13,14 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>fruits</name>
     <description>水果商店项目</description>
+
     <properties>
+        <!--        java版本-->
         <java.version>11</java.version>
+        <!--        微信sdk版本-->
+        <com.github.binarywang.version>4.1.0</com.github.binarywang.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -87,14 +92,14 @@
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>wx-java-pay-spring-boot-starter</artifactId>
-            <version>4.1.0</version>
+            <version>${com.github.binarywang.version}</version>
         </dependency>
 
         <!--           微信小程序模块sdk引入-->
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>
-            <version>4.1.0</version>
+            <version>${com.github.binarywang.version}</version>
         </dependency>
 
         <!--             websocket引入-->
