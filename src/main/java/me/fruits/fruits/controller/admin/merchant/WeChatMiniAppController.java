@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.fruits.fruits.controller.AdminLogin;
+import me.fruits.fruits.utils.QRCodeUtil;
+import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 
 @RequestMapping("/merchant")
 @RestController(value = "AdminWeChatMiniAppController")
@@ -37,9 +35,7 @@ public class WeChatMiniAppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "desk", value = "桌子号", required = true)
     })
-    public void deskQrCode(@RequestParam() String desk,
-                           HttpServletRequest request,
-                           HttpServletResponse response) throws WxErrorException, IOException {
+    public Result<String> deskQrCode(@RequestParam() String desk) throws WxErrorException {
 
         //scene格式为query：  ?desk=1&age=18
         String scene = UriComponentsBuilder.fromUriString("").queryParam("desk",desk).build().toString();
@@ -49,12 +45,6 @@ public class WeChatMiniAppController {
         byte[] qrCode = qrcodeService.createWxaCodeUnlimitBytes(scene, null, 430, true, null, false);
 
 
-        // 设置contentType
-        response.setContentType("image/png");
-        // 写入response的输出流中
-        OutputStream stream = response.getOutputStream();
-        stream.write(qrCode);
-        stream.flush();
-        stream.close();
+        return Result.success(QRCodeUtil.toBase64QRCode(qrCode));
     }
 }

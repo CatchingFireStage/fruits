@@ -88,6 +88,11 @@ public class QRCodeUtil {
         return getBase64Image(content, width, height, logoUrl, logoWidth, logoHeight);
     }
 
+    public String toBase64QRCode(byte[] qrCode){
+        // 转出即可直接使用
+        return  String.format(BASE64_IMAGE, Base64.getEncoder().encodeToString(qrCode));
+    }
+
     private String getBase64Image(String content, Integer width, Integer height, String logoUrl, Integer logoWidth, Integer logoHeight) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         BufferedImage bufferedImage = crateQRCode(content, width, height, logoUrl, logoWidth, logoHeight);
