@@ -11,6 +11,8 @@ services:
     - FRUITS_USERNAME=${FRUITS_USERNAME}
     - FRUITS_PASSWORD=${FRUITS_PASSWORD}
     - UPLOAD_VISIT_DOMAIN=${UPLOAD_VISIT_DOMAIN}
+    - FRUITS_MINIAPP_APPID=${FRUITS_MINIAPP_APPID}
+    - FRUITS_MINIAPP_SECRET=${FRUITS_MINIAPP_SECRET}
     working_dir: /usr/src/fruits
     volumes:
     - /home/liangyu/fruits/0.0.1:/usr/src/fruits
