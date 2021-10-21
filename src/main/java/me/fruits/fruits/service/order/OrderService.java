@@ -271,10 +271,14 @@ public class OrderService {
         }
 
 
-        Orders order = getOrder(id);
-
         //更新成功触发一些事件
-        eventHandler.producerNewPayOrderNotify(order);
+        try {
+            Orders order = getOrder(id);
+            //websocket订单通知
+            eventHandler.producerNewPayOrderNotify(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
