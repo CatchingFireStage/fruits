@@ -253,13 +253,11 @@ public class OrderService {
         try {
 
             //todo: 创建三方的支付订单、三方订单入库
-            payService.orderJSPAPI(userId, merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
+            return payService.orderJSPAPI(userId, merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
         } catch (WxPayException e) {
             e.printStackTrace();
             throw new FruitsRuntimeException("下单失败,三方失败");
         }
-
-        return "http://www.baidu.com";
     }
 
 

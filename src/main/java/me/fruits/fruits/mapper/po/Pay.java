@@ -28,9 +28,6 @@ public class Pay implements Serializable {
     @ApiModelProperty(value = "商品描述")
     private String description;
 
-    @ApiModelProperty(value = "订单失效时间")
-    private LocalDateTime timeExpire;
-
     @ApiModelProperty(value = "金额，单位分")
     private Integer amount;
 

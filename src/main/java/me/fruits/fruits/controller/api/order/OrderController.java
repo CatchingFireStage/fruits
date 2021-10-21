@@ -97,12 +97,9 @@ public class OrderController {
         UserDTO userDTO = ApiModuleRequestHolder.get();
 
         //下单
-        String payQRCode = orderService.addOrderByJSAPI(userDTO.getId(),inputOrderDescriptionVO);
+        String prepayId = orderService.addOrderByJSAPI(userDTO.getId(), inputOrderDescriptionVO);
 
 
-        //返回二维码
-        String base64QRCode = QRCodeUtil.getBase64QRCode(payQRCode);
-
-        return Result.success(base64QRCode);
+        return Result.success(prepayId);
     }
 }
