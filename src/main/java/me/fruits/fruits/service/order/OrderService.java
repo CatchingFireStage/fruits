@@ -261,15 +261,20 @@ public class OrderService {
     }
 
 
-    public void updateStatusToPay(Orders orders) {
+    public void updateStatusToPay(Long id) {
 
-        if (!this.updateStatusToPay(orders.getId())) {
+        if (!this.updateStatusToPay(id.longValue())) {
             //更新失败，结束
-            return;
+            String format = String.format("更新订单id:%s到已支付失败", id);
+            log.error(format);
+            throw new FruitsRuntimeException(format);
         }
 
+
+        Orders order = getOrder(id);
+
         //更新成功触发一些事件
-        eventHandler.producerNewPayOrderNotify(orders);
+        eventHandler.producerNewPayOrderNotify(order);
     }
 
     /**

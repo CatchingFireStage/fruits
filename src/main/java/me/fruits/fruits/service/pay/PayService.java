@@ -1,22 +1,29 @@
 package me.fruits.fruits.service.pay;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.PayMapper;
+import me.fruits.fruits.mapper.enums.PayStateEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.mapper.po.UserWeChat;
+import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.service.user.UserWeChatService;
+import me.fruits.fruits.utils.FruitsRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.github.binarywang.wxpay.service.WxPayService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 
 @Service
+@Slf4j
 public class PayService {
 
     @Autowired
@@ -27,6 +34,10 @@ public class PayService {
 
     @Autowired
     private PayMapper payMapper;
+
+
+    @Autowired
+    private OrderService orderService;
 
     /**
      * JSP API订单统一支付
@@ -55,7 +66,7 @@ public class PayService {
         wxPayUnifiedOrderV3Request.setOutTradeNo(String.format("%d", merchantTransactionId));
 
         //商品描述
-        wxPayUnifiedOrderV3Request.setDescription(orders.getDescription());
+        wxPayUnifiedOrderV3Request.setDescription("fruits订单支付");
 
         //支付成功后的回调地址
         wxPayUnifiedOrderV3Request.setNotifyUrl(wxPayService.getConfig().getPayScoreNotifyUrl());
@@ -94,10 +105,40 @@ public class PayService {
         pay.setDescription(orders.getDescription());
         pay.setAmount(orders.getPayMoney());
         pay.setCreateTime(LocalDateTime.now());
-        pay.setState(0);
+        pay.setState(PayStateEnum.ORDER.getValue());
         pay.setTransactionId(prepayId);
 
         payMapper.insert(pay);
+    }
+
+
+    /**
+     * 支付回调
+     *
+     * @param outTradeNo    fruits系统订单号
+     * @param transactionId 微信的支付的订单号
+     */
+    @Transactional
+    public void updateStateToSuccess(String transactionId, String outTradeNo) {
+
+        UpdateWrapper<Pay> updateWrapper = new UpdateWrapper<>();
+
+        updateWrapper.eq("merchant_transaction_id", Long.valueOf(outTradeNo));
+        updateWrapper.eq("transaction_id", transactionId);
+        updateWrapper.eq("state", PayStateEnum.ORDER.getValue());
+
+        updateWrapper.set("state", PayStateEnum.SUCCESS.getValue());
+
+        if (payMapper.update(null, updateWrapper) <= 0) {
+            //更新失败,让微信再次通知
+            String format = String.format("微信的transactionId:%s,系统订单号outTradeNo:%s从0到1的状态更新失败", transactionId, outTradeNo);
+            log.error(format);
+            throw new FruitsRuntimeException("订单");
+        }
+
+
+        orderService.updateStatusToPay(Long.valueOf(outTradeNo));
+
     }
 
 
