@@ -63,15 +63,16 @@ public class OrderService {
 
     /**
      * 构建生成订单详情
+     * @param userId 下单的用户
      */
-    public InputOrderDescriptionDTO encodeInputOrderDescriptionDTO(InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public InputOrderDescriptionDTO encodeInputOrderDescriptionDTO(long userId, InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         InputOrderDescriptionDTO inputOrderDescriptionDTO = new InputOrderDescriptionDTO();
 
         inputOrderDescriptionDTO.setOrderDescription(new ArrayList<>());
 
         //用户验证
-        User user = userService.getUser(inputOrderDescriptionVO.getUserId());
+        User user = userService.getUser(userId);
         if (user == null) {
             log.warn("用户不存在");
             throw new FruitsRuntimeException("用户不存在");
@@ -101,8 +102,8 @@ public class OrderService {
                 throw new FruitsRuntimeException(warn);
             }
 
-            if(spu.getIsInventory().equals(0)){
-                String warn = String.format("商品id:%d,名字:%s,卖完了,无货",spu.getId(),spu.getName());
+            if (spu.getIsInventory().equals(0)) {
+                String warn = String.format("商品id:%d,名字:%s,卖完了,无货", spu.getId(), spu.getName());
                 log.warn(warn);
                 throw new FruitsRuntimeException(warn);
             }
@@ -218,10 +219,10 @@ public class OrderService {
      * 创建订单
      */
     @Transactional
-    public String addOrderByNative(InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public String addOrderByNative(long userId,InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(userId,inputOrderDescriptionVO);
 
 
         //创建订单
@@ -321,7 +322,7 @@ public class OrderService {
         //更新订单状态为送达, 制作完成 才能切换到 送达
         UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .eq("state",OrderStateEnum.COMPLETED.getValue() )
+                .eq("state", OrderStateEnum.COMPLETED.getValue())
                 .set("state", OrderStateEnum.DELIVERY.getValue());
 
         this.ordersMapper.update(null, updateWrapper);

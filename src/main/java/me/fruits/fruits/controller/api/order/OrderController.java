@@ -8,18 +8,20 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.controller.ApiLogin;
 import me.fruits.fruits.mapper.po.Orders;
+import me.fruits.fruits.service.api.UserDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
+import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderApiModuleService;
 import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.utils.ApiModuleRequestHolder;
 import me.fruits.fruits.utils.PageVo;
+import me.fruits.fruits.utils.QRCodeUtil;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,5 +75,34 @@ public class OrderController {
 
 
         return Result.success(myOrders.getTotal(), myOrders.getPages(), response);
+    }
+
+
+    @ApiOperation("订单-预览")
+    @PostMapping("/orderPreview")
+    public Result<InputOrderDescriptionDTO> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+
+        UserDTO userDTO = ApiModuleRequestHolder.get();
+
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderService.encodeInputOrderDescriptionDTO(userDTO.getId(), inputOrderDescriptionVO);
+
+        return Result.success(inputOrderDescriptionDTO);
+    }
+
+
+    @ApiOperation("支付-订单-Native下单API")
+    @PostMapping("/payOrderByNative")
+    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+
+        UserDTO userDTO = ApiModuleRequestHolder.get();
+
+        //下单
+        String payQRCode = orderService.addOrderByNative(userDTO.getId(),inputOrderDescriptionVO);
+
+
+        //返回二维码
+        String base64QRCode = QRCodeUtil.getBase64QRCode(payQRCode);
+
+        return Result.success(base64QRCode);
     }
 }

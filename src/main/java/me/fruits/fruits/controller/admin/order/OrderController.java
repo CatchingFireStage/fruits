@@ -9,8 +9,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.mapper.po.Orders;
-import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
-import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
 import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.utils.*;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,28 +34,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @ApiOperation("订单-预览")
-    @PostMapping("/orderPreview")
-    public Result<InputOrderDescriptionDTO> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
-
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = orderAdminModuleService.encodeInputOrderDescriptionDTO(inputOrderDescriptionVO);
-
-        return Result.success(inputOrderDescriptionDTO);
-    }
-
-    @ApiOperation("支付-订单-Native下单API")
-    @PostMapping("/payOrderByNative")
-    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
-
-        //下单
-        String payQRCode = orderAdminModuleService.addOrderByNative(inputOrderDescriptionVO);
-
-
-        //返回二维码
-        String base64QRCode = QRCodeUtil.getBase64QRCode(payQRCode);
-
-        return Result.success(base64QRCode);
-    }
 
     @PatchMapping("/orderFulfill/{id}")
     @ApiOperation("订单-制作完成")

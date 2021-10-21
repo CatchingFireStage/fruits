@@ -102,7 +102,7 @@ public class WeChatController {
 
 
         Map<String, Object> response = new HashMap<>();
-        
+
         response.put("accessTokenApi", userWeChatApiModuleService.registerUserByMiniProgram(weChatMiniProgramPhoneRequest.getOpenId(), phoneNoInfo.getPhoneNumber()));
 
         return Result.success(response);
