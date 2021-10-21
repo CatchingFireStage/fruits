@@ -15,11 +15,16 @@ public class PayService {
     @Autowired
     private WxPayService wxPayService;
 
-
-    public void orderNative(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, Orders orders) throws WxPayException {
+    /**
+     * JSP API订单统一支付
+     * @param merchantTransactionId 订单id
+     * @param merchantTransactionTypeEnum 交易类型
+     * @param orders 订单
+     * @throws WxPayException
+     */
+    public void orderJSPAPI(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, Orders orders) throws WxPayException {
 
         WxPayUnifiedOrderV3Request wxPayUnifiedOrderV3Request = new WxPayUnifiedOrderV3Request();
-
 
         //商品描述
         wxPayUnifiedOrderV3Request.setDescription(orders.getDescription());
@@ -27,18 +32,14 @@ public class PayService {
         //订单id设置
         wxPayUnifiedOrderV3Request.setOutTradeNo(String.format("%d", merchantTransactionId));
 
-//        //设置支付的超时时间,为2小时,微信默认的也是2小时
-//        wxPayUnifiedOrderV3Request.setTimeExpire(LocalDateTime.now().plusHours(2).toString());
 
         //支付金额设置
         WxPayUnifiedOrderV3Request.Amount amount = new WxPayUnifiedOrderV3Request.Amount();
         amount.setTotal(orders.getPayMoney());
         wxPayUnifiedOrderV3Request.setAmount(amount);
 
-        //设置通知地址
-//        wxPayUnifiedOrderV3Request.setNotifyUrl("https://www.baidu.com");
 
-        Object orderV3 = wxPayService.createOrderV3(TradeTypeEnum.NATIVE, wxPayUnifiedOrderV3Request);
+        Object orderV3 = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, wxPayUnifiedOrderV3Request);
     }
 
 

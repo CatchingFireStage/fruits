@@ -91,13 +91,13 @@ public class OrderController {
 
 
     @ApiOperation("支付-订单-Native下单API")
-    @PostMapping("/payOrderByNative")
-    public Result<String> addOrderByNative(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+    @PostMapping("/payOrderByJsAPI")
+    public Result<String> payOrderByJsAPI(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         UserDTO userDTO = ApiModuleRequestHolder.get();
 
         //下单
-        String payQRCode = orderService.addOrderByNative(userDTO.getId(),inputOrderDescriptionVO);
+        String payQRCode = orderService.addOrderByJSAPI(userDTO.getId(),inputOrderDescriptionVO);
 
 
         //返回二维码

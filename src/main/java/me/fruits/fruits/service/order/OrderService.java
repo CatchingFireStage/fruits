@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.enums.OrderStateEnum;
@@ -219,7 +220,7 @@ public class OrderService {
      * 创建订单
      */
     @Transactional
-    public String addOrderByNative(long userId,InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public String addOrderByJSAPI(long userId,InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
         InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(userId,inputOrderDescriptionVO);
@@ -248,14 +249,14 @@ public class OrderService {
         //订单入库
         int merchantTransactionId = this.ordersMapper.insert(orders);
 
-//        try {
-//
-//            //todo: 创建三方的支付订单、三方订单入库
-//            payService.orderNative(merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
-//        } catch (WxPayException e) {
-//            e.printStackTrace();
-//            throw new FruitsRuntimeException("下单失败,三方失败");
-//        }
+        try {
+
+            //todo: 创建三方的支付订单、三方订单入库
+            payService.orderJSPAPI(merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            throw new FruitsRuntimeException("下单失败,三方失败");
+        }
 
         return "http://www.baidu.com";
     }
