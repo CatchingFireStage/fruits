@@ -90,7 +90,7 @@ public class OrderController {
     }
 
 
-    @ApiOperation("支付-订单-Native下单API")
+    @ApiOperation("支付-订单-JSAPI下单")
     @PostMapping("/payOrderByJsAPI")
     public Result<String> payOrderByJsAPI(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 

@@ -64,6 +64,7 @@ public class OrderService {
 
     /**
      * 构建生成订单详情
+     *
      * @param userId 下单的用户
      */
     public InputOrderDescriptionDTO encodeInputOrderDescriptionDTO(long userId, InputOrderDescriptionVO inputOrderDescriptionVO) {
@@ -220,10 +221,10 @@ public class OrderService {
      * 创建订单
      */
     @Transactional
-    public String addOrderByJSAPI(long userId,InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public String addOrderByJSAPI(long userId, InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
-        InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(userId,inputOrderDescriptionVO);
+        InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(userId, inputOrderDescriptionVO);
 
 
         //创建订单
@@ -252,7 +253,7 @@ public class OrderService {
         try {
 
             //todo: 创建三方的支付订单、三方订单入库
-            payService.orderJSPAPI(merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
+            payService.orderJSPAPI(userId, merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
         } catch (WxPayException e) {
             e.printStackTrace();
             throw new FruitsRuntimeException("下单失败,三方失败");

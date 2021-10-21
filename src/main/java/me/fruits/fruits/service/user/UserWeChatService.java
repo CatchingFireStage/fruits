@@ -61,4 +61,17 @@ public class UserWeChatService {
         return userWeChatMapper.selectOne(queryWrapper);
     }
 
+    /**
+     * 获取用户，渠道来源于微信小程序
+     * @param userId 用户id
+     */
+    public UserWeChat getUserWeChatByMiniProgramFormUserId(long userId){
+
+        QueryWrapper<UserWeChat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("carrier", 0);
+        queryWrapper.eq("user_id", userId);
+
+        return userWeChatMapper.selectOne(queryWrapper);
+    }
+
 }
