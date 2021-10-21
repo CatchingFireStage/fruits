@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import me.fruits.fruits.mapper.UserWeChatMapper;
 import me.fruits.fruits.mapper.po.User;
 import me.fruits.fruits.mapper.po.UserWeChat;
+import me.fruits.fruits.utils.FruitsRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,11 @@ public class UserWeChatService {
      * 创建用户，渠道来源于微信小程序
      */
     @Transactional
-    public UserWeChat addUserByMiniProgram(String openId,String phone, String sessionKey) {
+    public UserWeChat addUserByMiniProgram(String openId,String phone) {
+
+        if(phone == null || !phone.equals("")){
+            throw new FruitsRuntimeException("手机号必填");
+        }
 
         //创建一个用户
         User user = new User();
@@ -36,7 +41,6 @@ public class UserWeChatService {
         //小程序来的
         userWeChat.setCarrier(0);
         userWeChat.setOpenId(openId);
-        userWeChat.setSessionKey(sessionKey);
 
         userWeChatMapper.insert(userWeChat);
 
@@ -57,12 +61,4 @@ public class UserWeChatService {
         return userWeChatMapper.selectOne(queryWrapper);
     }
 
-
-    public void update(long id, String sessionKey) {
-        UpdateWrapper<UserWeChat> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("session_key", sessionKey);
-
-        userWeChatMapper.update(null, updateWrapper);
-    }
 }

@@ -27,7 +27,4 @@ public class UserWeChat implements Serializable {
 
     @ApiModelProperty(value = "微信的openId")
     private String openId;
-
-    @ApiModelProperty(value = "微信小程序的session_key，用来签名、解密开放数据")
-    private String sessionKey;
 }

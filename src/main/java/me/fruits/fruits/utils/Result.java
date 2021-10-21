@@ -19,8 +19,8 @@ public class Result<T> {
     }
 
 
-    public static Result<String> success(){
-        return new Result<>(0, "成功了哇",null);
+    public static Result<String> success() {
+        return new Result<>(0, "成功了哇", null);
     }
 
     public static <T> Result<T> success(T data) {
@@ -42,7 +42,7 @@ public class Result<T> {
         return new Result<>(exception.getErrCode(), exception.getMessage(), null);
     }
 
-    public static Result<String> failed(String err) {
-        return new Result<>(ErrCode.DEFAULT_ERR, err, null);
+    public static <T> Result<T> failed(String err) {
+        return new Result<T>(ErrCode.DEFAULT_ERR, err, null);
     }
 }
