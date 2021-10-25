@@ -12,6 +12,11 @@ export FRUITS_PASSWORD=xxxx4
 export UPLOAD_VISIT_DOMAIN=xxxx5
 
 
+#小程序配置
+export FRUITS_MINIAPP_APPID=xxxx1
+export FRUITS_MINIAPP_SECRET=xxxx1
+
+
 #列出当前所有的环境变量
 export -p
 

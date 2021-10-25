@@ -60,7 +60,7 @@ public class ClassicMenuController {
         });
 
 
-        
+
         Map<String, Object> response = new HashMap<>();
 
         response.put("category", category);
