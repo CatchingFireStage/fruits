@@ -13,6 +13,7 @@ services:
     - UPLOAD_VISIT_DOMAIN=${UPLOAD_VISIT_DOMAIN}
     - FRUITS_MINIAPP_APPID=${FRUITS_MINIAPP_APPID}
     - FRUITS_MINIAPP_SECRET=${FRUITS_MINIAPP_SECRET}
+    - FRUITS_DOMAIN=${FRUITS_DOMAIN}
     working_dir: /usr/src/fruits
     volumes:
     - /home/liangyu/fruits/0.0.1:/usr/src/fruits

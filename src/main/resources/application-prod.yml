@@ -20,7 +20,7 @@ swagger:
   application-name: ${spring.application.name}
   application-version: 1.0
   application-description: springfox swagger 3.0整合Demo
-  try-host: http://localhost:${server.port}
+  try-host: http://${FRUITS_DOMAIN}:${server.port}
 
 fruits:
   admin:
