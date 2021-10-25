@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @RestController(value = "apiClassicMenuController")
 @Api(tags = "菜单-经典菜单")
 @Validated
-@ApiLogin
 public class ClassicMenuController {
 
     @Autowired
@@ -38,40 +37,36 @@ public class ClassicMenuController {
 
     @ApiOperation(value = "经典菜单")
     @GetMapping("/menu")
-    public Result<List<Object>> menu() {
+    public Result<Object> menu() {
 
+        //获取商品
         List<Spu> spus = spuApiModuleService.getClassicMenu();
 
 
         List<SpuDTO> spuDTOS = wrapperDTOService.wrapperSPUs(spus);
 
-        //获取所有类别
+        //获取类别，去重
         Map<Long, SpuCategoryDTO> categoryMapKeyIsCategoryId = spuDTOS.stream().map(SpuDTO::getCategory).collect(Collectors.toMap(
                 SpuCategoryDTO::getId, spuCategoryDTO -> spuCategoryDTO,
                 //如果key重复，取后面的值覆盖
                 (last, next) -> next
         ));
 
-        //获取spu数据，然后按照类别分组
-        Map<Long, List<SpuDTO>> goodsMapKeyIsCategoryId = spuDTOS.stream().collect(Collectors.groupingBy(spu -> {
-            return spu.getCategory().getId();
-        }));
+        List<SpuCategoryDTO> category = new ArrayList<>();
 
-
-        List<Object> response = new ArrayList<>();
         categoryMapKeyIsCategoryId.forEach((key, value) -> {
+            category.add(value);
 
-            Map<String, Object> item = new HashMap<>();
-            //类别数据
-            item.put("id", value.getId());
-            item.put("name", value.getName());
-
-            //类别下的所有商品
-            item.put("goods", goodsMapKeyIsCategoryId.get(value.getId()));
-
-
-            response.add(item);
         });
+
+
+        
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("category", category);
+
+        response.put("goods", spuDTOS);
+
 
         return Result.success(response);
     }
