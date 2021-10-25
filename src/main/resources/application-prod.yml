@@ -20,7 +20,7 @@ springfox:
     swagger:
       v2:
         enabled: true
-        host: FRUITS_DOMAIN
+        host: ${FRUITS_DOMAIN}
 fruits:
   admin:
     username: ${FRUITS_USERNAME}
