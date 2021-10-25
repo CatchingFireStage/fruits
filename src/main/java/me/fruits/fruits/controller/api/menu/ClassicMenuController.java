@@ -52,20 +52,48 @@ public class ClassicMenuController {
                 (last, next) -> next
         ));
 
+        //菜单左边的分类项
         List<SpuCategoryDTO> category = new ArrayList<>();
 
         categoryMapKeyIsCategoryId.forEach((key, value) -> {
+
+
+            //分类
             category.add(value);
 
         });
 
+
+        //商品按照类别分组
+        Map<Long, List<SpuDTO>> goodsMapKeyIsCategoryId = spuDTOS.stream().collect(Collectors.groupingBy(spuDTO -> spuDTO.getCategory().getId()));
+
+        List<Object> goods = new ArrayList<>();
+
+        categoryMapKeyIsCategoryId.forEach((key, value) -> {
+
+
+            Map<String, Object> goodsItem = new HashMap<>();
+
+            goodsItem.put("list", goodsMapKeyIsCategoryId.get(value.getId()));
+
+
+            //分类
+            Map<String, Object> categoryItem = new HashMap<>();
+            categoryItem.put("id", value.getId());
+            categoryItem.put("name", value.getName());
+
+            goodsItem.put("category", categoryItem);
+
+
+            goods.add(goodsItem);
+        });
 
 
         Map<String, Object> response = new HashMap<>();
 
         response.put("category", category);
 
-        response.put("goods", spuDTOS);
+        response.put("goods", goods);
 
 
         return Result.success(response);
