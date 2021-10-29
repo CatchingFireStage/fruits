@@ -30,9 +30,6 @@ public class InputOrderDescriptionDTO {
 
         @ApiModelProperty(value = "规格值")
         private List<SpuSpecificationValue> spuSpecificationValue;
-
-        @ApiModelProperty(value = "单件，单位元")
-        private String unitPrice;
     }
 
     @Data
