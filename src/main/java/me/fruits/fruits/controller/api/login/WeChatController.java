@@ -6,6 +6,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.fruits.fruits.controller.api.login.vo.WeChatMiniProgramCodeRequest;
 import me.fruits.fruits.controller.api.login.vo.WeChatMiniProgramPhoneRequest;
@@ -30,6 +31,7 @@ import java.util.Map;
 @RestController(value = "apiWeChatController")
 @Api(tags = "登录-微信")
 @Validated
+@Slf4j
 public class WeChatController {
 
     @Autowired
