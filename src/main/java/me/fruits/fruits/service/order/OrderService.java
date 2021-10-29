@@ -95,6 +95,9 @@ public class OrderService {
 
             orderDescriptionDTO.setSpuSpecificationValue(new ArrayList<>());
 
+            //单价 = spu单价 + 规格值单价
+            int unitPrice = 0;
+
 
             //获取商品
             Spu spu = spuService.getSpu(inputOrderDescriptionVO.getOrder().get(curIndex).getSpuId());
@@ -116,6 +119,9 @@ public class OrderService {
             spuDTO.setName(spu.getName());
 
             orderDescriptionDTO.setSpu(spuDTO);
+
+
+            unitPrice += spu.getMoney();
 
 
             //获取spu必选的规格
@@ -174,6 +180,9 @@ public class OrderService {
                 spuSpecificationValueDTO.setName(specification.getName());
 
 
+                unitPrice += specificationValue.getMoney();
+
+
                 orderDescriptionDTO.getSpuSpecificationValue().add(spuSpecificationValueDTO);
 
             }
@@ -182,6 +191,9 @@ public class OrderService {
             if (orderItemRequiredNumber != requiredSpecificationIds.size()) {
                 throw new FruitsRuntimeException("缺少必选规格");
             }
+
+            //单价设置
+            orderDescriptionDTO.setUnitPrice(MoneyUtils.fenChangeYuan(unitPrice));
 
             inputOrderDescriptionDTO.getOrderDescription().add(orderDescriptionDTO);
         }
