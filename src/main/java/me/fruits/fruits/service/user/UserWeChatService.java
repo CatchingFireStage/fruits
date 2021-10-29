@@ -26,7 +26,7 @@ public class UserWeChatService {
     @Transactional
     public UserWeChat addUserByMiniProgram(String openId,String phone) {
 
-        if(phone == null || !phone.equals("")){
+        if(phone == null || phone.equals("")){
             throw new FruitsRuntimeException("手机号必填");
         }
 
