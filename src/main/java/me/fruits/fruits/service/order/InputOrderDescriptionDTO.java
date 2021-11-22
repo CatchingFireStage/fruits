@@ -23,7 +23,7 @@ public class InputOrderDescriptionDTO {
 
     @ApiModel("存到数据库中的订单格式元数据")
     @Data
-    static class OrderDescriptionDTO {
+    public static class OrderDescriptionDTO {
 
         @ApiModelProperty(value = "spu商品信息")
         private Spu spu;
@@ -33,7 +33,7 @@ public class InputOrderDescriptionDTO {
     }
 
     @Data
-    static class Spu {
+    public static class Spu {
 
         @ApiModelProperty(value = "商品名字")
         private String name;
@@ -43,7 +43,7 @@ public class InputOrderDescriptionDTO {
     }
 
     @Data
-    static class SpuSpecificationValue {
+    public static class SpuSpecificationValue {
 
         @ApiModelProperty(value = "规格名")
         private String name;

@@ -14,10 +14,7 @@ import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderApiModuleService;
 import me.fruits.fruits.service.order.OrderService;
-import me.fruits.fruits.utils.ApiModuleRequestHolder;
-import me.fruits.fruits.utils.PageVo;
-import me.fruits.fruits.utils.QRCodeUtil;
-import me.fruits.fruits.utils.Result;
+import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -81,13 +78,62 @@ public class OrderController {
 
     @ApiOperation("订单-预览")
     @PostMapping("/orderPreview")
-    public Result<InputOrderDescriptionDTO> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public Result<Object> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         UserDTO userDTO = ApiModuleRequestHolder.get();
 
         InputOrderDescriptionDTO inputOrderDescriptionDTO = orderService.encodeInputOrderDescriptionDTO(userDTO.getId(), inputOrderDescriptionVO);
 
-        return Result.success(inputOrderDescriptionDTO);
+
+        //响应
+        Map<String, Object> response = new HashMap<>();
+
+
+        //订单详情
+        List<Object> orderDescription = new ArrayList<>();
+
+        inputOrderDescriptionDTO.getOrderDescription().forEach(orderDescriptionDTO -> {
+
+            Map<String, Object> orderDescriptionItemRow = new HashMap<>();
+
+            //spu
+            Map<String, Object> spu = new HashMap<>();
+
+            spu.put("money", MoneyUtils.fenChangeYuan(orderDescriptionDTO.getSpu().getMoney()));
+            spu.put("name", orderDescriptionDTO.getSpu().getName());
+
+            orderDescriptionItemRow.put("spu", spu);
+
+            //spu的规格值
+            List<Object> spuSpecificationValue = new ArrayList<>();
+
+            orderDescriptionDTO.getSpuSpecificationValue().forEach(spuSpecificationValueItem -> {
+
+                Map<String, Object> spuSpecificationValueItemRow = new HashMap<>();
+
+                spuSpecificationValueItemRow.put("money", MoneyUtils.fenChangeYuan(spuSpecificationValueItem.getMoney()));
+                spuSpecificationValueItemRow.put("name", spuSpecificationValueItem.getName());
+                spuSpecificationValueItemRow.put("value", spuSpecificationValueItem.getValue());
+
+
+                spuSpecificationValue.add(spuSpecificationValueItemRow);
+            });
+
+
+            orderDescriptionItemRow.put("spuSpecificationValue", spuSpecificationValue);
+
+            orderDescription.add(orderDescriptionItemRow);
+
+        });
+
+
+        response.put("orderDescription", orderDescription);
+
+        //订单总金额
+        response.put("payAmount", MoneyUtils.fenChangeYuan(inputOrderDescriptionDTO.getPayAmount()));
+
+
+        return Result.success(response);
     }
 
 
