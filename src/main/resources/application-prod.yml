@@ -42,8 +42,8 @@ wx:
     app-id: ${FRUITS_MINIAPP_APPID}
     mch-id: ${FRUITS_WECHAT_MCH_ID}
     apiv3-key: ${FRUITS_WECHAT_APIV3_KEY}
-    private-cert-path: ${FRUITS_WECHAT_PRIVATE_CERT_PATH}
-    private-key-path: ${FRUITS_WECHAT_PRIVATE_KEY_PATH}
+    private-cert-path: /usr/src/fruits/wechat/apiclient_cert.pem
+    private-key-path: /usr/src/fruits/wechat/apiclient_key.pem
   miniapp:
     appid: ${FRUITS_MINIAPP_APPID}
     secret: ${FRUITS_MINIAPP_SECRET}
