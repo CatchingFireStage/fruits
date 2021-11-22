@@ -25,6 +25,9 @@ public class Pay implements Serializable {
     @ApiModelProperty(value = "商户系统的订单号类型 0:order表,1:充值记录")
     private Integer merchantTransactionType;
 
+    @ApiModelProperty(value = "商户的订单号,采用雪花算法生成")
+    private Long outTradeNo;
+
     @ApiModelProperty(value = "商品描述")
     private String description;
 

@@ -14,6 +14,7 @@ import me.fruits.fruits.mapper.po.UserWeChat;
 import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.service.user.UserWeChatService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
+import me.fruits.fruits.utils.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.github.binarywang.wxpay.service.WxPayService;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,9 @@ public class PayService {
 
     @Autowired
     private PayMapper payMapper;
+
+    @Autowired
+    private SnowFlake snowFlake;
 
 
     @Autowired
@@ -62,8 +66,9 @@ public class PayService {
         wxPayUnifiedOrderV3Request.setMchid(wxPayService.getConfig().getMchId());
 
 
-        //订单id设置
-        wxPayUnifiedOrderV3Request.setOutTradeNo(String.format("%d", merchantTransactionId));
+        //订单号
+        long outTradeNo = snowFlake.nextId();
+        wxPayUnifiedOrderV3Request.setOutTradeNo(String.format("%d", outTradeNo));
 
         //商品描述
         wxPayUnifiedOrderV3Request.setDescription("fruits订单支付");
@@ -83,21 +88,21 @@ public class PayService {
         wxPayUnifiedOrderV3Request.setPayer(payer);
 
 
-        Object orderV3 = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, wxPayUnifiedOrderV3Request);
+        WxPayUnifiedOrderV3Result.JsapiResult orderV3 = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, wxPayUnifiedOrderV3Request);
         System.out.println(orderV3);
 
         //创建支付订单
 
-        addPay(merchantTransactionId, merchantTransactionTypeEnum, orders, ((WxPayUnifiedOrderV3Result) orderV3).getPrepayId());
+        addPay(merchantTransactionId, merchantTransactionTypeEnum, outTradeNo, orders, orderV3.getPackageValue());
 
-        return ((WxPayUnifiedOrderV3Result) orderV3).getPrepayId();
+        return orderV3.getPackageValue();
     }
 
 
     /**
      * 创建支付订单
      */
-    private void addPay(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, Orders orders, String prepayId) {
+    private void addPay(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, long outTradeNo, Orders orders, String prepayId) {
 
         Pay pay = new Pay();
         pay.setMerchantTransactionId(merchantTransactionId);
@@ -107,6 +112,7 @@ public class PayService {
         pay.setCreateTime(LocalDateTime.now());
         pay.setState(PayStateEnum.ORDER.getValue());
         pay.setTransactionId(prepayId);
+        pay.setOutTradeNo(outTradeNo);
 
         payMapper.insert(pay);
     }
