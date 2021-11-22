@@ -16,6 +16,9 @@ export UPLOAD_VISIT_DOMAIN=xxxx5
 export FRUITS_MINIAPP_APPID=xxxx1
 export FRUITS_MINIAPP_SECRET=xxxx1
 
+#微信支付配置
+export FRUITS_WECHAT_MCH_ID=xxxx1
+
 #项目域名
 export FRUITS_DOMAIN=xxxx1
 

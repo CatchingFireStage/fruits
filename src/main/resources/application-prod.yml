@@ -40,7 +40,7 @@ logging:
 wx:
   pay:
     app-id: ${FRUITS_MINIAPP_APPID}
-    mch-id: 商户id
+    mch-id: ${FRUITS_WECHAT_MCH_ID}
     apiv3-key: API v3 秘钥
     private-cert-path: /home/liangyu/fruits/wechat/application-template.yml
     private-key-path: /home/liangyu/fruits/wechat/application-template.yml

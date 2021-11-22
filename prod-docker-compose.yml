@@ -14,6 +14,7 @@ services:
     - FRUITS_MINIAPP_APPID=${FRUITS_MINIAPP_APPID}
     - FRUITS_MINIAPP_SECRET=${FRUITS_MINIAPP_SECRET}
     - FRUITS_DOMAIN=${FRUITS_DOMAIN}
+    - FRUITS_WECHAT_MCH_ID=${FRUITS_WECHAT_MCH_ID}
     working_dir: /usr/src/fruits
     volumes:
     - /home/liangyu/fruits/0.0.1:/usr/src/fruits
