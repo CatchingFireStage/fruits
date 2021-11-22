@@ -37,13 +37,19 @@ public class WechatController {
         log.info("微信推送的数据:{}", jsonData);
         log.info("微信推送的请求头:{}", headers);
 
+        SignatureHeader signatureHeader = new SignatureHeader();
+        signatureHeader.setNonce(headers.get(" wechatpay-nonce").get(0));
+        signatureHeader.setSerial(headers.get(" wechatpay-serial").get(0));
+        signatureHeader.setSignature(headers.get(" wechatpay-signature").get(0));
+        signatureHeader.setTimeStamp(headers.get(" wechatpay-timestamp").get(0));
+
         //微信支付的回调数据
-        WxPayOrderNotifyV3Result wxPayOrderNotifyV3Result = wxPayService.parseOrderNotifyV3Result(jsonData, new SignatureHeader());
+        WxPayOrderNotifyV3Result wxPayOrderNotifyV3Result = wxPayService.parseOrderNotifyV3Result(jsonData, signatureHeader);
 
         log.info("微信推送的数据，解密之后:{}", wxPayOrderNotifyV3Result);
 
         //更新支付订单
-        payService.updateStateToSuccess(wxPayOrderNotifyV3Result.getResult().getTransactionId(), wxPayOrderNotifyV3Result.getResult().getOutTradeNo());
+//        payService.updateStateToSuccess(wxPayOrderNotifyV3Result.getResult().getTransactionId(), wxPayOrderNotifyV3Result.getResult().getOutTradeNo());
 
         Map<String, String> response = new HashMap<>();
 
