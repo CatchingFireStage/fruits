@@ -38,9 +38,12 @@ public class WechatController {
 
         log.info("微信推送的数据:{}", jsonData);
 
+        log.info("wxPayService:{}",wxPayService);
+
         //微信支付的回调数据
         WxPayOrderNotifyV3Result wxPayOrderNotifyV3Result = wxPayService.parseOrderNotifyV3Result(jsonData, new SignatureHeader());
 
+        log.info("微信推送的数据，解密之后:{}", wxPayOrderNotifyV3Result);
 
         //更新支付订单
         payService.updateStateToSuccess(wxPayOrderNotifyV3Result.getResult().getTransactionId(), wxPayOrderNotifyV3Result.getResult().getOutTradeNo());
