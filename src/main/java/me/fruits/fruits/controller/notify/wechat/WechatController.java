@@ -37,9 +37,7 @@ public class WechatController {
     public Map<String, String> pay(@RequestBody String jsonData) throws WxPayException {
 
         log.info("微信推送的数据:{}", jsonData);
-
-        log.info("wxPayService:{}",wxPayService);
-
+        
         //微信支付的回调数据
         WxPayOrderNotifyV3Result wxPayOrderNotifyV3Result = wxPayService.parseOrderNotifyV3Result(jsonData, new SignatureHeader());
 
