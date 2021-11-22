@@ -14,8 +14,8 @@ public class InputOrderDescriptionDTO {
     @ApiModelProperty(value = "订单详情")
     private List<OrderDescriptionDTO> orderDescription;
 
-    @ApiModelProperty(value = "支付总金额,单位元")
-    private String payAmount;
+    @ApiModelProperty(value = "支付总金额,单位分")
+    private Integer payAmount;
 
     @ApiModelProperty(value = "用户id")
     private Long userId;

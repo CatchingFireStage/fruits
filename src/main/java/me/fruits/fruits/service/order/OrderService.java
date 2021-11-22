@@ -204,7 +204,7 @@ public class OrderService {
         }
 
 
-        inputOrderDescriptionDTO.setPayAmount(MoneyUtils.fenChangeYuan(payAmount));
+        inputOrderDescriptionDTO.setPayAmount(payAmount);
 
         return inputOrderDescriptionDTO;
     }
@@ -231,7 +231,7 @@ public class OrderService {
 
         //创建订单
         Orders orders = new Orders();
-        orders.setPayMoney(MoneyUtils.yuanChangeFen(inputOrderDescriptionDTO.getPayAmount()));
+        orders.setPayMoney(inputOrderDescriptionDTO.getPayAmount());
         orders.setCreateTime(LocalDateTime.now());
         orders.setUserId(inputOrderDescriptionDTO.getUserId());
         //下单状态
