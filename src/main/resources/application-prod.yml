@@ -44,6 +44,7 @@ wx:
     apiv3-key: ${FRUITS_WECHAT_APIV3_KEY}
     private-cert-path: /usr/src/fruits/wechat/apiclient_cert.pem
     private-key-path: /usr/src/fruits/wechat/apiclient_key.pem
+    pay-score-notify-url: https://api.catchingfire.top/notify/wechat/pay
   miniapp:
     appid: ${FRUITS_MINIAPP_APPID}
     secret: ${FRUITS_MINIAPP_SECRET}
