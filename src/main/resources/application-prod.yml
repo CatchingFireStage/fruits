@@ -41,9 +41,9 @@ wx:
   pay:
     app-id: ${FRUITS_MINIAPP_APPID}
     mch-id: ${FRUITS_WECHAT_MCH_ID}
-    apiv3-key: API v3 秘钥
-    private-cert-path: /home/liangyu/fruits/wechat/application-template.yml
-    private-key-path: /home/liangyu/fruits/wechat/application-template.yml
+    apiv3-key: ${FRUITS_WECHAT_APIV3_KEY}
+    private-cert-path: ${FRUITS_WECHAT_PRIVATE_CERT_PATH}
+    private-key-path: ${FRUITS_WECHAT_PRIVATE_KEY_PATH}
   miniapp:
     appid: ${FRUITS_MINIAPP_APPID}
     secret: ${FRUITS_MINIAPP_SECRET}
