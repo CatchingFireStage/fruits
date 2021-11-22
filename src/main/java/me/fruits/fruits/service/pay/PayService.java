@@ -1,5 +1,6 @@
 package me.fruits.fruits.service.pay;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
@@ -42,6 +43,24 @@ public class PayService {
 
     @Autowired
     private OrderService orderService;
+
+
+    /**
+     * 获取记录
+     *
+     * @param outTradeNo    系统订单号
+     * @param transactionId 微信订单号
+     */
+    public Pay getPay(long outTradeNo, String transactionId) {
+
+        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("out_trade_no", outTradeNo);
+        queryWrapper.eq("transaction_id", transactionId);
+
+        return payMapper.selectOne(queryWrapper);
+
+    }
 
     /**
      * JSP API订单统一支付
@@ -129,7 +148,9 @@ public class PayService {
 
         UpdateWrapper<Pay> updateWrapper = new UpdateWrapper<>();
 
-        updateWrapper.eq("merchant_transaction_id", Long.valueOf(outTradeNo));
+        Long out_trade_no = Long.valueOf(outTradeNo);
+
+        updateWrapper.eq("out_trade_no", out_trade_no);
         updateWrapper.eq("transaction_id", transactionId);
         updateWrapper.eq("state", PayStateEnum.ORDER.getValue());
 
@@ -143,7 +164,18 @@ public class PayService {
         }
 
 
-        orderService.updateStatusToPay(Long.valueOf(outTradeNo));
+        //获取支付订单
+        Pay pay = getPay(out_trade_no, transactionId);
+
+
+        if (pay.getMerchantTransactionType().equals(MerchantTransactionTypeEnum.ORDER.getValue())) {
+
+            //订单类型的
+
+            //更新订单状态
+            orderService.updateStatusToPay(pay.getMerchantTransactionId());
+        }
+
 
     }
 
