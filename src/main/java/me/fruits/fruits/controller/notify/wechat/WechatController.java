@@ -10,10 +10,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.service.pay.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,10 +32,11 @@ public class WechatController {
 
     @PostMapping("/pay")
     @ApiOperation("微信支付结果通知接口")
-    public Map<String, String> pay(@RequestBody String jsonData) throws WxPayException {
+    public Map<String, String> pay(@RequestBody String jsonData, @RequestHeader HttpHeaders headers) throws WxPayException {
 
         log.info("微信推送的数据:{}", jsonData);
-        
+        log.info("微信推送的请求头:{}", headers);
+
         //微信支付的回调数据
         WxPayOrderNotifyV3Result wxPayOrderNotifyV3Result = wxPayService.parseOrderNotifyV3Result(jsonData, new SignatureHeader());
 
