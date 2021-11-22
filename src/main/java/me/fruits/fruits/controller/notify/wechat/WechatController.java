@@ -53,6 +53,8 @@ public class WechatController {
 
         Map<String, String> response = new HashMap<>();
 
+        log.info("感谢上帝，微信支付成功了");
+
         response.put("code", "SUCCESS");
         response.put("message", "成功");
 

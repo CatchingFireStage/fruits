@@ -150,7 +150,6 @@ public class PayService {
         Long out_trade_no = Long.valueOf(outTradeNo);
 
         updateWrapper.eq("out_trade_no", out_trade_no);
-        updateWrapper.eq("transaction_id", transactionId);
         updateWrapper.eq("state", PayStateEnum.ORDER.getValue());
 
         //更新状态
