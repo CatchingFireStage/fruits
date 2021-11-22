@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
@@ -118,7 +119,6 @@ public class OrderService {
             orderDescriptionDTO.setSpu(spuDTO);
 
 
-
             //获取spu必选的规格
             List<SpecificationSpu> specificationSpuRequired = specificationSpuService.getSpecificationSpuRequiredBySpuId(spu.getId());
             Set<Long> requiredSpecificationIds = new HashSet<>();
@@ -175,8 +175,6 @@ public class OrderService {
                 spuSpecificationValueDTO.setName(specification.getName());
 
 
-
-
                 orderDescriptionDTO.getSpuSpecificationValue().add(spuSpecificationValueDTO);
 
             }
@@ -225,7 +223,7 @@ public class OrderService {
      * 创建订单
      */
     @Transactional
-    public String addOrderByJSAPI(long userId, InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public WxPayUnifiedOrderV3Result.JsapiResult addOrderByJSAPI(long userId, InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         //生成订单详情
         InputOrderDescriptionDTO inputOrderDescriptionDTO = encodeInputOrderDescriptionDTO(userId, inputOrderDescriptionVO);

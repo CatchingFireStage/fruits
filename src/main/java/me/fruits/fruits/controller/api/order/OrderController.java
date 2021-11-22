@@ -3,6 +3,7 @@ package me.fruits.fruits.controller.api.order;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -92,14 +93,14 @@ public class OrderController {
 
     @ApiOperation("支付-订单-JSAPI下单")
     @PostMapping("/payOrderByJsAPI")
-    public Result<String> payOrderByJsAPI(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
+    public Result<WxPayUnifiedOrderV3Result.JsapiResult> payOrderByJsAPI(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
         UserDTO userDTO = ApiModuleRequestHolder.get();
 
         //下单
-        String prepayId = orderService.addOrderByJSAPI(userDTO.getId(), inputOrderDescriptionVO);
+        WxPayUnifiedOrderV3Result.JsapiResult result = orderService.addOrderByJSAPI(userDTO.getId(), inputOrderDescriptionVO);
 
 
-        return Result.success(prepayId);
+        return Result.success(result);
     }
 }

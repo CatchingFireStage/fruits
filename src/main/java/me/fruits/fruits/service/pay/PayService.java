@@ -72,7 +72,7 @@ public class PayService {
      * @return 返回小程序需要的支付Id
      * @throws WxPayException
      */
-    public String orderJSPAPI(long userId, long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, Orders orders) throws WxPayException {
+    public WxPayUnifiedOrderV3Result.JsapiResult orderJSPAPI(long userId, long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, Orders orders) throws WxPayException {
 
 
         //创建微信的支付订单
@@ -108,13 +108,13 @@ public class PayService {
 
 
         WxPayUnifiedOrderV3Result.JsapiResult orderV3 = wxPayService.createOrderV3(TradeTypeEnum.JSAPI, wxPayUnifiedOrderV3Request);
-        System.out.println(orderV3);
+        log.info("微信jsapi结果JsapiResult:{}", orderV3);
 
         //创建支付订单
 
         addPay(merchantTransactionId, merchantTransactionTypeEnum, outTradeNo, orders, orderV3.getPackageValue());
 
-        return orderV3.getPackageValue();
+        return orderV3;
     }
 
 
