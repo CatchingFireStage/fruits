@@ -252,12 +252,12 @@ public class OrderService {
 
 
         //订单入库
-        int merchantTransactionId = this.ordersMapper.insert(orders);
+        this.ordersMapper.insert(orders);
 
         try {
 
             //todo: 创建三方的支付订单、三方订单入库
-            return payService.orderJSPAPI(userId, merchantTransactionId, PayService.MerchantTransactionTypeEnum.ORDER, orders);
+            return payService.orderJSPAPI(userId, orders.getId(), PayService.MerchantTransactionTypeEnum.ORDER, orders);
         } catch (WxPayException e) {
             e.printStackTrace();
             throw new FruitsRuntimeException("下单失败,三方失败");
