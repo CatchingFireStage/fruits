@@ -130,7 +130,6 @@ public class PayService {
         pay.setAmount(orders.getPayMoney());
         pay.setCreateTime(LocalDateTime.now());
         pay.setState(PayStateEnum.ORDER.getValue());
-        pay.setTransactionId(prepayId);
         pay.setOutTradeNo(outTradeNo);
 
         payMapper.insert(pay);
@@ -154,7 +153,10 @@ public class PayService {
         updateWrapper.eq("transaction_id", transactionId);
         updateWrapper.eq("state", PayStateEnum.ORDER.getValue());
 
+        //更新状态
         updateWrapper.set("state", PayStateEnum.SUCCESS.getValue());
+        //设置微信的订单id
+        updateWrapper.set("transaction_id",transactionId);
 
         if (payMapper.update(null, updateWrapper) <= 0) {
             //更新失败,让微信再次通知
