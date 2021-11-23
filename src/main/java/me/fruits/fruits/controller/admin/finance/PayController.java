@@ -1,4 +1,5 @@
-package me.fruits.fruits.controller.admin.pipeline;
+package me.fruits.fruits.controller.admin.finance;
+
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,16 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/pipeline")
-@RestController(value = "AdminRefundController")
-@Api(tags = "流水-退款")
+@RequestMapping("/finance")
+@RestController(value = "AdminPayController")
+@Api(tags = "财务-支付")
 @AdminLogin
 @Validated
-public class RefundController {
+public class PayController {
 
-
-    @GetMapping(value = "/refund")
-    @ApiOperation("退款-列表")
+    @GetMapping(value = "/pay")
+    @ApiOperation("支付-列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "payid 支付表的id", example = "")
     })
