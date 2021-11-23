@@ -55,7 +55,7 @@ public class OrderController {
     @GetMapping(value = "/order")
     @ApiOperation("列表页-订单")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "state", value = "订单状态", required = false, example = "0下单；1：已支付；2：订单已关闭(未支付成功,支付失败); 3: 完成制作；4：已取餐")
+            @ApiImplicitParam(name = "state", value = "订单状态 0下单；1：已支付；2：订单已关闭(未支付成功,支付失败); 3: 完成制作；4：已取餐", required = false)
     })
     public Result<List<Object>> order(@RequestParam(required = false) Integer state, PageVo pageVo) {
         IPage<Orders> orders = orderAdminModuleService.getOrders(state, pageVo);
