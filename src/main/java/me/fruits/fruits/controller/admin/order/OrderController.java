@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
@@ -89,7 +90,7 @@ public class OrderController {
 
             //支付信息
             item.put("pay", null);
-            Pay pay = payService.getPay(order.getId(), PayService.MerchantTransactionTypeEnum.ORDER);
+            Pay pay = payService.getPay(order.getId(), MerchantTransactionTypeEnum.ORDER);
             if (pay != null) {
                 Map<String, Object> payData = new HashMap<>();
 

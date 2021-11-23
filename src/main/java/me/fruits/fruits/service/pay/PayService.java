@@ -8,8 +8,8 @@ import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.PayMapper;
-import me.fruits.fruits.mapper.enums.EnumLabelValue;
-import me.fruits.fruits.mapper.enums.PayStateEnum;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
+import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.mapper.po.UserWeChat;
@@ -204,30 +204,5 @@ public class PayService {
         }
 
 
-    }
-
-
-    //支付的订单类型
-    public enum MerchantTransactionTypeEnum implements EnumLabelValue {
-
-        ORDER(1, "订单"),
-        RECHARGE(2, "充值");
-
-        private int value;
-
-        private String label;
-
-        MerchantTransactionTypeEnum(int value, String label) {
-            this.value = value;
-            this.label = label;
-        }
-
-        public Integer getValue() {
-            return this.value;
-        }
-
-        public String getLabel() {
-            return this.label;
-        }
     }
 }

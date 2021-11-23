@@ -9,7 +9,8 @@ import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.OrdersMapper;
-import me.fruits.fruits.mapper.enums.OrderStateEnum;
+import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.po.*;
 import me.fruits.fruits.service.order.websocket.EventHandler;
 import me.fruits.fruits.service.order.websocket.message.Event;
@@ -21,7 +22,6 @@ import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
 import me.fruits.fruits.service.user.UserService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
-import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -255,7 +255,7 @@ public class OrderService {
         try {
 
             //todo: 创建三方的支付订单、三方订单入库
-            return payService.orderJSPAPI(userId, orders.getId(), PayService.MerchantTransactionTypeEnum.ORDER, orders);
+            return payService.orderJSPAPI(userId, orders.getId(), MerchantTransactionTypeEnum.ORDER, orders);
         } catch (WxPayException e) {
             e.printStackTrace();
             throw new FruitsRuntimeException("下单失败,三方失败");

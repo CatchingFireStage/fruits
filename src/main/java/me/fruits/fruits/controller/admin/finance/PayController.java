@@ -7,7 +7,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
-import me.fruits.fruits.mapper.enums.PayStateEnum;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
+import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.pay.PayAdminModuleService;
 import me.fruits.fruits.service.pay.PayService;
@@ -56,7 +57,7 @@ public class PayController {
         }
 
         //获取数据
-        IPage<Pay> pays = payAdminModuleService.getPays(keyword, PayService.MerchantTransactionTypeEnum.ORDER, payState, pageVo);
+        IPage<Pay> pays = payAdminModuleService.getPays(keyword, MerchantTransactionTypeEnum.ORDER, payState, pageVo);
 
         if (pays.getRecords().size() == 0) {
             return Result.success(pays.getTotal(), pays.getPages(), new ArrayList<>());
@@ -71,7 +72,7 @@ public class PayController {
 
             payItem.put("id", pay.getId());
             payItem.put("merchantTransactionId", pay.getMerchantTransactionId());
-            payItem.put("merchantTransactionType", EnumUtils.changeToString(PayService.MerchantTransactionTypeEnum.class, pay.getMerchantTransactionType()));
+            payItem.put("merchantTransactionType", EnumUtils.changeToString(MerchantTransactionTypeEnum.class, pay.getMerchantTransactionType()));
             payItem.put("outTradeNo", pay.getOutTradeNo());
             payItem.put("transactionId", pay.getTransactionId());
             payItem.put("createTime", DateFormatUtils.format(pay.getCreateTime()));

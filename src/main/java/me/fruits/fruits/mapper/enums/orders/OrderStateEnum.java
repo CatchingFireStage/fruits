@@ -1,5 +1,7 @@
-package me.fruits.fruits.mapper.enums;
+package me.fruits.fruits.mapper.enums.orders;
 
+
+import me.fruits.fruits.mapper.enums.EnumLabelValue;
 
 public enum OrderStateEnum implements EnumLabelValue {
 

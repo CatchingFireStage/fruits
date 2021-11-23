@@ -5,7 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.PayMapper;
-import me.fruits.fruits.mapper.enums.PayStateEnum;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
+import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class PayAdminModuleService {
     /**
      * 列表
      */
-    public IPage<Pay> getPays(String keyword, PayService.MerchantTransactionTypeEnum merchantTransactionTypeEnum,
+    public IPage<Pay> getPays(String keyword, MerchantTransactionTypeEnum merchantTransactionTypeEnum,
                               PayStateEnum payStateEnum, PageVo pageVo) {
 
 
