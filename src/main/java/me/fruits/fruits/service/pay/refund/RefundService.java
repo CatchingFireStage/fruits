@@ -49,7 +49,9 @@ public class RefundService {
         refundMapper.insert(refund);
 
         //更新支付表记录的状态
-        payService.updateStateToRefund(pay.getId());
+        if (payService.updateStateToRefund(pay.getId()) <= 0) {
+            throw new FruitsRuntimeException("支付表的状态更新失败");
+        }
 
         //todo 微信退款
     }
