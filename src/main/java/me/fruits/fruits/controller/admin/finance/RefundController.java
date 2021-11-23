@@ -6,8 +6,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.finance.vo.AddRefundRequest;
+import me.fruits.fruits.service.pay.refund.RefundService;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,9 @@ import javax.validation.Valid;
 @Validated
 public class RefundController {
 
+
+    @Autowired
+    private RefundService refundService;
 
     @GetMapping(value = "/refund")
     @ApiOperation("退款-列表")
@@ -36,7 +41,7 @@ public class RefundController {
 
 
     @PostMapping(value = "/refund")
-    @ApiOperation("退款-申请")
+    @ApiOperation(value = "退款-申请")
     public Result<Object> refund(@Valid AddRefundRequest addRefundRequest) {
 
         return null;

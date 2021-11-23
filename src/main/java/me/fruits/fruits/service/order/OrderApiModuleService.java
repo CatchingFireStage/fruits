@@ -48,7 +48,7 @@ public class OrderApiModuleService {
      * @return 客户端看到的状态提示
      */
     public String changeStateToText(int state) {
-        
+
         switch (state) {
             case 0:
                 return "待支付";

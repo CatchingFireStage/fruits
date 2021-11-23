@@ -48,6 +48,11 @@ public class PayService {
     private OrderService orderService;
 
 
+    public Pay getPay(long id) {
+
+        return payMapper.selectById(id);
+    }
+
     /**
      * 获取记录
      *
@@ -161,6 +166,29 @@ public class PayService {
         payMapper.insert(pay);
     }
 
+
+    /**
+     * 更新订单状态到 退款
+     *
+     * @param id 订单id
+     */
+    public int updateStateToRefund(long id) {
+
+        UpdateWrapper<Pay> updateWrapper = new UpdateWrapper<>();
+
+        updateWrapper.eq("id", id);
+
+        //已支付或者部分退款的，都可以切换到退款状态
+        updateWrapper.nested(nested -> {
+
+            nested.eq("state", PayStateEnum.SUCCESS.getValue()).or().eq("state", PayStateEnum.REFUND.getValue());
+
+        });
+
+        updateWrapper.set("state", PayStateEnum.REFUND.getValue());
+
+        return payMapper.update(null, updateWrapper);
+    }
 
     /**
      * 支付回调
