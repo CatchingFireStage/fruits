@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -60,6 +62,29 @@ public class PayService {
 
         return payMapper.selectOne(queryWrapper);
 
+    }
+
+    public Pay getPay(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum) {
+
+        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("merchant_transaction_id", merchantTransactionId);
+        queryWrapper.eq("merchant_transaction_type", merchantTransactionTypeEnum.getValue());
+
+        return payMapper.selectOne(queryWrapper);
+
+    }
+
+    /**
+     * 通过商户的订单号获取记录
+     */
+    public List<Pay> getPays(Set<Long> outTradeNo) {
+
+        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.in("out_trade_no", outTradeNo);
+
+        return payMapper.selectList(queryWrapper);
     }
 
     /**
@@ -147,7 +172,7 @@ public class PayService {
 
         UpdateWrapper<Pay> updateWrapper = new UpdateWrapper<>();
 
-        Long out_trade_no = Long.valueOf(outTradeNo);
+        long out_trade_no = Long.parseLong(outTradeNo);
 
         updateWrapper.eq("out_trade_no", out_trade_no);
         updateWrapper.eq("state", PayStateEnum.ORDER.getValue());
@@ -155,7 +180,7 @@ public class PayService {
         //更新状态
         updateWrapper.set("state", PayStateEnum.SUCCESS.getValue());
         //设置微信的订单id
-        updateWrapper.set("transaction_id",transactionId);
+        updateWrapper.set("transaction_id", transactionId);
 
         if (payMapper.update(null, updateWrapper) <= 0) {
             //更新失败,让微信再次通知

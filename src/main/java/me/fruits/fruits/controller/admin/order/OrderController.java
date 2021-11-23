@@ -9,8 +9,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.mapper.po.Orders;
+import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
 import me.fruits.fruits.service.order.OrderService;
+import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +35,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PayService payService;
 
 
     @PatchMapping("/orderFulfill/{id}")
@@ -73,6 +78,7 @@ public class OrderController {
             item.put("id", order.getId());
             item.put("payMoney", MoneyUtils.fenChangeYuan(order.getPayMoney()));
             item.put("state", order.getState());
+            item.put("createTime", DateFormatUtils.format(order.getCreateTime()));
 
             try {
                 item.put("description", orderService.decodeInputOrderDescriptionDTO(order.getDescription()));
@@ -81,7 +87,19 @@ public class OrderController {
                 item.put("description", null);
             }
 
-            item.put("createTime", DateFormatUtils.format(order.getCreateTime()));
+            //支付信息
+            item.put("pay", null);
+            Pay pay = payService.getPay(order.getId(), PayService.MerchantTransactionTypeEnum.ORDER);
+            if (pay != null) {
+                Map<String, Object> payData = new HashMap<>();
+
+                payData.put("transactionId", pay.getTransactionId());
+                payData.put("outTradeNo", pay.getOutTradeNo());
+                payData.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
+
+
+                item.put("pay", payData);
+            }
 
 
             list.add(item);

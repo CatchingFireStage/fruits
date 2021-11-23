@@ -24,12 +24,14 @@ public class PayController {
     @GetMapping(value = "/pay")
     @ApiOperation("支付-列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "keyword", value = "payid 支付表的id", example = "")
+            @ApiImplicitParam(name = "keyword", value = "transaction_id 微信的支付id", example = "")
     })
-    public Result<Object> refund(
+    public Result<Object> pay(
             @RequestParam(required = false) String keyword,
             PageVo pageVo
     ) {
+
+
 
         return null;
     }

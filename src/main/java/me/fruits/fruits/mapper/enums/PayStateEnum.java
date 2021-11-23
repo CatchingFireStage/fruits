@@ -6,7 +6,9 @@ public enum PayStateEnum implements EnumLabelValue {
 
     SUCCESS(1, "已支付"),
 
-    FAIL(2, "支付失败");
+    FAIL(2, "支付失败"),
+
+    REFUND(3, "进入退款,有一条或者多条退款信息");
 
     /**
      * 值

@@ -37,7 +37,7 @@ public class Pay implements Serializable {
     @ApiModelProperty(value = "订单创建时间")
     private LocalDateTime createTime;
 
-    @ApiModelProperty(value = "订单状态；0下单，1已支付，2支付失败")
+    @ApiModelProperty(value = "订单状态；0下单，1已支付，2支付失败,3进入退款")
     private Integer state;
 
     @ApiModelProperty(value = "微信支付系统生成的订单号")
