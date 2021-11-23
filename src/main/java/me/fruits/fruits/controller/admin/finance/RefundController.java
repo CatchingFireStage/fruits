@@ -5,13 +5,13 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
+import me.fruits.fruits.controller.admin.finance.vo.AddRefundRequest;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequestMapping("/finance")
 @RestController(value = "AdminRefundController")
@@ -30,6 +30,14 @@ public class RefundController {
             @RequestParam(required = false) String keyword,
             PageVo pageVo
     ) {
+
+        return null;
+    }
+
+
+    @PostMapping(value = "/refund")
+    @ApiOperation("退款-申请")
+    public Result<Object> refund(@Valid AddRefundRequest addRefundRequest) {
 
         return null;
     }
