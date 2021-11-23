@@ -1,6 +1,6 @@
 package me.fruits.fruits.mapper.enums;
 
-public interface EnumLabelValue {
+public interface EnumLabelValue<T> {
 
 
     /**
@@ -12,4 +12,10 @@ public interface EnumLabelValue {
      * 获取枚举值
      */
     public Integer getValue();
+
+    /**
+     * 通过整形转化成枚举
+     */
+    public T valueOf(int enumValue);
+
 }

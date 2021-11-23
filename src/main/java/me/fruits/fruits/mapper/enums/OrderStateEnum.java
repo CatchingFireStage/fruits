@@ -1,6 +1,8 @@
 package me.fruits.fruits.mapper.enums;
 
-public enum OrderStateEnum implements EnumLabelValue {
+import me.fruits.fruits.utils.FruitsRuntimeException;
+
+public enum OrderStateEnum implements EnumLabelValue<OrderStateEnum> {
 
     ORDER(0, "下单"),
     PAY(1, "已支付"),
@@ -34,4 +36,28 @@ public enum OrderStateEnum implements EnumLabelValue {
     public Integer getValue() {
         return this.value;
     }
+
+    @Override
+    public OrderStateEnum valueOf(int enumValue) {
+
+        if (OrderStateEnum.ORDER.getValue().equals(enumValue)) {
+            return OrderStateEnum.ORDER;
+        }
+
+
+        if (OrderStateEnum.PAY.getValue().equals(enumValue)) {
+            return OrderStateEnum.PAY;
+        }
+
+        if (OrderStateEnum.CLOSE.getValue().equals(enumValue)) {
+            return OrderStateEnum.CLOSE;
+        }
+
+
+
+        throw new FruitsRuntimeException("找不到枚举");
+
+    }
+
+
 }

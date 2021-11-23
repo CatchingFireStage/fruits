@@ -1,6 +1,8 @@
 package me.fruits.fruits.mapper.enums;
 
-public enum BooleanEnum implements EnumLabelValue {
+import me.fruits.fruits.utils.FruitsRuntimeException;
+
+public enum BooleanEnum implements EnumLabelValue<BooleanEnum> {
 
     FALSE(0, "不存在，没有,不可以"),
     TRUE(1, "存在，有，可以");
@@ -31,4 +33,20 @@ public enum BooleanEnum implements EnumLabelValue {
     public Integer getValue() {
         return this.value;
     }
+
+    @Override
+    public BooleanEnum valueOf(int enumValue) {
+
+        if (BooleanEnum.TRUE.getValue().equals(enumValue)) {
+            return BooleanEnum.TRUE;
+        }
+
+        if (BooleanEnum.FALSE.getValue().equals(enumValue)) {
+            return BooleanEnum.FALSE;
+        }
+
+        throw new FruitsRuntimeException("找不到枚举");
+    }
+
+
 }

@@ -11,6 +11,8 @@ import me.fruits.fruits.mapper.enums.PayStateEnum;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.pay.PayAdminModuleService;
 import me.fruits.fruits.service.pay.PayService;
+import me.fruits.fruits.utils.DateFormatUtils;
+import me.fruits.fruits.utils.MoneyUtils;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/finance")
 @RestController(value = "AdminPayController")
@@ -54,9 +61,32 @@ public class PayController {
         //获取数据
         IPage<Pay> pays = payAdminModuleService.getPays(keyword, PayService.MerchantTransactionTypeEnum.ORDER, payState, pageVo);
 
+        if (pays.getRecords().size() == 0) {
+            return Result.success(pays.getTotal(), pays.getPages(), new ArrayList<>());
+        }
 
-        
 
-        return null;
+        List<Object> list = new ArrayList<>();
+
+        pays.getRecords().forEach(pay -> {
+
+            Map<String, Object> payItem = new HashMap<>();
+
+            payItem.put("id", pay.getId());
+            payItem.put("merchantTransactionId", pay.getMerchantTransactionId());
+            payItem.put("merchantTransactionType", pay.getMerchantTransactionType());
+            payItem.put("outTradeNo", pay.getOutTradeNo());
+            payItem.put("transactionId", pay.getTransactionId());
+            payItem.put("createTime", DateFormatUtils.format(pay.getCreateTime()));
+            payItem.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
+            payItem.put("state", pay.getState());
+            payItem.put("refundAmount", MoneyUtils.fenChangeYuan(pay.getRefundAmount()));
+
+
+            list.add(payItem);
+
+        });
+
+        return Result.success(pays.getTotal(), pays.getPages(), list);
     }
 }
