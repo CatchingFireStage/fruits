@@ -11,10 +11,7 @@ import me.fruits.fruits.mapper.enums.PayStateEnum;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.pay.PayAdminModuleService;
 import me.fruits.fruits.service.pay.PayService;
-import me.fruits.fruits.utils.DateFormatUtils;
-import me.fruits.fruits.utils.MoneyUtils;
-import me.fruits.fruits.utils.PageVo;
-import me.fruits.fruits.utils.Result;
+import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,13 +43,13 @@ public class PayController {
     })
     public Result<Object> pay(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String payStateEnum,
+            @RequestParam(required = false,defaultValue = "") String payStateEnum,
             PageVo pageVo
     ) {
 
+
         PayStateEnum payState;
         try {
-
             payState = PayStateEnum.valueOf(payStateEnum);
         } catch (IllegalArgumentException exception) {
             payState = null;
@@ -74,12 +71,12 @@ public class PayController {
 
             payItem.put("id", pay.getId());
             payItem.put("merchantTransactionId", pay.getMerchantTransactionId());
-            payItem.put("merchantTransactionType", pay.getMerchantTransactionType());
+            payItem.put("merchantTransactionType", EnumUtils.changeToString(PayService.MerchantTransactionTypeEnum.class, pay.getMerchantTransactionType()));
             payItem.put("outTradeNo", pay.getOutTradeNo());
             payItem.put("transactionId", pay.getTransactionId());
             payItem.put("createTime", DateFormatUtils.format(pay.getCreateTime()));
             payItem.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
-            payItem.put("state", pay.getState());
+            payItem.put("state", EnumUtils.changeToString(PayStateEnum.class, pay.getState()));
             payItem.put("refundAmount", MoneyUtils.fenChangeYuan(pay.getRefundAmount()));
 
 

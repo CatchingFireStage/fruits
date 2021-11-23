@@ -8,6 +8,7 @@ import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.PayMapper;
+import me.fruits.fruits.mapper.enums.EnumLabelValue;
 import me.fruits.fruits.mapper.enums.PayStateEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
@@ -207,7 +208,7 @@ public class PayService {
 
 
     //支付的订单类型
-    public enum MerchantTransactionTypeEnum {
+    public enum MerchantTransactionTypeEnum implements EnumLabelValue {
 
         ORDER(1, "订单"),
         RECHARGE(2, "充值");
@@ -221,7 +222,7 @@ public class PayService {
             this.label = label;
         }
 
-        public int getValue() {
+        public Integer getValue() {
             return this.value;
         }
 

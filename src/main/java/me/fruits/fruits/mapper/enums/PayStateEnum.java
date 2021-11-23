@@ -1,5 +1,6 @@
 package me.fruits.fruits.mapper.enums;
 
+
 public enum PayStateEnum implements EnumLabelValue {
 
     ORDER(0, "下单"),
@@ -35,4 +36,6 @@ public enum PayStateEnum implements EnumLabelValue {
     public Integer getValue() {
         return this.value;
     }
+
+
 }
