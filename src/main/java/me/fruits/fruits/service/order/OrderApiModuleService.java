@@ -12,10 +12,7 @@ import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -36,8 +33,8 @@ public class OrderApiModuleService {
         QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId);
 
-        //用户的订单不能查看状态为已关闭的订单
-        queryWrapper.ne("state", 2);
+        //只能看1已支付，3制作完成, 4已取餐
+        queryWrapper.in("state", Arrays.asList(1, 3, 4));
 
         return ordersMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
