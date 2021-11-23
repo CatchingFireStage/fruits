@@ -1,7 +1,13 @@
 package me.fruits.fruits.service.pay;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.PayMapper;
+import me.fruits.fruits.mapper.enums.PayStateEnum;
+import me.fruits.fruits.mapper.po.Pay;
+import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +20,28 @@ public class PayAdminModuleService {
     private PayMapper payMapper;
 
 
+    /**
+     * 列表
+     */
+    public IPage<Pay> getPays(String keyword, PayService.MerchantTransactionTypeEnum merchantTransactionTypeEnum,
+                              PayStateEnum payStateEnum, PageVo pageVo) {
+
+
+        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("merchant_transaction_type", merchantTransactionTypeEnum.getValue());
+
+        //搜索
+        if (keyword != null && !keyword.isEmpty()) {
+            queryWrapper.eq("out_trade_no", Long.valueOf(keyword));
+        }
+
+        if (payStateEnum != null) {
+            queryWrapper.eq("state", payStateEnum.getValue());
+        }
+
+
+        return payMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+    }
 
 }
