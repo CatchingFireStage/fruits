@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.fruits.fruits.mapper.OrdersMapper;
+import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.MoneyUtils;
@@ -34,7 +35,8 @@ public class OrderApiModuleService {
         queryWrapper.eq("user_id", userId);
 
         //只能看1已支付，3制作完成, 4已取餐
-        queryWrapper.in("state", Arrays.asList(1, 3, 4));
+
+        queryWrapper.in("state", Arrays.asList(OrderStateEnum.PAY.getValue(), OrderStateEnum.COMPLETED.getValue(), OrderStateEnum.DELIVERY.getValue()));
 
         return ordersMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
@@ -46,6 +48,7 @@ public class OrderApiModuleService {
      * @return 客户端看到的状态提示
      */
     public String changeStateToText(int state) {
+        
         switch (state) {
             case 0:
                 return "待支付";
