@@ -23,5 +23,5 @@ public class AddRefundRequest {
     @ApiModelProperty(value = "退款金额,单位元", name = "amount", required = true, example = "1.00")
     @NotNull
     @Pattern(regexp = "^(([1-9]{1}\\d*)|(0{1}))(\\.\\d{1,2})?$", message = "金额格式不对")
-    private Integer amount;
+    private String amount;
 }

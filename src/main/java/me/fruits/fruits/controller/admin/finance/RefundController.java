@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.finance.vo.AddRefundRequest;
 import me.fruits.fruits.service.pay.refund.RefundService;
+import me.fruits.fruits.utils.MoneyUtils;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,18 @@ public class RefundController {
 
     @PostMapping(value = "/refund")
     @ApiOperation(value = "退款-申请")
-    public Result<Object> refund(@Valid AddRefundRequest addRefundRequest) {
+    public Result<String> refund(@Valid AddRefundRequest addRefundRequest) {
 
-        return null;
+
+        refundService.addRefund(addRefundRequest.getPayId(), addRefundRequest.getReason(), MoneyUtils.yuanChangeFen(addRefundRequest.getAmount()));
+
+        return Result.success();
+    }
+
+    @PutMapping("/reiterateRefund/{id}")
+    @ApiOperation(value = "退款-重新申请")
+    public Result<String> reiterateRefund(@PathVariable long id) {
+
+        return Result.success();
     }
 }

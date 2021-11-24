@@ -159,6 +159,18 @@ public class RefundService {
 
 
     /**
+     * 重新申请退款
+     * 当退款状态是 close 或者是 abnormal的时候，说明退款失败了，需要基于原来的数据，重新申请退款
+     *
+     * @param id
+     */
+    public void reiterateRefund(long id) {
+        Refund refund = refundMapper.selectById(id);
+
+        //todo 重新退款
+    }
+
+    /**
      * 更新退款状态到关闭
      *
      * @param outRefundNo 商户退款订单号
