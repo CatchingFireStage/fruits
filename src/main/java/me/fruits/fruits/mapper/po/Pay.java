@@ -37,7 +37,7 @@ public class Pay implements Serializable {
     @ApiModelProperty(value = "订单创建时间")
     private LocalDateTime createTime;
 
-    @ApiModelProperty(value = "退款金额")
+    @ApiModelProperty(value = "退款金额，单位分，最大值和amount一样,用于判断是否能多次退款，相等则不能")
     private Integer refundAmount;
 
     @ApiModelProperty(value = "订单状态；0下单，1已支付，2支付失败,3进入退款")

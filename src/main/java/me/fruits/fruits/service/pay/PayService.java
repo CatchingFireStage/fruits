@@ -168,6 +168,16 @@ public class PayService {
 
 
     /**
+     * 累加本次退款金额
+     *
+     * @param id     支付id
+     * @param amount 本次退款的金额
+     */
+    public int accumulationRefundAmount(long id, int amount) {
+        return payMapper.accumulationRefundAmount(id, amount);
+    }
+
+    /**
      * 更新订单状态到 退款
      *
      * @param id 订单id

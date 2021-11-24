@@ -8,6 +8,9 @@ public enum RefundStateEnum implements EnumLabelValue {
 
     SUCCESS(1, "退款成功"),
 
+    /**
+     * 如果监听到微信传过来的消息退款结果是 ABNORMAL、CLOSE， 说明没有退款成功，需要基于原来的refund数据记录重新发出退款申请
+     */
     ABNORMAL(2, "退款异常，需要去微信商户平台手动处理"),
 
     CLOSE(3, "退款关闭");
