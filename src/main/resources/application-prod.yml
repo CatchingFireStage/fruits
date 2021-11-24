@@ -45,6 +45,7 @@ wx:
     private-cert-path: /usr/src/fruits/wechat/apiclient_cert.pem
     private-key-path: /usr/src/fruits/wechat/apiclient_key.pem
     pay-score-notify-url: https://api.catchingfire.top/notify/wechat/pay
+    refund-notify-url: https://api.catchingfire.top/notify/wechat/refund
   miniapp:
     appid: ${FRUITS_MINIAPP_APPID}
     secret: ${FRUITS_MINIAPP_SECRET}

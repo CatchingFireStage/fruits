@@ -16,6 +16,7 @@ import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,12 @@ public class RefundService {
 
     @Autowired
     private SnowFlake snowFlake;
+
+    /**
+     * 微信退款接受地址
+     */
+    @Value("${wx.pay.refund-notify-url}")
+    private String refundNotifyUrl;
 
     /**
      * 微信订单
@@ -69,7 +76,23 @@ public class RefundService {
 
 
         //退款的前提条件检查
-        Pay pay = checkRefundPremise(payId, amount);
+        Pay pay = payService.getPay(payId);
+
+        if (pay == null) {
+            throw new FruitsRuntimeException("找不到支付记录");
+        }
+
+        if (!PayStateEnum.SUCCESS.getValue().equals(pay.getState()) && !PayStateEnum.REFUND.getValue().equals(pay.getState())) {
+            throw new FruitsRuntimeException("申请退款前提是，订单已经支付完成，或者是订单已经部分退款");
+        }
+
+        //下次退款总金额 = 原来的退款金额 + 本次退款金额
+        int nextRefundAmountTotal = pay.getRefundAmount() + amount;
+
+        if (nextRefundAmountTotal > pay.getAmount()) {
+            throw new FruitsRuntimeException("退款总金额不能大于订单实际支付的金额");
+        }
+
 
         //申请退款
         Refund refund = new Refund();
@@ -106,7 +129,7 @@ public class RefundService {
             refundV3Request.setReason(reason);
 
             //退款回调地址,可以不填，在微信的商户平台生设置也可以
-            refundV3Request.setNotifyUrl("https://www.baidu.com");
+            refundV3Request.setNotifyUrl(refundNotifyUrl);
 
             //退款金额
             WxPayRefundV3Request.Amount refundAmount = new WxPayRefundV3Request.Amount();
@@ -133,32 +156,5 @@ public class RefundService {
         }
     }
 
-    /**
-     * 检查退款的前提条件
-     *
-     * @param payId  支付id
-     * @param amount 本次退矿金额，单位分
-     */
-    private Pay checkRefundPremise(long payId, int amount) {
 
-        Pay pay = payService.getPay(payId);
-
-        if (pay == null) {
-            throw new FruitsRuntimeException("找不到支付记录");
-        }
-
-        if (!PayStateEnum.SUCCESS.getValue().equals(pay.getState()) && !PayStateEnum.REFUND.getValue().equals(pay.getState())) {
-            throw new FruitsRuntimeException("申请退款前提是，订单已经支付完成，或者是订单已经部分退款");
-        }
-
-        //下次退款总金额 = 原来的退款金额 + 本次退款金额
-        int nextRefundAmountTotal = pay.getRefundAmount() + amount;
-
-        if (nextRefundAmountTotal > pay.getAmount()) {
-            throw new FruitsRuntimeException("退款总金额不能大于订单实际支付的金额");
-        }
-
-        return pay;
-
-    }
 }
