@@ -174,10 +174,10 @@
 
     <!--开发环境:打印控制台-->
     <springProfile name="dev">
-<!--        &lt;!&ndash;        打印sql&ndash;&gt;-->
-<!--        <logger name="me.fruits.fruits.mapper" level="DEBUG">-->
-<!--            <appender-ref ref="CONSOLE"/>-->
-<!--        </logger>-->
+        <!--        打印sql-->
+        <logger name="me.fruits.fruits.mapper" level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
 
     </springProfile>
 

@@ -51,7 +51,3 @@ wx:
     token: token
     aes-key: aesKey
     msg-data-format: json
-
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
