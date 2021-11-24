@@ -1,6 +1,10 @@
 package me.fruits.fruits.service.pay.refund;
 
 
+import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundV3Result;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.RefundMapper;
 import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
@@ -9,9 +13,12 @@ import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.mapper.po.Refund;
 import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
+import me.fruits.fruits.utils.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -23,6 +30,12 @@ public class RefundService {
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private WxPayService wxPayService;
+
+    @Autowired
+    private SnowFlake snowFlake;
 
     /**
      * 微信订单申请退款
@@ -45,6 +58,12 @@ public class RefundService {
         refund.setReason(reason);
         refund.setAmount(amount);
         refund.setState(RefundStateEnum.REFUND.getValue());
+        refund.setCreateTime(LocalDateTime.now());
+        //商户退款订单号
+        long outRefundNo = snowFlake.nextId();
+
+        refund.setOutRefundNo(outRefundNo);
+
 
         refundMapper.insert(refund);
 
@@ -53,7 +72,41 @@ public class RefundService {
             throw new FruitsRuntimeException("支付表的状态更新失败");
         }
 
-        //todo 微信退款
+
+        try {
+
+            //微信退款申请
+            WxPayRefundV3Request refundV3Request = new WxPayRefundV3Request();
+
+            //原支付交易对应的商户订单号
+            refundV3Request.setOutTradeNo(String.valueOf(pay.getOutTradeNo().longValue()));
+
+            //退款单号
+            refundV3Request.setOutRefundNo(String.valueOf(outRefundNo));
+            //退款原因
+            refundV3Request.setReason(reason);
+
+            //退款回调地址,可以不填，在微信的商户平台生设置也可以
+            refundV3Request.setNotifyUrl("https://www.baidu.com");
+
+            //退款金额
+            WxPayRefundV3Request.Amount refundAmount = new WxPayRefundV3Request.Amount();
+
+            //本次退款金额
+            refundAmount.setRefund(amount);
+            //原订单金额
+            refundAmount.setTotal(pay.getAmount());
+            refundAmount.setCurrency("CNY");
+
+            refundV3Request.setAmount(refundAmount);
+
+            //退款
+            WxPayRefundV3Result wxPayRefundV3Result = wxPayService.refundV3(refundV3Request);
+
+
+        } catch (WxPayException wxPayException) {
+            throw new FruitsRuntimeException("微信申请退款接口请求失败");
+        }
     }
 
     /**

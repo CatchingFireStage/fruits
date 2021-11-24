@@ -36,4 +36,11 @@ public class Refund implements Serializable {
 
     @ApiModelProperty(value = "申请退款时间")
     private LocalDateTime createTime;
+
+    @ApiModelProperty(value = "商户退款单号")
+    private Long outRefundNo;
+
+    @ApiModelProperty(value = "微信退款单号")
+    private String refundId;
+
 }
