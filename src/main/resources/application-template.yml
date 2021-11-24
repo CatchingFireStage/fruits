@@ -66,3 +66,8 @@ wx:
     aes-key: aesKey
     msg-data-format: json
 
+#mybati-plus配置
+mybatis-plus:
+  configuration:
+    #sql日志打印
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
