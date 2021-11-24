@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.service.pay.PayService;
+import me.fruits.fruits.service.pay.refund.RefundService;
+import me.fruits.fruits.utils.FruitsRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,9 @@ public class WechatController {
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private RefundService refundService;
 
 
     @PostMapping("/pay")
@@ -78,8 +83,37 @@ public class WechatController {
         //退款结果
         WxPayRefundNotifyV3Result wxPayRefundNotifyV3Result = wxPayService.parseRefundNotifyV3Result(jsonData, signatureHeader);
 
-
         //todo: 业务逻辑
+        String refundStatus = wxPayRefundNotifyV3Result.getResult().getRefundStatus();
+
+        //商户的退款订单号
+        long outRefundNo = Long.parseLong(wxPayRefundNotifyV3Result.getResult().getOutRefundNo());
+        //微信的退款订单号
+        String refundId = wxPayRefundNotifyV3Result.getResult().getRefundId();
+
+
+        switch (refundStatus) {
+            case "CLOSE":
+                //退款订单切换到close状态
+                if (refundService.updateStateToCloseAndRefundId(outRefundNo, refundId) <= 0) {
+                    throw new FruitsRuntimeException("退款订单切换到close失败:outRefundNo:" + outRefundNo);
+                }
+                break;
+            case "ABNORMAL":
+                //退款订单切换到abnormal状态
+                if (refundService.updateStateToAbnormalAndRefundId(outRefundNo, refundId) <= 0) {
+                    throw new FruitsRuntimeException("退款订单切换到abnormal失败:outRefundNo:" + outRefundNo);
+                }
+                break;
+            case "SUCCESS":
+                //退款订单，退款成功
+                if (refundService.updateStateToSuccessAndRefundId(outRefundNo, refundId) <= 0) {
+                    throw new FruitsRuntimeException("退款订单切换到success失败:outRefundNo:" + outRefundNo);
+                }
+                break;
+            default:
+                throw new FruitsRuntimeException("未知的微信退款状态：" + refundStatus);
+        }
 
 
         Map<String, String> response = new HashMap<>();

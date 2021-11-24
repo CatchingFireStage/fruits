@@ -1,6 +1,7 @@
 package me.fruits.fruits.service.pay.refund;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -154,6 +155,67 @@ public class RefundService {
         } catch (WxPayException wxPayException) {
             throw new FruitsRuntimeException("微信申请退款接口请求失败");
         }
+    }
+
+
+    /**
+     * 更新退款状态到关闭
+     *
+     * @param outRefundNo 商户退款订单号
+     * @param refundId    微信支付退款单号
+     */
+    public int updateStateToCloseAndRefundId(long outRefundNo, String refundId) {
+
+        UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
+
+        updateWrapper.eq("out_refund_no", outRefundNo);
+        updateWrapper.eq("state", RefundStateEnum.REFUND.getLabel());
+
+
+        updateWrapper.set("state", RefundStateEnum.CLOSE.getValue());
+        updateWrapper.set("refund_id", refundId);
+
+
+        return refundMapper.update(null, updateWrapper);
+
+    }
+
+
+    /**
+     * 更新退款状态到异常, 异常订单
+     */
+    public int updateStateToAbnormalAndRefundId(long outRefundNo, String refundId) {
+
+        UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
+
+        updateWrapper.eq("out_refund_no", outRefundNo);
+        updateWrapper.eq("state", RefundStateEnum.REFUND.getLabel());
+
+
+        updateWrapper.set("state", RefundStateEnum.ABNORMAL.getValue());
+        updateWrapper.set("refund_id", refundId);
+
+
+        return refundMapper.update(null, updateWrapper);
+    }
+
+
+    /**
+     * 更新退款状态到退款成功
+     *
+     * @param outRefundNo
+     * @param refundId
+     */
+    public int updateStateToSuccessAndRefundId(long outRefundNo, String refundId) {
+
+        UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
+
+        updateWrapper.eq("out_refund_no", outRefundNo);
+
+        updateWrapper.set("state", RefundStateEnum.SUCCESS.getValue());
+        updateWrapper.set("refund_id", refundId);
+
+        return refundMapper.update(null, updateWrapper);
     }
 
 
