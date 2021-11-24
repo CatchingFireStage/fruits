@@ -124,7 +124,9 @@ public class RefundService {
 
 
             //更新订单已经退款的金额
-            payService.accumulationRefundAmount(payId, amount);
+            if (payService.accumulationRefundAmount(payId, amount) <= 0) {
+                throw new FruitsRuntimeException("更新refundAmount失败");
+            }
 
         } catch (WxPayException wxPayException) {
             throw new FruitsRuntimeException("微信申请退款接口请求失败");
