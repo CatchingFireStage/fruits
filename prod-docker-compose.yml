@@ -22,4 +22,4 @@ services:
     - /home/liangyu/fruits/0.0.1/upload:/usr/src/fruits/upload
     - /home/liangyu/fruits/0.0.1/log:/usr/src/fruits/log
     - /home/liangyu/fruits/0.0.1/wechat/:/usr/src/fruits/wechat
-    command: java -jar  ./fruits-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+    command: java -jar -Duser.timezone=GMT+08 ./fruits-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod

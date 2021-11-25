@@ -17,7 +17,7 @@ public class ServerListener implements ApplicationListener<WebServerInitializedE
     @Override
     public void onApplicationEvent(WebServerInitializedEvent webServerInitializedEvent) {
         log.info("当前程序启动监听的端口:{}", webServerInitializedEvent.getWebServer().getPort());
-        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-        log.info("设置系统的TimeZone:{}", "Asia/Shanghai");
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+:08:00"));
+        log.info("设置系统的TimeZone:{}", "GMT+:08:00");
     }
 }
