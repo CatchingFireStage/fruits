@@ -22,6 +22,7 @@ import me.fruits.fruits.service.spu.SpecificationValueService;
 import me.fruits.fruits.service.spu.SpuService;
 import me.fruits.fruits.service.user.UserService;
 import me.fruits.fruits.utils.FruitsRuntimeException;
+import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -444,5 +445,63 @@ public class OrderService {
         event.setEventType(EventType.FULFILL_ORDER_LIST);
         event.setEvent(this.objectMapper.writeValueAsString(getOrdersByPayStateOrFulfillState(OrderStateEnum.COMPLETED)));
         return this.objectMapper.writeValueAsString(event);
+    }
+
+
+    /**
+     * 基与后端的inputOrderDescriptionDTO结构，包装、处理、转化成前端的展示数据
+     *
+     * @param inputOrderDescriptionDTO 后端的结构
+     * @return
+     */
+    public static Map<String, Object> inputOrderDescriptionDTOWrap(InputOrderDescriptionDTO inputOrderDescriptionDTO) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        //订单详情
+        List<Object> orderDescription = new ArrayList<>();
+
+        inputOrderDescriptionDTO.getOrderDescription().forEach(orderDescriptionDTO -> {
+
+            Map<String, Object> orderDescriptionItemRow = new HashMap<>();
+
+            //spu
+            Map<String, Object> spu = new HashMap<>();
+
+            spu.put("money", MoneyUtils.fenChangeYuan(orderDescriptionDTO.getSpu().getMoney()));
+            spu.put("name", orderDescriptionDTO.getSpu().getName());
+
+            orderDescriptionItemRow.put("spu", spu);
+
+            //spu的规格值
+            List<Object> spuSpecificationValue = new ArrayList<>();
+
+            orderDescriptionDTO.getSpuSpecificationValue().forEach(spuSpecificationValueItem -> {
+
+                Map<String, Object> spuSpecificationValueItemRow = new HashMap<>();
+
+                spuSpecificationValueItemRow.put("money", MoneyUtils.fenChangeYuan(spuSpecificationValueItem.getMoney()));
+                spuSpecificationValueItemRow.put("name", spuSpecificationValueItem.getName());
+                spuSpecificationValueItemRow.put("value", spuSpecificationValueItem.getValue());
+
+
+                spuSpecificationValue.add(spuSpecificationValueItemRow);
+            });
+
+
+            orderDescriptionItemRow.put("spuSpecificationValue", spuSpecificationValue);
+
+            orderDescription.add(orderDescriptionItemRow);
+
+        });
+
+
+        response.put("orderDescription", orderDescription);
+
+        //订单总金额
+        response.put("payAmount", MoneyUtils.fenChangeYuan(inputOrderDescriptionDTO.getPayAmount()));
+
+
+        return response;
     }
 }

@@ -132,7 +132,7 @@ public class PayController {
             Map<String, Object> orderObject = new HashMap<>();
 
             orderObject.put("id", order.getId());
-            orderObject.put("description", orderService.decodeInputOrderDescriptionDTO(order.getDescription()));
+            orderObject.put("description", OrderService.inputOrderDescriptionDTOWrap(orderService.decodeInputOrderDescriptionDTO(order.getDescription())));
             orderObject.put("state", EnumUtils.changeToString(OrderStateEnum.class, order.getState()));
             orderObject.put("createTime", DateFormatUtils.format(order.getCreateTime()));
             orderObject.put("user", userAdminModuleService.getUserForAdminDTO(order.getUserId()));
