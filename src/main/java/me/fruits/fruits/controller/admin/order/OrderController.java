@@ -94,6 +94,7 @@ public class OrderController {
             if (pay != null) {
                 Map<String, Object> payData = new HashMap<>();
 
+                payData.put("id", pay.getId());
                 payData.put("transactionId", pay.getTransactionId());
                 payData.put("outTradeNo", pay.getOutTradeNo());
                 payData.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
