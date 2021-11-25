@@ -68,7 +68,7 @@ public class WrapperDTOService {
 
             try {
                 //获取所关联的规格
-                Set<Long> specificationIds = specificationSpuList.stream().map(SpecificationSpu::getSpecificationId).collect(Collectors.toSet());
+                Set<Long> specificationIds = SpecificationSpuList.stream().map(SpecificationSpu::getSpecificationId).collect(Collectors.toSet());
                 List<Specification> specifications = specificationService.getSpecifications(specificationIds);
 
                 //包装成dto
