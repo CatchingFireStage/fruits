@@ -77,6 +77,7 @@ public class RefundController {
             refundItem.put("payId", refund.getPayId());
             refundItem.put("reason", refund.getReason());
             refundItem.put("state", EnumUtils.changeToString(RefundStateEnum.class, refund.getState()));
+            refundItem.put("refundId", refund.getRefundId());
 
 
             list.add(refundItem);
