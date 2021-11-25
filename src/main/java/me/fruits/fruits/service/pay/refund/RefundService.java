@@ -1,6 +1,7 @@
 package me.fruits.fruits.service.pay.refund;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundV3Result;
@@ -45,6 +46,28 @@ public class RefundService {
      */
     @Value("${wx.pay.refund-notify-url}")
     private String refundNotifyUrl;
+
+
+    /**
+     * 获取可以重新申请退款的退款订单
+     * <p>
+     * 状态是退款异常或者是退款关闭的，可以重新按照原来的记录重新申请退款
+     *
+     * @param id 订单id
+     */
+    private Refund getRefundByReiterate(long id) {
+
+        QueryWrapper<Refund> refundQueryWrapper = new QueryWrapper<>();
+
+        refundQueryWrapper.eq("id", id);
+        refundQueryWrapper.nested(consumer -> {
+            consumer.eq("state", RefundStateEnum.ABNORMAL.getValue()).or()
+                    .eq("state", RefundStateEnum.CLOSE.getValue());
+        });
+
+
+        return refundMapper.selectOne(refundQueryWrapper);
+    }
 
     /**
      * 微信订单
@@ -115,14 +138,33 @@ public class RefundService {
             throw new FruitsRuntimeException("支付表的状态更新失败");
         }
 
+        //微信接口退款申请
+        weChatRefund(pay.getOutTradeNo(), outRefundNo, reason, amount, pay.getAmount());
 
+
+        //更新订单已经退款的金额
+        payService.accumulationRefundAmount(payId, amount);
+
+    }
+
+
+    /**
+     * 微信退退款申请
+     *
+     * @param outTradeNo  商户原支付订单号
+     * @param outRefundNo 商户退款订单号
+     * @param reason      退款原因
+     * @param amount      本次退款金额 单位分
+     * @param payAmount   原支付订单总金额 单位分
+     */
+    private void weChatRefund(long outTradeNo, long outRefundNo, String reason, int amount, int payAmount) {
         try {
 
             //微信退款申请
             WxPayRefundV3Request refundV3Request = new WxPayRefundV3Request();
 
             //原支付交易对应的商户订单号
-            refundV3Request.setOutTradeNo(String.valueOf(pay.getOutTradeNo().longValue()));
+            refundV3Request.setOutTradeNo(String.valueOf(outTradeNo));
 
             //退款单号
             refundV3Request.setOutRefundNo(String.valueOf(outRefundNo));
@@ -138,19 +180,13 @@ public class RefundService {
             //本次退款金额
             refundAmount.setRefund(amount);
             //原订单金额
-            refundAmount.setTotal(pay.getAmount());
+            refundAmount.setTotal(payAmount);
             refundAmount.setCurrency("CNY");
 
             refundV3Request.setAmount(refundAmount);
 
             //微信申请退款
             wxPayService.refundV3(refundV3Request);
-
-
-            //更新订单已经退款的金额
-            if (payService.accumulationRefundAmount(payId, amount) <= 0) {
-                throw new FruitsRuntimeException("更新refundAmount失败");
-            }
 
         } catch (WxPayException wxPayException) {
             throw new FruitsRuntimeException("微信申请退款接口请求失败");
@@ -164,10 +200,16 @@ public class RefundService {
      *
      * @param id
      */
+    @Transactional
     public void reiterateRefund(long id) {
-        Refund refund = refundMapper.selectById(id);
+        //原退款订单
+        Refund refundByReiterate = getRefundByReiterate(id);
 
-        //todo 重新退款
+        //获取原支付订单
+        Pay pay = payService.getPay(refundByReiterate.getPayId());
+
+        //重新退款
+        weChatRefund(pay.getOutTradeNo(), refundByReiterate.getOutRefundNo(), refundByReiterate.getReason(), refundByReiterate.getAmount(), pay.getAmount());
     }
 
     /**

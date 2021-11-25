@@ -55,6 +55,8 @@ public class RefundController {
     @ApiOperation(value = "退款-重新申请")
     public Result<String> reiterateRefund(@PathVariable long id) {
 
+        refundService.reiterateRefund(id);
+        
         return Result.success();
     }
 }
