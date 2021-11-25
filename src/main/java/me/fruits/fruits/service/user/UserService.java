@@ -16,7 +16,11 @@ public class UserService {
         return this.userMapper.selectById(id);
     }
 
-    public long add(User user) {
+    public long add(String phone) {
+
+        User user = new User();
+
+        user.setPhone(phone);
 
         this.userMapper.insert(user);
 

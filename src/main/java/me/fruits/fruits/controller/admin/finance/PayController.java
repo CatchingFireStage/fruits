@@ -2,23 +2,25 @@ package me.fruits.fruits.controller.admin.finance;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
+import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
 import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
+import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
+import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.service.pay.PayAdminModuleService;
 import me.fruits.fruits.service.pay.PayService;
+import me.fruits.fruits.service.user.UserAdminModuleService;
 import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +38,15 @@ public class PayController {
     @Autowired
     private PayAdminModuleService payAdminModuleService;
 
+    @Autowired
+    private PayService payService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private UserAdminModuleService userAdminModuleService;
+
     @GetMapping(value = "/pay")
     @ApiOperation("支付-列表")
     @ApiImplicitParams({
@@ -44,7 +55,7 @@ public class PayController {
     })
     public Result<Object> pay(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false,defaultValue = "") String payStateEnum,
+            @RequestParam(required = false, defaultValue = "") String payStateEnum,
             PageVo pageVo
     ) {
 
@@ -86,6 +97,50 @@ public class PayController {
         });
 
         return Result.success(pays.getTotal(), pays.getPages(), list);
+    }
+
+
+    @GetMapping(value = "/pay/{id}")
+    @ApiOperation("支付-详情")
+    public Result<Object> pay(@PathVariable long id) throws JsonProcessingException {
+
+        //获取支付信息
+        Pay pay = payService.getPay(id);
+
+
+        Map<String, Object> response = new HashMap<>();
+
+        //支付信息构建
+        response.put("id", pay.getId());
+        response.put("merchantTransactionId", pay.getMerchantTransactionId());
+        response.put("merchantTransactionType", EnumUtils.changeToString(MerchantTransactionTypeEnum.class, pay.getMerchantTransactionType()));
+        response.put("outTradeNo", pay.getOutTradeNo());
+        response.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
+        response.put("createTime", DateFormatUtils.format(pay.getCreateTime()));
+        response.put("refundAmount", pay.getRefundAmount());
+        response.put("state", EnumUtils.changeToString(PayStateEnum.class, pay.getState()));
+        response.put("transactionId", pay.getTransactionId());
+
+
+        //商家的交易对象
+        response.put("merchantTransactionObject", null);
+
+        if (MerchantTransactionTypeEnum.ORDER.getValue().equals(pay.getMerchantTransactionType())) {
+            //订单类型
+            Orders order = orderService.getOrder(pay.getMerchantTransactionId());
+
+            Map<String, Object> orderObject = new HashMap<>();
+
+            orderObject.put("id", order.getId());
+            orderObject.put("description", orderService.decodeInputOrderDescriptionDTO(order.getDescription()));
+            orderObject.put("state", EnumUtils.changeToString(OrderStateEnum.class, order.getState()));
+            orderObject.put("createTime", DateFormatUtils.format(order.getCreateTime()));
+            orderObject.put("user", userAdminModuleService.getUserForAdminDTO(order.getUserId()));
+
+            response.put("merchantTransactionObject", orderObject);
+        }
+
+        return Result.success(response);
     }
 
 

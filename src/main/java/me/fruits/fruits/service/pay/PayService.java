@@ -143,7 +143,7 @@ public class PayService {
 
         //创建支付订单
 
-        addPay(merchantTransactionId, merchantTransactionTypeEnum, outTradeNo, orders, orderV3.getPackageValue());
+        addPay(merchantTransactionId, merchantTransactionTypeEnum, outTradeNo, orders);
 
         return orderV3;
     }
@@ -152,12 +152,11 @@ public class PayService {
     /**
      * 创建支付订单
      */
-    private void addPay(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, long outTradeNo, Orders orders, String prepayId) {
+    private void addPay(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum, long outTradeNo, Orders orders) {
 
         Pay pay = new Pay();
         pay.setMerchantTransactionId(merchantTransactionId);
         pay.setMerchantTransactionType(merchantTransactionTypeEnum.getValue());
-        pay.setDescription(orders.getDescription());
         pay.setAmount(orders.getPayMoney());
         pay.setCreateTime(LocalDateTime.now());
         pay.setState(PayStateEnum.ORDER.getValue());
