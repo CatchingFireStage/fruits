@@ -37,6 +37,9 @@ public class UserWeChatAdminModuleService {
             userWeChatForAdminDTO.setCarrier(EnumUtils.changeToString(CarrierEnum.class, userWeChat.getCarrier()));
             userWeChatForAdminDTO.setOpenId(userWeChat.getOpenId());
 
+
+            response.add(userWeChatForAdminDTO);
+
         });
 
 
