@@ -4,10 +4,8 @@ package me.fruits.fruits.service.pay.refund;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
-import com.github.binarywang.wxpay.bean.result.WxPayRefundV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.mapper.RefundMapper;
 import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -47,6 +46,21 @@ public class RefundService {
     @Value("${wx.pay.refund-notify-url}")
     private String refundNotifyUrl;
 
+
+    /**
+     * 支付id获取退款记录
+     *
+     * @param payId 支付id
+     */
+    public List<Refund> getRefunds(long payId) {
+
+        QueryWrapper<Refund> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("pay_id", payId);
+
+        return refundMapper.selectList(queryWrapper);
+
+    }
 
     /**
      * 获取可以重新申请退款的退款订单

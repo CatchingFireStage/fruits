@@ -11,11 +11,14 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
 import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
+import me.fruits.fruits.mapper.enums.pay.refund.RefundStateEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
+import me.fruits.fruits.mapper.po.Refund;
 import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.service.pay.PayAdminModuleService;
 import me.fruits.fruits.service.pay.PayService;
+import me.fruits.fruits.service.pay.refund.RefundService;
 import me.fruits.fruits.service.user.UserAdminModuleService;
 import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +49,9 @@ public class PayController {
 
     @Autowired
     private UserAdminModuleService userAdminModuleService;
+
+    @Autowired
+    private RefundService refundService;
 
     @GetMapping(value = "/pay")
     @ApiOperation("支付-列表")
@@ -138,6 +144,33 @@ public class PayController {
             orderObject.put("user", userAdminModuleService.getUserForAdminDTO(order.getUserId()));
 
             response.put("merchantTransactionObject", orderObject);
+        }
+
+
+        //退款订单
+        response.put("refund", new ArrayList<>());
+        List<Refund> refunds = refundService.getRefunds(pay.getId());
+        if (refunds != null) {
+
+            List<Object> refundList = new ArrayList<>();
+
+            refunds.forEach(refund -> {
+
+                Map<String, Object> refundItem = new HashMap<>();
+
+                refundItem.put("id", refund.getId());
+                refundItem.put("reason", refund.getReason());
+                refundItem.put("amount", MoneyUtils.fenChangeYuan(refund.getAmount()));
+                refundItem.put("createTime", DateFormatUtils.format(refund.getCreateTime()));
+                refundItem.put("outRefundNo", refund.getOutRefundNo());
+                refundItem.put("refundId", refund.getRefundId());
+                refundItem.put("state", EnumUtils.changeToString(RefundStateEnum.class, refund.getState()));
+
+                refundList.add(refundItem);
+            });
+
+
+            response.put("refund", refundList);
         }
 
         return Result.success(response);
