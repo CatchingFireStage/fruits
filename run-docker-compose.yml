@@ -9,4 +9,4 @@ services:
     working_dir: /usr/src/fruits
     volumes:
       - ./:/usr/src/fruits
-    command: java -jar -Duser.timezone=GMT+08 ./target/fruits-0.0.1-SNAPSHOT.jar
+    command: java -jar  ./target/fruits-0.0.1-SNAPSHOT.jar
