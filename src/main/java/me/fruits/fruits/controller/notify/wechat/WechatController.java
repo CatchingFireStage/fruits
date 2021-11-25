@@ -83,7 +83,7 @@ public class WechatController {
         //退款结果
         WxPayRefundNotifyV3Result wxPayRefundNotifyV3Result = wxPayService.parseRefundNotifyV3Result(jsonData, signatureHeader);
 
-        //todo: 业务逻辑
+        //业务逻辑
         String refundStatus = wxPayRefundNotifyV3Result.getResult().getRefundStatus();
 
         //商户的退款订单号
@@ -107,8 +107,9 @@ public class WechatController {
                 break;
             case "SUCCESS":
                 //退款订单，退款成功
+                //防止微信重复通知,通过更新是否大于0判断是否已经处理过业务
                 if (refundService.updateStateToSuccessAndRefundId(outRefundNo, refundId) <= 0) {
-                    throw new FruitsRuntimeException("退款订单切换到success失败:outRefundNo:" + outRefundNo);
+                    throw new FruitsRuntimeException("退款订单切换到success失败:outRefundNo:" + outRefundNo + "已经处理业务了，微信可以不需要再发送了");
                 }
                 break;
             default:

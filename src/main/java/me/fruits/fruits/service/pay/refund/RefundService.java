@@ -265,6 +265,8 @@ public class RefundService {
         UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
 
         updateWrapper.eq("out_refund_no", outRefundNo);
+        //防止微信重复通知,通过更新是否大于0判断是否已经处理过业务
+        updateWrapper.ne("state", RefundStateEnum.SUCCESS.getValue());
 
         updateWrapper.set("state", RefundStateEnum.SUCCESS.getValue());
         updateWrapper.set("refund_id", refundId);
