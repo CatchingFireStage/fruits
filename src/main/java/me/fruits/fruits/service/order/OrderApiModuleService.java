@@ -38,6 +38,9 @@ public class OrderApiModuleService {
 
         queryWrapper.in("state", Arrays.asList(OrderStateEnum.PAY.getValue(), OrderStateEnum.COMPLETED.getValue(), OrderStateEnum.DELIVERY.getValue()));
 
+
+        queryWrapper.orderByDesc("create_time");
+
         return ordersMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 
