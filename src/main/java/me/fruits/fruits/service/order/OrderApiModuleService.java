@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
+import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
 import me.fruits.fruits.mapper.po.Orders;
-import me.fruits.fruits.utils.FruitsRuntimeException;
-import me.fruits.fruits.utils.MoneyUtils;
+import me.fruits.fruits.mapper.po.Pay;
+import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class OrderApiModuleService {
 
     @Autowired
     private OrdersMapper ordersMapper;
+
+    @Autowired
+    private PayService payService;
 
 
     /**
@@ -44,27 +49,52 @@ public class OrderApiModuleService {
         return ordersMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 
+
     /**
-     * 将状态转化为文本
+     * 显示前端展示订单的状态
      *
-     * @param state 数据库中的状态
-     * @return 客户端看到的状态提示
+     * @param order 订单数据
      */
-    public String changeStateToText(int state) {
+    public String showStateText(Orders order) {
+        Integer state = order.getState();
 
-        switch (state) {
-            case 0:
-                return "待支付";
-            case 1:
-            case 3:
-                return "制作中";
-            case 4:
-                return "已完成";
-            default:
-                throw new FruitsRuntimeException("客户只能看到以上定义的订单状态");
+
+        if (OrderStateEnum.ORDER.getValue().equals(state)) {
+            //未支付的情况
+
+            return "待支付";
         }
-    }
 
+        if (OrderStateEnum.CLOSE.getValue().equals(state)) {
+            return "订单关闭，支付失败";
+        }
+
+        //支付成功处理
+
+        String stateText = "支付成功";
+
+        if (OrderStateEnum.PAY.getValue().equals(state)
+                || OrderStateEnum.COMPLETED.getValue().equals(state)
+        ) {
+            stateText = "制作中";
+        }
+
+        if (OrderStateEnum.DELIVERY.getValue().equals(state)) {
+            stateText = "已完成";
+        }
+
+
+        //查看订单是否处理了退款
+        Pay pay = payService.getPay(order.getId(), MerchantTransactionTypeEnum.ORDER);
+
+        if (PayStateEnum.REFUND.getValue().equals(pay.getState())) {
+            stateText = "已退款";
+        }
+
+        return stateText;
+
+
+    }
 
 
 }

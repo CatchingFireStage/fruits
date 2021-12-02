@@ -60,7 +60,7 @@ public class OrderController {
 
             item.put("id", orders.getId());
             item.put("payMoney", MoneyUtils.fenChangeYuan(orders.getPayMoney()));
-            item.put("stateText", orderApiModuleService.changeStateToText(orders.getState()));
+            item.put("stateText", orderApiModuleService.showStateText(orders));
             try {
                 item.put("description", OrderService.inputOrderDescriptionDTOWrap(orderService.decodeInputOrderDescriptionDTO(orders.getDescription())));
             } catch (JsonProcessingException e) {
