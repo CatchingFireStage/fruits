@@ -16,7 +16,7 @@ public interface PayMapper extends BaseMapper<Pay> {
      */
     @Update({
             "UPDATE pay",
-            "SET amount = amount + #{amount}",
+            "SET refund_amount = refund_amount + #{amount}",
             "WHERE",
             "id = #{id}"
     })
