@@ -123,7 +123,7 @@ public class PayController {
         response.put("outTradeNo", pay.getOutTradeNo());
         response.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
         response.put("createTime", DateFormatUtils.format(pay.getCreateTime()));
-        response.put("refundAmount", pay.getRefundAmount());
+        response.put("refundAmount", MoneyUtils.fenChangeYuan(pay.getRefundAmount()));
         response.put("state", EnumUtils.changeToString(PayStateEnum.class, pay.getState()));
         response.put("transactionId", pay.getTransactionId());
 
