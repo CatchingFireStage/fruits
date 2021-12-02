@@ -147,10 +147,8 @@ public class RefundService {
 
         refundMapper.insert(refund);
 
-        //更新支付表记录的状态
-        if (payService.updateStateToRefund(pay.getId()) <= 0) {
-            throw new FruitsRuntimeException("支付表的状态更新失败");
-        }
+        //更新支付表记录的状态到进入退款
+        payService.updateStateToRefund(pay.getId());
 
         //微信接口退款申请
         weChatRefund(pay.getOutTradeNo(), outRefundNo, reason, amount, pay.getAmount());
