@@ -89,7 +89,7 @@ public class RefundController {
 
     @PostMapping(value = "/refund")
     @ApiOperation(value = "退款-申请")
-    public Result<String> refund(@Valid AddRefundRequest addRefundRequest) {
+    public Result<String> refund(@RequestBody @Valid AddRefundRequest addRefundRequest) {
 
 
         refundService.addRefund(addRefundRequest.getPayId(), addRefundRequest.getReason(), MoneyUtils.yuanChangeFen(addRefundRequest.getAmount()));
