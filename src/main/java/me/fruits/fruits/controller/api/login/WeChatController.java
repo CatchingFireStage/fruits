@@ -3,7 +3,6 @@ package me.fruits.fruits.controller.api.login;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
-import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +11,7 @@ import me.fruits.fruits.controller.api.login.vo.WeChatMiniProgramCodeRequest;
 import me.fruits.fruits.controller.api.login.vo.WeChatMiniProgramPhoneRequest;
 import me.fruits.fruits.service.api.LoginService;
 import me.fruits.fruits.service.user.UserWeChatApiModuleService;
+import me.fruits.fruits.utils.CacheKeyUtils;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +75,7 @@ public class WeChatController {
         }
 
         //没有存在的用户,缓存用户信息，走微信的流程，引导用户获取手机号注册，然后注册用户
-        Cache miniWeChatRegisterUser = cacheManager.getCache("miniWeChatRegisterUser");
+        Cache miniWeChatRegisterUser = cacheManager.getCache(CacheKeyUtils.miniWeChatRegisterUserCacheKey);
 
         //保存用户的sessionKey
         miniWeChatRegisterUser.put(sessionInfo.getOpenid(), sessionInfo);
@@ -92,7 +91,7 @@ public class WeChatController {
 
 
         //获取微信用户的session_key
-        Cache miniWeChatRegisterUser = cacheManager.getCache("miniWeChatRegisterUser");
+        Cache miniWeChatRegisterUser = cacheManager.getCache(CacheKeyUtils.miniWeChatRegisterUserCacheKey);
 
         WxMaJscode2SessionResult wxMaJscode2SessionResult = miniWeChatRegisterUser.get(weChatMiniProgramPhoneRequest.getOpenId(), WxMaJscode2SessionResult.class);
         if(wxMaJscode2SessionResult == null){
