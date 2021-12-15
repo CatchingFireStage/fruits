@@ -11,7 +11,6 @@ import me.fruits.fruits.controller.api.login.vo.WeChatMiniProgramCodeRequest;
 import me.fruits.fruits.controller.api.login.vo.WeChatMiniProgramPhoneRequest;
 import me.fruits.fruits.service.api.LoginService;
 import me.fruits.fruits.service.user.UserWeChatApiModuleService;
-import me.fruits.fruits.utils.CacheKeyUtils;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -46,6 +45,9 @@ public class WeChatController {
     @Autowired
     private WxMaService weChatMiniApp;
 
+    //微信注册用户key
+    public static final String miniWeChatRegisterUserCacheKey = "miniWeChatRegisterUser";
+
     @PostMapping("/weChatMiniProgramCode")
     @ApiOperation(value = "微信小程序-code换取fruits系统用户Token")
     public Result<Object> miniProgramCode(@RequestBody @Valid WeChatMiniProgramCodeRequest weChatMiniProgramCodeRequest) throws WxErrorException {
@@ -75,7 +77,7 @@ public class WeChatController {
         }
 
         //没有存在的用户,缓存用户信息，走微信的流程，引导用户获取手机号注册，然后注册用户
-        Cache miniWeChatRegisterUser = cacheManager.getCache(CacheKeyUtils.miniWeChatRegisterUserCacheKey);
+        Cache miniWeChatRegisterUser = cacheManager.getCache(WeChatController.miniWeChatRegisterUserCacheKey);
 
         //保存用户的sessionKey
         miniWeChatRegisterUser.put(sessionInfo.getOpenid(), sessionInfo);
@@ -91,7 +93,7 @@ public class WeChatController {
 
 
         //获取微信用户的session_key
-        Cache miniWeChatRegisterUser = cacheManager.getCache(CacheKeyUtils.miniWeChatRegisterUserCacheKey);
+        Cache miniWeChatRegisterUser = cacheManager.getCache(WeChatController.miniWeChatRegisterUserCacheKey);
 
         WxMaJscode2SessionResult wxMaJscode2SessionResult = miniWeChatRegisterUser.get(weChatMiniProgramPhoneRequest.getOpenId(), WxMaJscode2SessionResult.class);
         if(wxMaJscode2SessionResult == null){
