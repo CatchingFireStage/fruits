@@ -38,7 +38,7 @@ public class ClassicMenuController {
 
     @ApiOperation(value = "经典菜单")
     @GetMapping("/menu")
-    @Cacheable(value = CacheConfiguration.menuCacheManager_cache_menu, cacheManager = CacheConfiguration.menuCacheManager)
+    @Cacheable(value = CacheConfiguration.MENU_CACHE_MANAGER_CACHE_MENU, cacheManager = CacheConfiguration.MENU_CACHE_MANAGER)
     public Result<Object> menu() {
 
         //获取商品
