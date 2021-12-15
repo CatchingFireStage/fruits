@@ -3,6 +3,7 @@ package me.fruits.fruits.controller.api.menu;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import me.fruits.fruits.configuration.CacheConfiguration;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuApiModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
@@ -37,7 +38,7 @@ public class ClassicMenuController {
 
     @ApiOperation(value = "经典菜单")
     @GetMapping("/menu")
-    @Cacheable(value = "menu", cacheManager = "menuCacheManager")
+    @Cacheable(value = CacheConfiguration.menuCacheManager_cache_menu, cacheManager = CacheConfiguration.menuCacheManager)
     public Result<Object> menu() {
 
         //获取商品
