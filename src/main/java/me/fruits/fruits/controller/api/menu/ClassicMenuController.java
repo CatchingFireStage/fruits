@@ -3,7 +3,6 @@ package me.fruits.fruits.controller.api.menu;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import me.fruits.fruits.controller.ApiLogin;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuApiModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
@@ -11,6 +10,7 @@ import me.fruits.fruits.service.spu.dto.SpuCategoryDTO;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +37,7 @@ public class ClassicMenuController {
 
     @ApiOperation(value = "经典菜单")
     @GetMapping("/menu")
+    @Cacheable(value = "menu", cacheManager = "menuCacheManager")
     public Result<Object> menu() {
 
         //获取商品
