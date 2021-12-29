@@ -74,7 +74,7 @@ public class OrderService {
         InputOrderDescriptionDTO inputOrderDescriptionDTO = new InputOrderDescriptionDTO();
 
         //桌号
-        inputOrderDescriptionDTO.setTableNumber(inputOrderDescriptionVO.getTableNumber());
+        inputOrderDescriptionDTO.setDesk(inputOrderDescriptionVO.getDesk());
 
         inputOrderDescriptionDTO.setOrderDescription(new ArrayList<>());
 

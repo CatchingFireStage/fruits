@@ -20,7 +20,7 @@ public class InputOrderDescriptionVO {
     @ApiModelProperty(value = "桌子号",required = true)
     @Min(value = 0,message = "桌子号最小是0号")
     @NotNull(message = "桌子号必填")
-    private Integer tableNumber;
+    private Integer desk;
 
     /**
      * 用户输入的订单元数据

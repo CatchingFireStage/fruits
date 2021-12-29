@@ -21,7 +21,7 @@ public class InputOrderDescriptionDTO {
     private Long userId;
 
     @ApiModelProperty(value = "桌子号")
-    private Integer tableNumber;
+    private Integer desk;
 
 
     @ApiModel("存到数据库中的订单格式元数据")
