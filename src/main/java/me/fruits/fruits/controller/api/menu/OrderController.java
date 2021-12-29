@@ -8,12 +8,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.controller.ApiLogin;
+import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.po.Orders;
+import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.api.UserDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderApiModuleService;
 import me.fruits.fruits.service.order.OrderService;
+import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -38,6 +41,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PayService payService;
 
 
     @ApiOperation(value = "我的订单")
@@ -70,6 +76,15 @@ public class OrderController {
             }
 
             item.put("createTime", DateFormatUtils.format(orders.getCreateTime()));
+
+            item.put("pay", null);
+            Pay pay = payService.getPay(orders.getId(), MerchantTransactionTypeEnum.ORDER);
+            if (pay != null) {
+                Map<String, Object> payData = new HashMap<>();
+                payData.put("id", pay.getId());
+                payData.put("outTradeNo", pay.getOutTradeNo().toString());
+                item.put("pay", payData);
+            }
 
             response.add(item);
         });
