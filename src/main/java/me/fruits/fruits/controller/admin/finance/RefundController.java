@@ -72,7 +72,7 @@ public class RefundController {
 
             refundItem.put("id", refund.getId());
             refundItem.put("amount", MoneyUtils.fenChangeYuan(refund.getAmount()));
-            refundItem.put("outRefundNo", refund.getOutRefundNo());
+            refundItem.put("outRefundNo", refund.getOutRefundNo().toString());
             refundItem.put("createTime", DateFormatUtils.format(refund.getCreateTime()));
             refundItem.put("payId", refund.getPayId());
             refundItem.put("reason", refund.getReason());

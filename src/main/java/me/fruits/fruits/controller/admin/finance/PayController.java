@@ -162,7 +162,7 @@ public class PayController {
                 refundItem.put("reason", refund.getReason());
                 refundItem.put("amount", MoneyUtils.fenChangeYuan(refund.getAmount()));
                 refundItem.put("createTime", DateFormatUtils.format(refund.getCreateTime()));
-                refundItem.put("outRefundNo", refund.getOutRefundNo());
+                refundItem.put("outRefundNo", refund.getOutRefundNo().toString());
                 refundItem.put("refundId", refund.getRefundId());
                 refundItem.put("state", EnumUtils.changeToString(RefundStateEnum.class, refund.getState()));
 
