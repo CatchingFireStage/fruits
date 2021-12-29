@@ -90,7 +90,7 @@ public class PayController {
             payItem.put("id", pay.getId());
             payItem.put("merchantTransactionId", pay.getMerchantTransactionId());
             payItem.put("merchantTransactionType", EnumUtils.changeToString(MerchantTransactionTypeEnum.class, pay.getMerchantTransactionType()));
-            payItem.put("outTradeNo", pay.getOutTradeNo());
+            payItem.put("outTradeNo", pay.getOutTradeNo().toString());
             payItem.put("transactionId", pay.getTransactionId());
             payItem.put("createTime", DateFormatUtils.format(pay.getCreateTime()));
             payItem.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
@@ -120,7 +120,7 @@ public class PayController {
         response.put("id", pay.getId());
         response.put("merchantTransactionId", pay.getMerchantTransactionId());
         response.put("merchantTransactionType", EnumUtils.changeToString(MerchantTransactionTypeEnum.class, pay.getMerchantTransactionType()));
-        response.put("outTradeNo", pay.getOutTradeNo());
+        response.put("outTradeNo", pay.getOutTradeNo().toString());
         response.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
         response.put("createTime", DateFormatUtils.format(pay.getCreateTime()));
         response.put("refundAmount", MoneyUtils.fenChangeYuan(pay.getRefundAmount()));

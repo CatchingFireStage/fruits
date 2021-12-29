@@ -96,7 +96,7 @@ public class OrderController {
 
                 payData.put("id", pay.getId());
                 payData.put("transactionId", pay.getTransactionId());
-                payData.put("outTradeNo", pay.getOutTradeNo());
+                payData.put("outTradeNo", pay.getOutTradeNo().toString());
                 payData.put("amount", MoneyUtils.fenChangeYuan(pay.getAmount()));
 
 
