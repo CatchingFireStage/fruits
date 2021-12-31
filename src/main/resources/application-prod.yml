@@ -21,6 +21,8 @@ springfox:
       v2:
         enabled: ${SWAGGER_V2_ENABLED}
         host: ${FRUITS_DOMAIN}
+    swagger-ui:
+      enabled: ${SWAGGER_V2_ENABLED}
 fruits:
   admin:
     username: ${FRUITS_USERNAME}
