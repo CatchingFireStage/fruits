@@ -101,7 +101,7 @@ public class OrderController {
     @ApiOperation("订单-预览")
     @PostMapping("/orderPreview")
     public Result<Object> orderPreview(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
-
+        
         UserDTO userDTO = ApiModuleRequestHolder.get();
 
         InputOrderDescriptionDTO inputOrderDescriptionDTO = orderService.encodeInputOrderDescriptionDTO(userDTO.getId(), inputOrderDescriptionVO);

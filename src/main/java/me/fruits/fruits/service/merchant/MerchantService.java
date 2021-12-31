@@ -3,8 +3,6 @@ package me.fruits.fruits.service.merchant;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,24 +13,19 @@ import java.time.format.DateTimeFormatter;
 public class MerchantService {
 
     //营业开始时间
-    @Value("${fruits.merchant.start-time}")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startTime;
+    private LocalDateTime startTime = LocalDateTime.parse("2021-08-23 23:59:00", DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"));
 
     //营业结束时间
-    @Value("${fruits.merchant.end-time}")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime endTime;
+    private LocalDateTime endTime = LocalDateTime.parse("2021-08-23 23:59:00", DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss"));
+    ;
 
-    //是否24小时
-    @Value("${fruits.merchant.is-24-hours}")
-    private Boolean is24Hours;
+    //24小时
+    private Boolean is24Hours = false;
 
-    //是否关门休息
-    @Value("${fruits.merchant.is-close}")
-    private Boolean isClose;
+    //关门休息
+    private Boolean isClose = true;
 
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
 
 
     public synchronized void setStartTime(LocalDateTime startTime) {
@@ -58,8 +51,8 @@ public class MerchantService {
     public boolean isOpen() {
 
         if (isClose) {
-            //关门休息
-            return true;
+            //关门休息,不营业
+            return false;
         }
 
 
@@ -98,8 +91,8 @@ public class MerchantService {
         MerchantDTO merchantDTO = new MerchantDTO();
         merchantDTO.setStartTime(this.startTime.format(dateTimeFormatter));
         merchantDTO.setEndTime(this.endTime.format(dateTimeFormatter));
-        merchantDTO.setIs24Hours(this.is24Hours);
-        merchantDTO.setIsClose(this.isClose);
+        merchantDTO.setIs24Hours(is24Hours);
+        merchantDTO.setIsClose(isClose);
 
         return merchantDTO;
     }
