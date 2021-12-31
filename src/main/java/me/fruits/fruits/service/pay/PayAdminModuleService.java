@@ -41,6 +41,8 @@ public class PayAdminModuleService {
             queryWrapper.eq("state", payStateEnum.getValue());
         }
 
+        queryWrapper.orderByDesc("id");
+
 
         return payMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }

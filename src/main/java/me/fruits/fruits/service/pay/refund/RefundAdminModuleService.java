@@ -36,6 +36,8 @@ public class RefundAdminModuleService {
             queryWrapper.eq("state", refundState.getValue());
         }
 
+        queryWrapper.orderByDesc("id");
+
         return refundMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 }
