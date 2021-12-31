@@ -19,7 +19,7 @@ springfox:
   documentation:
     swagger:
       v2:
-        enabled: true
+        enabled: ${SWAGGER_V2_ENABLED}
         host: ${FRUITS_DOMAIN}
 fruits:
   admin:

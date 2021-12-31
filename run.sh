@@ -23,6 +23,9 @@ export FRUITS_WECHAT_APIV3_KEY=xxxx1
 #项目域名
 export FRUITS_DOMAIN=xxxx1
 
+#swagger是否开启
+export SWAGGER_V2_ENABLED=false
+
 
 #列出当前所有的环境变量
 export -p

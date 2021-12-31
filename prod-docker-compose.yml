@@ -16,6 +16,7 @@ services:
     - FRUITS_DOMAIN=${FRUITS_DOMAIN}
     - FRUITS_WECHAT_MCH_ID=${FRUITS_WECHAT_MCH_ID}
     - FRUITS_WECHAT_APIV3_KEY=${FRUITS_WECHAT_APIV3_KEY}
+    - SWAGGER_V2_ENABLED=${SWAGGER_V2_ENABLED}
     working_dir: /usr/src/fruits
     volumes:
     - /home/liangyu/fruits/0.0.1:/usr/src/fruits
