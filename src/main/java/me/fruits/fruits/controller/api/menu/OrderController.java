@@ -12,6 +12,7 @@ import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.api.UserDTO;
+import me.fruits.fruits.service.merchant.MerchantService;
 import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderApiModuleService;
@@ -44,6 +45,9 @@ public class OrderController {
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private MerchantService merchantService;
 
 
     @ApiOperation(value = "我的订单")
@@ -111,7 +115,13 @@ public class OrderController {
     @PostMapping("/payOrderByJsAPI")
     public Result<WxPayUnifiedOrderV3Result.JsapiResult> payOrderByJsAPI(@RequestBody @Valid InputOrderDescriptionVO inputOrderDescriptionVO) {
 
+
+        if(!merchantService.isOpen()){
+            return Result.failed("亲，还没到营业时间哦");
+        }
+
         UserDTO userDTO = ApiModuleRequestHolder.get();
+
 
         //下单
         WxPayUnifiedOrderV3Result.JsapiResult result = orderService.addOrderByJSAPI(userDTO.getId(), inputOrderDescriptionVO);

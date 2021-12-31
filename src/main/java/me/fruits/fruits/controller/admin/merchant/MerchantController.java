@@ -5,7 +5,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.merchant.vo.MerchantRequest;
-import me.fruits.fruits.service.merchant.MerchantAdminModuleService;
 import me.fruits.fruits.service.merchant.MerchantService;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,14 @@ import javax.validation.Valid;
 public class MerchantController {
 
     @Autowired
-    private MerchantAdminModuleService merchantAdminModuleService;
+    private MerchantService merchantService;
 
 
     @GetMapping("/merchant")
     @ApiOperation("商家信息-详情")
     public Result<MerchantService.MerchantDTO> merchant(){
 
-        MerchantService.MerchantDTO merchant = merchantAdminModuleService.getMerchant();
+        MerchantService.MerchantDTO merchant = merchantService.getMerchant();
 
         return Result.success(merchant);
     }
@@ -38,10 +37,10 @@ public class MerchantController {
     @ApiOperation("商家信息-修改")
     public Result<String> merchant(@RequestBody @Valid MerchantRequest merchantRequest) {
 
-        merchantAdminModuleService.setStartTime(merchantRequest.getStartTime());
-        merchantAdminModuleService.setEndTime(merchantRequest.getEndTime());
-        merchantAdminModuleService.setIs24Hours(merchantRequest.getIs24Hours());
-        merchantAdminModuleService.setIsClose(merchantRequest.getIsClose());
+        merchantService.setStartTime(merchantRequest.getStartTime());
+        merchantService.setEndTime(merchantRequest.getEndTime());
+        merchantService.setIs24Hours(merchantRequest.getIs24Hours());
+        merchantService.setIsClose(merchantRequest.getIsClose());
 
 
         return Result.success();
