@@ -94,6 +94,7 @@
             <artifactId>wx-java-pay-spring-boot-starter</artifactId>
             <version>${com.github.binarywang.version}</version>
             <exclusions>
+                <!--                其他依赖已经引入了这两个包，导致版本冲突-->
                 <exclusion>
                     <artifactId>core</artifactId>
                     <groupId>com.google.zxing</groupId>
@@ -102,11 +103,14 @@
                     <artifactId>commons-io</artifactId>
                     <groupId>commons-io</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
             </exclusions>
+        </dependency>
+
+        <!--        指定一个版本，和其他jar中的有冲突-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
         </dependency>
 
         <!--           微信小程序模块sdk引入-->
