@@ -93,6 +93,20 @@
             <groupId>com.github.binarywang</groupId>
             <artifactId>wx-java-pay-spring-boot-starter</artifactId>
             <version>${com.github.binarywang.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>core</artifactId>
+                    <groupId>com.google.zxing</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--           微信小程序模块sdk引入-->
