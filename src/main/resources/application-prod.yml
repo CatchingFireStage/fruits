@@ -54,3 +54,6 @@ wx:
     token: token
     aes-key: aesKey
     msg-data-format: json
+
+mybatis-plus:
+  type-enums-package: me.fruits.fruits.mapper.enums

@@ -71,3 +71,5 @@ mybatis-plus:
   configuration:
     #sql日志打印
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #枚举扫描包
+  type-enums-package: me.fruits.fruits.mapper.enums

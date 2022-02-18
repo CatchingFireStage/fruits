@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import me.fruits.fruits.mapper.enums.coupon.CategoryEnum;
@@ -26,6 +27,6 @@ public class Coupon implements Serializable {
     private CategoryEnum category;
 
     @ApiModelProperty(value = "优惠券具体是如何优惠的")
-    @TableField(typeHandler = FastjsonTypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private Payload payload;
 }
