@@ -80,13 +80,7 @@ public class OrderController {
             item.put("payMoney", MoneyUtils.fenChangeYuan(order.getPayMoney()));
             item.put("state", order.getState());
             item.put("createTime", DateFormatUtils.format(order.getCreateTime()));
-
-            try {
-                item.put("description", orderService.decodeInputOrderDescriptionDTO(order.getDescription()));
-            } catch (JsonProcessingException e) {
-                //解码失败
-                item.put("description", null);
-            }
+            item.put("description", order.getDescription());
 
             //支付信息
             item.put("pay", null);

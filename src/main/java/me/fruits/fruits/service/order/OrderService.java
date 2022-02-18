@@ -213,10 +213,6 @@ public class OrderService {
         return inputOrderDescriptionDTO;
     }
 
-    public InputOrderDescriptionDTO decodeInputOrderDescriptionDTO(String json) throws JsonProcessingException {
-        return objectMapper.readValue(json, InputOrderDescriptionDTO.class);
-    }
-
 
     public Orders getOrder(long id) {
         return this.ordersMapper.selectById(id);
@@ -241,16 +237,7 @@ public class OrderService {
         //下单状态
         orders.setState(OrderStateEnum.ORDER.getValue());
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            //订单详情
-            String description = objectMapper.writeValueAsString(inputOrderDescriptionDTO);
-            orders.setDescription(description);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-            throw new FruitsRuntimeException("下单失败，序列化失败");
-        }
+        orders.setDescription(inputOrderDescriptionDTO);
 
 
         //订单入库
@@ -398,7 +385,7 @@ public class OrderService {
     private Map<String, Object> buildWebsocketEventDataItem(Orders order) throws JsonProcessingException {
         Map<String, Object> item = new HashMap<>();
         item.put("id", order.getId());
-        item.put("description", decodeInputOrderDescriptionDTO(order.getDescription()));
+        item.put("description", order.getDescription());
         return item;
     }
 

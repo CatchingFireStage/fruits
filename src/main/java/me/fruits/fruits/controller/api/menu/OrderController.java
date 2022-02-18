@@ -71,13 +71,8 @@ public class OrderController {
             item.put("id", orders.getId());
             item.put("payMoney", MoneyUtils.fenChangeYuan(orders.getPayMoney()));
             item.put("stateText", orderApiModuleService.showStateText(orders));
-            try {
-                item.put("description", OrderService.inputOrderDescriptionDTOWrap(orderService.decodeInputOrderDescriptionDTO(orders.getDescription())));
-            } catch (JsonProcessingException e) {
-                //跳过这条数据
-                log.info("订单id：{}，DescriptionDTO json解码失败", orders.getId());
-                return;
-            }
+
+            item.put("description", OrderService.inputOrderDescriptionDTOWrap(orders.getDescription()));
 
             item.put("createTime", DateFormatUtils.format(orders.getCreateTime()));
 
