@@ -2,7 +2,6 @@ package me.fruits.fruits.controller.api.menu;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,7 +12,7 @@ import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.api.UserDTO;
 import me.fruits.fruits.service.merchant.MerchantService;
-import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
+import me.fruits.fruits.mapper.po.order.InputOrderDescriptionDTO;
 import me.fruits.fruits.service.order.InputOrderDescriptionVO;
 import me.fruits.fruits.service.order.OrderApiModuleService;
 import me.fruits.fruits.service.order.OrderService;

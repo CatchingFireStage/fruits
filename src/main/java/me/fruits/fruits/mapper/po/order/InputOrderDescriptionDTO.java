@@ -1,4 +1,4 @@
-package me.fruits.fruits.service.order;
+package me.fruits.fruits.mapper.po.order;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

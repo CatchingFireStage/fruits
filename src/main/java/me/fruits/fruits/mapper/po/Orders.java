@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import me.fruits.fruits.service.order.InputOrderDescriptionDTO;
+import me.fruits.fruits.mapper.po.order.InputOrderDescriptionDTO;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

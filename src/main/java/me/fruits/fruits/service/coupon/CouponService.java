@@ -44,4 +44,12 @@ public class CouponService extends ServiceImpl<CouponMapper, Coupon> {
     public void delete(long id) {
         removeById(id);
     }
+
+    /**
+     * @param money 实际支付金额
+     * @return 获取商家满减最大优惠的卷
+     */
+    public MerchantMoneyOffPayload getMaxMerchantMoneyOffPayload(int money){
+        return null;
+    }
 }
