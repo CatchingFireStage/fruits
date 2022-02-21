@@ -2,7 +2,6 @@ package me.fruits.fruits.controller.admin.order;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -12,7 +11,6 @@ import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.mapper.po.Pay;
 import me.fruits.fruits.service.order.OrderAdminModuleService;
-import me.fruits.fruits.service.order.OrderService;
 import me.fruits.fruits.service.pay.PayService;
 import me.fruits.fruits.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +31,6 @@ public class OrderController {
 
     @Autowired
     private OrderAdminModuleService orderAdminModuleService;
-
-    @Autowired
-    private OrderService orderService;
 
     @Autowired
     private PayService payService;
