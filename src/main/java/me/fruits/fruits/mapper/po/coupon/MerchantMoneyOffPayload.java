@@ -3,6 +3,7 @@ package me.fruits.fruits.mapper.po.coupon;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import me.fruits.fruits.utils.MoneyUtils;
 
 /**
  * 商家满减优惠
@@ -17,4 +18,9 @@ public class MerchantMoneyOffPayload implements Payload {
 
     @ApiModelProperty(value = "单位分，优惠多少钱")
     private int discounts;
+
+    @Override
+    public String toString() {
+        return "(商家) 满" + MoneyUtils.fenChangeYuan(waterLine) + "减" + MoneyUtils.fenChangeYuan(discounts) + "元";
+    }
 }

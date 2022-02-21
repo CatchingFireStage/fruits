@@ -12,7 +12,9 @@ import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
 import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.po.*;
+import me.fruits.fruits.mapper.po.coupon.MerchantMoneyOffPayload;
 import me.fruits.fruits.mapper.po.order.InputOrderDescriptionDTO;
+import me.fruits.fruits.service.coupon.CouponService;
 import me.fruits.fruits.service.order.websocket.EventHandler;
 import me.fruits.fruits.service.order.websocket.message.Event;
 import me.fruits.fruits.service.order.websocket.message.EventType;
@@ -43,7 +45,6 @@ public class OrderService {
     @Autowired
     private SpecificationValueService specificationValueService;
 
-
     @Autowired
     private SpecificationService specificationService;
 
@@ -65,6 +66,40 @@ public class OrderService {
     @Autowired
     private SpecificationSpuService specificationSpuService;
 
+    @Autowired
+    private CouponService couponService;
+
+    /**
+     * 构建订单步骤，验证用户
+     *
+     * @return 返回有效用户的id
+     */
+    private long encodeInputOrderDescriptionDTOStepVerifyUser(long userId) {
+        User user = userService.getUser(userId);
+        if (user == null) {
+            log.warn("用户不存在");
+            throw new FruitsRuntimeException("用户不存在");
+        }
+        return userId;
+    }
+
+    /**
+     * 优惠券步骤
+     *
+     * @param inputOrderDescriptionDTO 订单原价总金额
+     */
+    private void encodeInputOrderDescriptionDTOStepCoupon(InputOrderDescriptionDTO inputOrderDescriptionDTO) {
+
+        //商家满减优惠券
+        MerchantMoneyOffPayload maxMerchantMoneyOffPayload = couponService.getMaxMerchantMoneyOffPayload(inputOrderDescriptionDTO.getPayAmount());
+        if (maxMerchantMoneyOffPayload != null) {
+            //减去满减金额
+            inputOrderDescriptionDTO.setPayAmount(inputOrderDescriptionDTO.getPayAmount() - maxMerchantMoneyOffPayload.getDiscounts());
+            inputOrderDescriptionDTO.getCouponInfo().add(maxMerchantMoneyOffPayload.toString());
+        }
+
+    }
+
     /**
      * 构建生成订单详情
      *
@@ -79,21 +114,17 @@ public class OrderService {
 
         inputOrderDescriptionDTO.setOrderDescription(new ArrayList<>());
 
-        //用户验证
-        User user = userService.getUser(userId);
-        if (user == null) {
-            log.warn("用户不存在");
-            throw new FruitsRuntimeException("用户不存在");
-        }
+        //用户验证，步骤1
+        inputOrderDescriptionDTO.setUserId(encodeInputOrderDescriptionDTOStepVerifyUser(userId));
 
-        inputOrderDescriptionDTO.setUserId(user.getId());
+
+        //构建每一条商品，步骤2
 
         //规格唯一验证
         Set<String> specificationUniq = new HashSet<>();
 
 
         //构建每一条数据
-
         for (int curIndex = 0; curIndex < inputOrderDescriptionVO.getOrder().size(); curIndex++) {
 
 
@@ -194,7 +225,7 @@ public class OrderService {
         }
 
 
-        //总金额
+        //计算总金额（实际支付金额，未参加优惠券前），步骤3
         int payAmount = 0;
 
         for (int i = 0; i < inputOrderDescriptionDTO.getOrderDescription().size(); i++) {
@@ -210,6 +241,10 @@ public class OrderService {
 
 
         inputOrderDescriptionDTO.setPayAmount(payAmount);
+
+
+        //优惠券步骤
+        encodeInputOrderDescriptionDTOStepCoupon(inputOrderDescriptionDTO);
 
         return inputOrderDescriptionDTO;
     }

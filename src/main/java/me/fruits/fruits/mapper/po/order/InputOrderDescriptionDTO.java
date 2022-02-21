@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,6 +23,9 @@ public class InputOrderDescriptionDTO {
 
     @ApiModelProperty(value = "桌子号")
     private Integer desk;
+
+    @ApiModelProperty(value = "优惠信息")
+    private List<String> couponInfo = new ArrayList<>();
 
 
     @ApiModel("存到数据库中的订单格式元数据")
