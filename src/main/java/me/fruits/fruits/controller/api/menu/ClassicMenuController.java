@@ -5,10 +5,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.configuration.CacheConfiguration;
 import me.fruits.fruits.mapper.po.Spu;
+import me.fruits.fruits.mapper.po.coupon.MerchantMoneyOffPayload;
+import me.fruits.fruits.service.coupon.CouponService;
 import me.fruits.fruits.service.spu.SpuApiModuleService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpuCategoryDTO;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
+import me.fruits.fruits.utils.MoneyUtils;
 import me.fruits.fruits.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,6 +37,9 @@ public class ClassicMenuController {
 
     @Autowired
     private WrapperDTOService wrapperDTOService;
+
+    @Autowired
+    private CouponService couponService;
 
 
     @ApiOperation(value = "经典菜单")
@@ -96,6 +102,19 @@ public class ClassicMenuController {
         response.put("category", category);
 
         response.put("goods", goods);
+
+        //商家满减信息
+        List<MerchantMoneyOffPayload> allMerchantMoneyOffPayload = couponService.getAllMerchantMoneyOffPayload();
+        ArrayList<Object> merchantMoneyOffPayloadInfo = new ArrayList<>();
+
+        allMerchantMoneyOffPayload.forEach(merchantMoneyOffPayload -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("waterLine", MoneyUtils.fenChangeYuan(merchantMoneyOffPayload.getWaterLine()));
+            item.put("discounts", MoneyUtils.fenChangeYuan(merchantMoneyOffPayload.getDiscounts()));
+            merchantMoneyOffPayloadInfo.add(item);
+        });
+
+        response.put("merchantMoneyOffPayloadInfo", merchantMoneyOffPayloadInfo);
 
 
         return Result.success(response);

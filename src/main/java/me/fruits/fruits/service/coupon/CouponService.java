@@ -13,7 +13,9 @@ import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,6 +29,28 @@ public class CouponService extends ServiceImpl<CouponMapper, Coupon> {
      */
     public IPage<Coupon> getCouponsByAdminManage(PageVo pageVo) {
         return lambdaQuery().page(new Page<>(pageVo.getP(), pageVo.getPageSize()));
+    }
+
+
+    /**
+     * @return 商家所有满减优惠券,用户菜单显示给用户看商家活动都有什么
+     */
+    public List<MerchantMoneyOffPayload> getAllMerchantMoneyOffPayload() {
+        List<Coupon> list = lambdaQuery().eq(Coupon::getCategory, CategoryEnum.MERCHANT_MONEY_OFF).list();
+        if (list == null) {
+            return new ArrayList<>();
+        }
+
+        //随便排个序，可有可无
+        list.sort((coupon1, coupon2) -> {
+
+            MerchantMoneyOffPayload payload1 = (MerchantMoneyOffPayload) coupon1.getPayload();
+            MerchantMoneyOffPayload payload2 = (MerchantMoneyOffPayload) coupon2.getPayload();
+
+            return payload2.getWaterLine() - payload1.getWaterLine();
+        });
+
+        return list.stream().map(coupon -> (MerchantMoneyOffPayload) coupon.getPayload()).collect(Collectors.toList());
     }
 
     /**
