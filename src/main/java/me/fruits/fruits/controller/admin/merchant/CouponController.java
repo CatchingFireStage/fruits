@@ -4,6 +4,7 @@ package me.fruits.fruits.controller.admin.merchant;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.merchant.vo.CouponRequest;
 import me.fruits.fruits.controller.admin.merchant.vo.MerchantRequest;
@@ -29,6 +30,7 @@ import java.util.Map;
 @Api(tags = "商家-优惠券")
 @AdminLogin
 @Validated
+@Slf4j
 public class CouponController {
 
     @Autowired
@@ -67,6 +69,7 @@ public class CouponController {
 
             response.add(item);
         });
+        
 
         return Result.success(page.getTotal(), page.getPages(), response);
     }
