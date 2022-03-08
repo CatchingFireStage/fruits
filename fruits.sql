@@ -11,11 +11,22 @@
  Target Server Version : 80018
  File Encoding         : 65001
 
- Date: 26/01/2022 15:29:19
+ Date: 08/03/2022 16:29:50
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for coupon
+-- ----------------------------
+DROP TABLE IF EXISTS `coupon`;
+CREATE TABLE `coupon`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category` tinyint(3) NOT NULL COMMENT '优惠券类型',
+  `payload` json NOT NULL COMMENT '优惠券具体信息',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for orders
@@ -29,7 +40,7 @@ CREATE TABLE `orders`  (
   `user_id` bigint(20) UNSIGNED NOT NULL COMMENT '下单用户',
   `create_time` datetime NOT NULL COMMENT '订单创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 71 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 76 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '订单' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for pay
@@ -47,7 +58,7 @@ CREATE TABLE `pay`  (
   `transaction_id` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '微信支付系统生成的订单号',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_outTradeNo`(`out_trade_no`) USING BTREE COMMENT '也可以确认唯一记录'
-) ENGINE = InnoDB AUTO_INCREMENT = 71 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '支付系统' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 75 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '支付系统' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for refund
@@ -64,7 +75,7 @@ CREATE TABLE `refund`  (
   `refund_id` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '微信支付退款单号',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_outRefundNo`(`out_refund_no`) USING BTREE COMMENT '可以确定唯一记录'
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '退款' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '退款' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for specification
