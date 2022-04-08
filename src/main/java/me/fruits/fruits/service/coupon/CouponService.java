@@ -33,7 +33,7 @@ public class CouponService extends ServiceImpl<CouponMapper, Coupon> {
 
 
     /**
-     * @return 商家所有满减优惠券,用户菜单显示给用户看商家活动都有什么
+     * @return 商家所有满减优惠券, 用户菜单显示给用户看商家活动都有什么
      */
     public List<MerchantMoneyOffPayload> getAllMerchantMoneyOffPayload() {
         List<Coupon> list = lambdaQuery().eq(Coupon::getCategory, CategoryEnum.MERCHANT_MONEY_OFF).list();
@@ -61,7 +61,7 @@ public class CouponService extends ServiceImpl<CouponMapper, Coupon> {
      */
     public void createByMerchantMoneyOff(int waterLine, int discounts) {
 
-        Integer count = lambdaQuery().eq(Coupon::getCategory, CategoryEnum.MERCHANT_MONEY_OFF)
+        Long count = lambdaQuery().eq(Coupon::getCategory, CategoryEnum.MERCHANT_MONEY_OFF)
                 .count();
 
         if (count != null && count >= 10) {
