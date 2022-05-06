@@ -527,6 +527,8 @@ public class OrderService {
 
         //订单总金额
         response.put("payAmount", MoneyUtils.fenChangeYuan(inputOrderDescriptionDTO.getPayAmount()));
+        //优惠信息
+        response.put("couponInfo", inputOrderDescriptionDTO.getCouponInfo());
 
 
         return response;
