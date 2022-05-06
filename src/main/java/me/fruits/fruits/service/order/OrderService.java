@@ -93,8 +93,9 @@ public class OrderService {
         //商家满减优惠券
         MerchantMoneyOffPayload maxMerchantMoneyOffPayload = couponService.getMaxMerchantMoneyOffPayload(inputOrderDescriptionDTO.getPayAmount());
         if (maxMerchantMoneyOffPayload != null) {
-            //减去满减金额
-            inputOrderDescriptionDTO.setPayAmount(inputOrderDescriptionDTO.getPayAmount() - maxMerchantMoneyOffPayload.getDiscounts());
+            //参与满减活动后的金额 = 减去满减金额
+            int payAmount = inputOrderDescriptionDTO.getPayAmount() - maxMerchantMoneyOffPayload.getDiscounts();
+            inputOrderDescriptionDTO.setPayAmount(Math.max(payAmount, 0));
             inputOrderDescriptionDTO.getCouponInfo().add(maxMerchantMoneyOffPayload.toString());
         }
 
