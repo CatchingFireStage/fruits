@@ -18,6 +18,8 @@ spring:
 #http服务配置
 server:
   port: 8080
+  #执行 killer -2 pid 时候会优雅关闭; 不要 killer -9 pid 强制关闭
+  shutdown: graceful
 
 #swagger配置
 springfox:
