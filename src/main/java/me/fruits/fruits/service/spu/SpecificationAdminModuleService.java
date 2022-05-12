@@ -1,10 +1,9 @@
 package me.fruits.fruits.service.spu;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.SpecificationMapper;
 import me.fruits.fruits.mapper.po.Specification;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,6 @@ import java.io.StringReader;
 @Slf4j
 public class SpecificationAdminModuleService {
     @Autowired
-    private SpecificationMapper specificationMapper;
-
-    @Autowired
     private SpecificationService specificationService;
 
 
@@ -29,36 +25,26 @@ public class SpecificationAdminModuleService {
      * 列表
      */
     public IPage<Specification> getSpecifications(String keyword, PageVo pageVo) {
-        QueryWrapper<Specification> queryWrapper = new QueryWrapper<>();
+
+        LambdaQueryChainWrapper<Specification> queryWrapper = specificationService.lambdaQuery();
 
         if (keyword != null && !keyword.trim().equals("")) {
             try {
                 IKSegmenter ikSegmenter = new IKSegmenter(new StringReader(keyword), true);
                 Lexeme lex;
                 while ((lex = ikSegmenter.next()) != null) {
-                    queryWrapper.like("name", lex.getLexemeText()).or();
+                    queryWrapper.like(Specification::getName, lex.getLexemeText()).or();
                 }
-                queryWrapper.like("name", keyword.trim());
+                queryWrapper.like(Specification::getName, keyword.trim());
             } catch (IOException ignored) {
 
             }
         }
 
 
-        queryWrapper.orderByDesc("id");
+        queryWrapper.orderByDesc(Specification::getId);
 
-        return this.specificationMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
-    }
-
-    public void add(Specification specification) {
-
-        this.specificationService.add(specification);
-    }
-
-
-    public void update(long id, Specification specification) {
-
-        this.specificationService.update(id, specification.getName());
+        return specificationService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 
 

@@ -9,6 +9,7 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationRequest;
 import me.fruits.fruits.mapper.po.Specification;
 import me.fruits.fruits.service.spu.SpecificationAdminModuleService;
+import me.fruits.fruits.service.spu.SpecificationService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpecificationSpuDTO;
 import me.fruits.fruits.utils.PageVo;
@@ -30,6 +31,9 @@ public class SpecificationController {
 
     @Autowired
     private SpecificationAdminModuleService specificationAdminModuleService;
+
+    @Autowired
+    private SpecificationService specificationService;
 
     @Autowired
     private WrapperDTOService wrapperDTOService;
@@ -59,22 +63,14 @@ public class SpecificationController {
     @PostMapping(value = "/specification")
     @ApiOperation("规格-新增")
     public Result<String> specification(@RequestBody @Valid AddSpecificationRequest addSpecificationRequest) {
-
-
-        Specification specification = new Specification();
-        BeanUtils.copyProperties(addSpecificationRequest, specification);
-        specificationAdminModuleService.add(specification);
+        specificationService.add(addSpecificationRequest.getName());
         return Result.success();
     }
 
     @PutMapping("/specification/{id}")
     @ApiOperation("规格-修改")
     public Result<String> specification(@PathVariable long id, @RequestBody @Valid AddSpecificationRequest addSpecificationRequest) {
-
-        Specification specification = new Specification();
-        BeanUtils.copyProperties(addSpecificationRequest, specification);
-
-        specificationAdminModuleService.update(id, specification);
+        specificationService.update(id, addSpecificationRequest.getName());
         return Result.success();
     }
 
