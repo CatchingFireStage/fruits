@@ -3,16 +3,17 @@ package me.fruits.fruits.service.spu;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.SpuMapper;
 import me.fruits.fruits.mapper.po.Spu;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class SpuAdminModuleService extends ServiceImpl<SpuMapper, Spu> {
+public class SpuAdminModuleService {
 
+    @Autowired
+    private SpuService spuService;
 
     /**
      * spu列表
@@ -20,7 +21,7 @@ public class SpuAdminModuleService extends ServiceImpl<SpuMapper, Spu> {
     public IPage<Spu> getSPUs(int p, int pageSize, String keyword) {
 
 
-        LambdaQueryChainWrapper<Spu> queryWrapper = lambdaQuery();
+        LambdaQueryChainWrapper<Spu> queryWrapper = spuService.lambdaQuery();
 
 
         if (keyword != null && !keyword.equals("")) {
@@ -29,6 +30,6 @@ public class SpuAdminModuleService extends ServiceImpl<SpuMapper, Spu> {
 
         queryWrapper.orderByDesc(Spu::getId);
 
-        return page(new Page<>(p, pageSize), queryWrapper);
+        return spuService.page(new Page<>(p, pageSize), queryWrapper);
     }
 }
