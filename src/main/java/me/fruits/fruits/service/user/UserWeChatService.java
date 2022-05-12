@@ -1,6 +1,6 @@
 package me.fruits.fruits.service.user;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.fruits.fruits.mapper.UserWeChatMapper;
 import me.fruits.fruits.mapper.enums.user.weChat.CarrierEnum;
 import me.fruits.fruits.mapper.po.UserWeChat;
@@ -13,10 +13,7 @@ import java.util.List;
 
 
 @Service
-public class UserWeChatService {
-
-    @Autowired
-    private UserWeChatMapper userWeChatMapper;
+public class UserWeChatService extends ServiceImpl<UserWeChatMapper, UserWeChat> {
 
 
     @Autowired
@@ -42,7 +39,7 @@ public class UserWeChatService {
         userWeChat.setCarrier(CarrierEnum.MINI_PROGRAM.getValue());
         userWeChat.setOpenId(openId);
 
-        userWeChatMapper.insert(userWeChat);
+        save(userWeChat);
 
         return userWeChat;
     }
@@ -53,12 +50,8 @@ public class UserWeChatService {
      * @param openId 微信的openId
      */
     public UserWeChat getUserWeChatByMiniProgram(String openId) {
-
-        QueryWrapper<UserWeChat> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("carrier", CarrierEnum.MINI_PROGRAM.getValue());
-        queryWrapper.eq("open_id", openId);
-
-        return userWeChatMapper.selectOne(queryWrapper);
+        return lambdaQuery().eq(UserWeChat::getCarrier, CarrierEnum.MINI_PROGRAM.getValue())
+                .eq(UserWeChat::getOpenId, openId).one();
     }
 
     /**
@@ -68,11 +61,8 @@ public class UserWeChatService {
      */
     public UserWeChat getUserWeChatByMiniProgramFormUserId(long userId) {
 
-        QueryWrapper<UserWeChat> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("carrier", CarrierEnum.MINI_PROGRAM.getValue());
-        queryWrapper.eq("user_id", userId);
-
-        return userWeChatMapper.selectOne(queryWrapper);
+        return lambdaQuery().eq(UserWeChat::getCarrier, CarrierEnum.MINI_PROGRAM.getValue())
+                .eq(UserWeChat::getUserId, userId).one();
     }
 
 
@@ -80,11 +70,7 @@ public class UserWeChatService {
      * 获取用户绑定的微信载体
      */
     public List<UserWeChat> getUserWeChats(long userId) {
-
-        QueryWrapper<UserWeChat> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId);
-
-        return userWeChatMapper.selectList(queryWrapper);
+        return lambdaQuery().eq(UserWeChat::getUserId, userId).list();
     }
 
 }
