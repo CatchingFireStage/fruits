@@ -1,8 +1,7 @@
 package me.fruits.fruits.service.order;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
@@ -36,7 +35,7 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class OrderService {
+public class OrderService extends ServiceImpl<OrdersMapper, Orders> {
 
 
     @Autowired
@@ -50,9 +49,6 @@ public class OrderService {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private OrdersMapper ordersMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -252,7 +248,7 @@ public class OrderService {
 
 
     public Orders getOrder(long id) {
-        return this.ordersMapper.selectById(id);
+        return getById(id);
     }
 
 
@@ -278,7 +274,7 @@ public class OrderService {
 
 
         //订单入库
-        this.ordersMapper.insert(orders);
+        save(orders);
 
         try {
 
@@ -316,18 +312,16 @@ public class OrderService {
      */
     private boolean updateStatusToPay(long id) {
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
-        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id)
-                .eq("state", OrderStateEnum.ORDER.getValue())
-                .set("state", OrderStateEnum.PAY.getValue());
-
-        return this.ordersMapper.update(null, updateWrapper) > 0;
+        return lambdaUpdate().eq(Orders::getId, id)
+                .eq(Orders::getState, OrderStateEnum.ORDER.getValue())
+                .set(Orders::getState, OrderStateEnum.PAY.getValue())
+                .update();
     }
 
 
     public void updateStatusToFulfill(Long id) {
 
-        Orders orders = this.ordersMapper.selectById(id);
+        Orders orders = getOrder(id);
 
         if (!updateStatusToFulfill(orders.getId().longValue())) {
             //更新失败
@@ -344,12 +338,9 @@ public class OrderService {
     private boolean updateStatusToFulfill(long id) {
 
         //更新订单状态为完成制作, 已支付 才能切换到 完成状态
-        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id)
-                .eq("state", OrderStateEnum.PAY.getValue())
-                .set("state", OrderStateEnum.COMPLETED.getValue());
-
-        return this.ordersMapper.update(null, updateWrapper) > 0;
+        return lambdaUpdate().eq(Orders::getId, id)
+                .eq(Orders::getState, OrderStateEnum.PAY.getValue())
+                .set(Orders::getState, OrderStateEnum.COMPLETED.getValue()).update();
     }
 
 
@@ -359,12 +350,10 @@ public class OrderService {
     public void updateStatusToDelivery(long id) {
 
         //更新订单状态为送达, 制作完成 才能切换到 送达
-        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id)
-                .eq("state", OrderStateEnum.COMPLETED.getValue())
-                .set("state", OrderStateEnum.DELIVERY.getValue());
-
-        this.ordersMapper.update(null, updateWrapper);
+        lambdaUpdate().eq(Orders::getId, id)
+                .eq(Orders::getState, OrderStateEnum.COMPLETED.getValue())
+                .set(Orders::getState, OrderStateEnum.DELIVERY.getValue())
+                .update();
 
     }
 
@@ -382,12 +371,10 @@ public class OrderService {
 
 
         //更新订单状态为关闭,下单状态 才能切换到 已关闭状态
-        UpdateWrapper<Orders> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id)
-                .eq("state", OrderStateEnum.ORDER.getValue())
-                .set("state", OrderStateEnum.CLOSE.getValue());
-
-        this.ordersMapper.update(null, updateWrapper);
+        lambdaUpdate().eq(Orders::getId, id)
+                .eq(Orders::getState, OrderStateEnum.ORDER.getValue())
+                .set(Orders::getState, OrderStateEnum.CLOSE.getValue())
+                .update();
     }
 
 
@@ -400,9 +387,8 @@ public class OrderService {
             throw new FruitsRuntimeException("该方法只能获取已支付或者完整制作的订单");
         }
 
-        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", orderStateEnum.getValue());
-        List<Orders> orders = this.ordersMapper.selectList(queryWrapper);
+
+        List<Orders> orders = lambdaQuery().eq(Orders::getState, orderStateEnum.getValue()).list();
 
 
         List<Map<String, Object>> response = new ArrayList<>();

@@ -1,10 +1,9 @@
 package me.fruits.fruits.service.order;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.enums.orders.OrderStateEnum;
 import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
@@ -21,9 +20,8 @@ import java.util.*;
 @Service
 public class OrderApiModuleService {
 
-
     @Autowired
-    private OrdersMapper ordersMapper;
+    private OrderService orderService;
 
     @Autowired
     private PayService payService;
@@ -36,17 +34,17 @@ public class OrderApiModuleService {
      */
     public IPage<Orders> getMyOrders(long userId, PageVo pageVo) {
 
-        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId);
+        LambdaQueryChainWrapper<Orders> queryWrapper = orderService.lambdaQuery();
+        queryWrapper.eq(Orders::getUserId, userId);
 
         //只能看1已支付，3制作完成, 4已取餐
 
-        queryWrapper.in("state", Arrays.asList(OrderStateEnum.PAY.getValue(), OrderStateEnum.COMPLETED.getValue(), OrderStateEnum.DELIVERY.getValue()));
+        queryWrapper.in(Orders::getState, Arrays.asList(OrderStateEnum.PAY.getValue(), OrderStateEnum.COMPLETED.getValue(), OrderStateEnum.DELIVERY.getValue()));
 
 
-        queryWrapper.orderByDesc("create_time");
+        queryWrapper.orderByDesc(Orders::getCreateTime);
 
-        return ordersMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return orderService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 
 

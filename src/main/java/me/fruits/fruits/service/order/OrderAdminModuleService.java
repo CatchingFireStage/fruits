@@ -1,11 +1,10 @@
 package me.fruits.fruits.service.order;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.OrdersMapper;
 import me.fruits.fruits.mapper.po.Orders;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ public class OrderAdminModuleService {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private OrdersMapper ordersMapper;
 
 
     public void updateStatusToFulfill(Long id) {
@@ -55,17 +51,17 @@ public class OrderAdminModuleService {
      */
     public IPage<Orders> getOrders(Integer state, PageVo pageVo) {
 
-        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
+        LambdaQueryChainWrapper<Orders> queryWrapper = orderService.lambdaQuery();
 
         if (state != null) {
             //状态过滤
-            queryWrapper.eq("state", state);
+            queryWrapper.eq(Orders::getState, state);
         }
 
         //倒序排序
-        queryWrapper.orderByDesc("id");
+        queryWrapper.orderByDesc(Orders::getId);
 
-        return ordersMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return orderService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 
 }
