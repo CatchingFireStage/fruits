@@ -1,10 +1,9 @@
 package me.fruits.fruits.service.pay;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import me.fruits.fruits.mapper.PayMapper;
 import me.fruits.fruits.mapper.enums.pay.MerchantTransactionTypeEnum;
 import me.fruits.fruits.mapper.enums.pay.PayStateEnum;
 import me.fruits.fruits.mapper.po.Pay;
@@ -16,9 +15,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class PayAdminModuleService {
 
-
     @Autowired
-    private PayMapper payMapper;
+    private PayService payService;
 
 
     /**
@@ -28,23 +26,22 @@ public class PayAdminModuleService {
                               PayStateEnum payStateEnum, PageVo pageVo) {
 
 
-        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
+        LambdaQueryChainWrapper<Pay> queryWrapper = payService.lambdaQuery();
 
-        queryWrapper.eq("merchant_transaction_type", merchantTransactionTypeEnum.getValue());
+        queryWrapper.eq(Pay::getMerchantTransactionType, merchantTransactionTypeEnum.getValue());
 
         //搜索
         if (keyword != null && !keyword.isEmpty()) {
-            queryWrapper.eq("out_trade_no", Long.valueOf(keyword));
+            queryWrapper.eq(Pay::getOutTradeNo, Long.valueOf(keyword));
         }
 
         if (payStateEnum != null) {
-            queryWrapper.eq("state", payStateEnum.getValue());
+            queryWrapper.eq(Pay::getState, payStateEnum.getValue());
         }
 
-        queryWrapper.orderByDesc("id");
+        queryWrapper.orderByDesc(Pay::getId);
 
-
-        return payMapper.selectPage(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return payService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
     }
 
 }

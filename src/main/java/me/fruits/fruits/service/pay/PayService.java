@@ -1,7 +1,7 @@
 package me.fruits.fruits.service.pay;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
@@ -29,16 +29,13 @@ import java.util.Set;
 
 @Service
 @Slf4j
-public class PayService {
+public class PayService extends ServiceImpl<PayMapper, Pay> {
 
     @Autowired
     private WxPayService wxPayService;
 
     @Autowired
     private UserWeChatService userWeChatService;
-
-    @Autowired
-    private PayMapper payMapper;
 
     @Autowired
     private SnowFlake snowFlake;
@@ -49,8 +46,7 @@ public class PayService {
 
 
     public Pay getPay(long id) {
-
-        return payMapper.selectById(id);
+        return getById(id);
     }
 
     /**
@@ -61,23 +57,16 @@ public class PayService {
      */
     public Pay getPay(long outTradeNo, String transactionId) {
 
-        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.eq("out_trade_no", outTradeNo);
-        queryWrapper.eq("transaction_id", transactionId);
-
-        return payMapper.selectOne(queryWrapper);
+        return lambdaQuery().eq(Pay::getOutTradeNo, outTradeNo)
+                .eq(Pay::getTransactionId, transactionId).one();
 
     }
 
     public Pay getPay(long merchantTransactionId, MerchantTransactionTypeEnum merchantTransactionTypeEnum) {
 
-        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.eq("merchant_transaction_id", merchantTransactionId);
-        queryWrapper.eq("merchant_transaction_type", merchantTransactionTypeEnum.getValue());
-
-        return payMapper.selectOne(queryWrapper);
+        return lambdaQuery().eq(Pay::getMerchantTransactionId, merchantTransactionId)
+                .eq(Pay::getMerchantTransactionType, merchantTransactionTypeEnum.getValue())
+                .one();
 
     }
 
@@ -86,11 +75,7 @@ public class PayService {
      */
     public List<Pay> getPays(Set<Long> outTradeNo) {
 
-        QueryWrapper<Pay> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.in("out_trade_no", outTradeNo);
-
-        return payMapper.selectList(queryWrapper);
+        return lambdaQuery().in(Pay::getOutTradeNo, outTradeNo).list();
     }
 
     /**
@@ -162,7 +147,7 @@ public class PayService {
         pay.setState(PayStateEnum.ORDER.getValue());
         pay.setOutTradeNo(outTradeNo);
 
-        payMapper.insert(pay);
+        save(pay);
     }
 
 
@@ -173,7 +158,7 @@ public class PayService {
      * @param amount 本次退款的金额
      */
     public int accumulationRefundAmount(long id, int amount) {
-        return payMapper.accumulationRefundAmount(id, amount);
+        return this.baseMapper.accumulationRefundAmount(id, amount);
     }
 
     /**
@@ -181,22 +166,22 @@ public class PayService {
      *
      * @param id 订单id
      */
-    public int updateStateToRefund(long id) {
+    public void updateStateToRefund(long id) {
 
-        UpdateWrapper<Pay> updateWrapper = new UpdateWrapper<>();
+        LambdaUpdateChainWrapper<Pay> updateWrapper = lambdaUpdate();
 
-        updateWrapper.eq("id", id);
+        updateWrapper.eq(Pay::getId, id);
 
         //已支付或者部分退款的，都可以切换到退款状态
         updateWrapper.nested(nested -> {
 
-            nested.eq("state", PayStateEnum.SUCCESS.getValue()).or().eq("state", PayStateEnum.REFUND.getValue());
+            nested.eq(Pay::getState, PayStateEnum.SUCCESS.getValue()).or().eq(Pay::getState, PayStateEnum.REFUND.getValue());
 
         });
 
-        updateWrapper.set("state", PayStateEnum.REFUND.getValue());
+        updateWrapper.set(Pay::getState, PayStateEnum.REFUND.getValue());
 
-        return payMapper.update(null, updateWrapper);
+        updateWrapper.update();
     }
 
     /**
@@ -208,19 +193,19 @@ public class PayService {
     @Transactional
     public void updateStateToSuccess(String transactionId, String outTradeNo) {
 
-        UpdateWrapper<Pay> updateWrapper = new UpdateWrapper<>();
+        LambdaUpdateChainWrapper<Pay> updateWrapper = lambdaUpdate();
 
         long out_trade_no = Long.parseLong(outTradeNo);
 
-        updateWrapper.eq("out_trade_no", out_trade_no);
-        updateWrapper.eq("state", PayStateEnum.ORDER.getValue());
+        updateWrapper.eq(Pay::getOutTradeNo, out_trade_no);
+        updateWrapper.eq(Pay::getState, PayStateEnum.ORDER.getValue());
 
         //更新状态
-        updateWrapper.set("state", PayStateEnum.SUCCESS.getValue());
+        updateWrapper.set(Pay::getState, PayStateEnum.SUCCESS.getValue());
         //设置微信的订单id
-        updateWrapper.set("transaction_id", transactionId);
+        updateWrapper.set(Pay::getTransactionId, transactionId);
 
-        if (payMapper.update(null, updateWrapper) <= 0) {
+        if (updateWrapper.update()) {
             //更新失败,让微信再次通知
             String format = String.format("微信的transactionId:%s,系统订单号outTradeNo:%s从0到1的状态更新失败", transactionId, outTradeNo);
             log.error(format);

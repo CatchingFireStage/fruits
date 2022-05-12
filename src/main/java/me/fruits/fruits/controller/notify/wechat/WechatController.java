@@ -95,20 +95,20 @@ public class WechatController {
         switch (refundStatus) {
             case "CLOSE":
                 //退款订单切换到close状态
-                if (refundService.updateStateToCloseAndRefundId(outRefundNo, refundId) <= 0) {
+                if (refundService.updateStateToCloseAndRefundId(outRefundNo, refundId)) {
                     throw new FruitsRuntimeException("退款订单切换到close失败:outRefundNo:" + outRefundNo);
                 }
                 break;
             case "ABNORMAL":
                 //退款订单切换到abnormal状态
-                if (refundService.updateStateToAbnormalAndRefundId(outRefundNo, refundId) <= 0) {
+                if (refundService.updateStateToAbnormalAndRefundId(outRefundNo, refundId)) {
                     throw new FruitsRuntimeException("退款订单切换到abnormal失败:outRefundNo:" + outRefundNo);
                 }
                 break;
             case "SUCCESS":
                 //退款订单，退款成功
                 //防止微信重复通知,通过更新是否大于0判断是否已经处理过业务
-                if (refundService.updateStateToSuccessAndRefundId(outRefundNo, refundId) <= 0) {
+                if (refundService.updateStateToSuccessAndRefundId(outRefundNo, refundId)) {
                     throw new FruitsRuntimeException("退款订单切换到success失败:outRefundNo:" + outRefundNo + "已经处理业务了，微信可以不需要再发送了");
                 }
                 break;

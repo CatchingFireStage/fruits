@@ -1,8 +1,9 @@
 package me.fruits.fruits.service.pay.refund;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
@@ -25,11 +26,8 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class RefundService {
+public class RefundService extends ServiceImpl<RefundMapper, Refund> {
 
-
-    @Autowired
-    private RefundMapper refundMapper;
 
     @Autowired
     private PayService payService;
@@ -53,13 +51,7 @@ public class RefundService {
      * @param payId 支付id
      */
     public List<Refund> getRefunds(long payId) {
-
-        QueryWrapper<Refund> queryWrapper = new QueryWrapper<>();
-
-        queryWrapper.eq("pay_id", payId);
-
-        return refundMapper.selectList(queryWrapper);
-
+        return lambdaQuery().eq(Refund::getPayId, payId).list();
     }
 
     /**
@@ -71,16 +63,15 @@ public class RefundService {
      */
     private Refund getRefundByReiterate(long id) {
 
-        QueryWrapper<Refund> refundQueryWrapper = new QueryWrapper<>();
+        LambdaQueryChainWrapper<Refund> refundQueryWrapper = lambdaQuery();
 
-        refundQueryWrapper.eq("id", id);
+        refundQueryWrapper.eq(Refund::getId, id);
         refundQueryWrapper.nested(consumer -> {
-            consumer.eq("state", RefundStateEnum.ABNORMAL.getValue()).or()
-                    .eq("state", RefundStateEnum.CLOSE.getValue());
+            consumer.eq(Refund::getState, RefundStateEnum.ABNORMAL.getValue()).or()
+                    .eq(Refund::getState, RefundStateEnum.CLOSE.getValue());
         });
 
-
-        return refundMapper.selectOne(refundQueryWrapper);
+        return refundQueryWrapper.one();
     }
 
     /**
@@ -145,7 +136,7 @@ public class RefundService {
         refund.setOutRefundNo(outRefundNo);
 
 
-        refundMapper.insert(refund);
+        save(refund);
 
         //更新支付表记录的状态到进入退款
         payService.updateStateToRefund(pay.getId());
@@ -230,19 +221,19 @@ public class RefundService {
      * @param outRefundNo 商户退款订单号
      * @param refundId    微信支付退款单号
      */
-    public int updateStateToCloseAndRefundId(long outRefundNo, String refundId) {
+    public boolean updateStateToCloseAndRefundId(long outRefundNo, String refundId) {
 
-        UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
+        LambdaUpdateChainWrapper<Refund> updateWrapper = lambdaUpdate();
 
-        updateWrapper.eq("out_refund_no", outRefundNo);
-        updateWrapper.eq("state", RefundStateEnum.REFUND.getLabel());
-
-
-        updateWrapper.set("state", RefundStateEnum.CLOSE.getValue());
-        updateWrapper.set("refund_id", refundId);
+        updateWrapper.eq(Refund::getOutRefundNo, outRefundNo);
+        updateWrapper.eq(Refund::getState, RefundStateEnum.REFUND.getLabel());
 
 
-        return refundMapper.update(null, updateWrapper);
+        updateWrapper.set(Refund::getState, RefundStateEnum.CLOSE.getValue());
+        updateWrapper.set(Refund::getRefundId, refundId);
+
+
+        return updateWrapper.update();
 
     }
 
@@ -250,19 +241,19 @@ public class RefundService {
     /**
      * 更新退款状态到异常, 异常订单
      */
-    public int updateStateToAbnormalAndRefundId(long outRefundNo, String refundId) {
+    public boolean updateStateToAbnormalAndRefundId(long outRefundNo, String refundId) {
 
-        UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
+        LambdaUpdateChainWrapper<Refund> updateWrapper = lambdaUpdate();
 
-        updateWrapper.eq("out_refund_no", outRefundNo);
-        updateWrapper.eq("state", RefundStateEnum.REFUND.getLabel());
-
-
-        updateWrapper.set("state", RefundStateEnum.ABNORMAL.getValue());
-        updateWrapper.set("refund_id", refundId);
+        updateWrapper.eq(Refund::getOutRefundNo, outRefundNo);
+        updateWrapper.eq(Refund::getState, RefundStateEnum.REFUND.getLabel());
 
 
-        return refundMapper.update(null, updateWrapper);
+        updateWrapper.set(Refund::getState, RefundStateEnum.ABNORMAL.getValue());
+        updateWrapper.set(Refund::getRefundId, refundId);
+
+
+        return updateWrapper.update();
     }
 
 
@@ -272,18 +263,18 @@ public class RefundService {
      * @param outRefundNo
      * @param refundId
      */
-    public int updateStateToSuccessAndRefundId(long outRefundNo, String refundId) {
+    public boolean updateStateToSuccessAndRefundId(long outRefundNo, String refundId) {
 
-        UpdateWrapper<Refund> updateWrapper = new UpdateWrapper<>();
+        LambdaUpdateChainWrapper<Refund> updateWrapper = lambdaUpdate();
 
-        updateWrapper.eq("out_refund_no", outRefundNo);
+        updateWrapper.eq(Refund::getOutRefundNo, outRefundNo);
         //防止微信重复通知,通过更新是否大于0判断是否已经处理过业务
-        updateWrapper.ne("state", RefundStateEnum.SUCCESS.getValue());
+        updateWrapper.ne(Refund::getState, RefundStateEnum.SUCCESS.getValue());
 
-        updateWrapper.set("state", RefundStateEnum.SUCCESS.getValue());
-        updateWrapper.set("refund_id", refundId);
+        updateWrapper.set(Refund::getState, RefundStateEnum.SUCCESS.getValue());
+        updateWrapper.set(Refund::getRefundId, refundId);
 
-        return refundMapper.update(null, updateWrapper);
+        return updateWrapper.update();
     }
 
 
