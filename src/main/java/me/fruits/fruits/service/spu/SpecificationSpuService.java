@@ -1,66 +1,59 @@
 package me.fruits.fruits.service.spu;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.fruits.fruits.mapper.SpecificationSpuMapper;
 import me.fruits.fruits.mapper.po.SpecificationSpu;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
-public class SpecificationSpuService {
+public class SpecificationSpuService extends ServiceImpl<SpecificationSpuMapper, SpecificationSpu> {
 
-    @Autowired
-    private SpecificationSpuMapper specificationSpuMapper;
 
     /**
      * 通过spuid，获取spu必选的规格
      */
     public List<SpecificationSpu> getSpecificationSpuRequiredBySpuId(long spuId) {
 
-        QueryWrapper<SpecificationSpu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("spu_id", spuId);
-        queryWrapper.eq("required", 1);
-
-        return this.specificationSpuMapper.selectList(queryWrapper);
+        return lambdaQuery().eq(SpecificationSpu::getSpuId, spuId)
+                .eq(SpecificationSpu::getRequired, 1).list();
     }
 
     /**
      * 通过spuId,获取spu所关联的所有规格
      */
     public List<SpecificationSpu> getSpecificationSpuBySpuId(long spuId) {
-        QueryWrapper<SpecificationSpu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("spu_id", spuId);
-        return this.specificationSpuMapper.selectList(queryWrapper);
+
+        return lambdaQuery().eq(SpecificationSpu::getSpuId, spuId).list();
     }
 
     public List<SpecificationSpu> getSpecificationSpuBySpuId(Set<Long> spuIds) {
-        QueryWrapper<SpecificationSpu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("spu_id", spuIds);
-        return this.specificationSpuMapper.selectList(queryWrapper);
+        return lambdaQuery().in(SpecificationSpu::getSpuId, spuIds).list();
     }
 
 
-    public void add(SpecificationSpu specificationSpu) {
-        specificationSpuMapper.insert(specificationSpu);
+    public void add(long spuId, long specificationId, int required) {
+        SpecificationSpu specificationSpu = new SpecificationSpu();
+        specificationSpu.setSpuId(spuId);
+        specificationSpu.setSpecificationId(specificationId);
+        specificationSpu.setRequired(required);
+
+        save(specificationSpu);
     }
 
 
     public void delete(long id) {
-        specificationSpuMapper.deleteById(id);
+        removeById(id);
     }
 
 
     public void update(long id, int required) {
 
-        UpdateWrapper<SpecificationSpu> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("required", required);
-
-        this.specificationSpuMapper.update(null, updateWrapper);
+        lambdaUpdate().eq(SpecificationSpu::getId, id)
+                .set(SpecificationSpu::getRequired, required)
+                .update();
 
     }
 }

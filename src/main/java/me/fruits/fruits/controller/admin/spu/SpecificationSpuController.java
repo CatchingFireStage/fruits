@@ -6,10 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpecificationSpuRequest;
 import me.fruits.fruits.controller.admin.spu.vo.ChangeSpecificationSpuRequiredRequest;
-import me.fruits.fruits.mapper.po.SpecificationSpu;
-import me.fruits.fruits.service.spu.SpecificationAdminModuleSpuService;
+import me.fruits.fruits.service.spu.SpecificationSpuService;
 import me.fruits.fruits.utils.Result;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +23,14 @@ public class SpecificationSpuController {
 
 
     @Autowired
-    private SpecificationAdminModuleSpuService specificationAdminModuleSpuService;
+    private SpecificationSpuService specificationSpuService;
 
     @PostMapping("/specificationSpu")
     @ApiOperation("规格与spu-关联绑定")
     public Result<String> specificationSpu(@RequestBody @Valid AddSpecificationSpuRequest addSpecificationSpuRequest) {
 
-        SpecificationSpu specificationSpu = new SpecificationSpu();
-        BeanUtils.copyProperties(addSpecificationSpuRequest, specificationSpu);
-        specificationAdminModuleSpuService.add(specificationSpu);
+        specificationSpuService.add(addSpecificationSpuRequest.getSpuId(), addSpecificationSpuRequest.getSpecificationId(),
+                addSpecificationSpuRequest.getRequired());
 
         return Result.success();
     }
@@ -44,7 +41,7 @@ public class SpecificationSpuController {
     public Result<String> specificationSpu(@PathVariable long id, @RequestBody @Valid ChangeSpecificationSpuRequiredRequest changeSpecificationSpuRequiredRequest) {
 
 
-        specificationAdminModuleSpuService.update(id, changeSpecificationSpuRequiredRequest.getRequired());
+        specificationSpuService.update(id, changeSpecificationSpuRequiredRequest.getRequired());
 
         return Result.success();
     }
@@ -54,7 +51,7 @@ public class SpecificationSpuController {
     @ApiOperation("规格与spu-关联解除")
     public Result<String> specificationSpu(@PathVariable long id) {
 
-        specificationAdminModuleSpuService.delete(id);
+        specificationSpuService.delete(id);
 
         return Result.success();
     }
