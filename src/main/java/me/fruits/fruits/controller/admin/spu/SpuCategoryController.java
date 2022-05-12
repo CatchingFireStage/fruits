@@ -10,10 +10,9 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddCategoryRequest;
 import me.fruits.fruits.mapper.po.SpuCategory;
 import me.fruits.fruits.service.spu.SpuCategoryAdminModuleService;
-import me.fruits.fruits.utils.FruitsException;
+import me.fruits.fruits.service.spu.SpuCategoryService;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,9 @@ public class SpuCategoryController {
 
     @Autowired
     private SpuCategoryAdminModuleService spuCategoryAdminModuleService;
+
+    @Autowired
+    private SpuCategoryService spuCategoryService;
 
     @GetMapping(value = "/categories")
     @ApiOperation("商品分类-列表页")
@@ -70,20 +72,14 @@ public class SpuCategoryController {
     @PostMapping(value = "/category")
     @ApiOperation("商品分类-添加")
     public Result<String> category(@RequestBody @Valid AddCategoryRequest addCategoryRequest) {
-
-        SpuCategory spuCategory = new SpuCategory();
-        BeanUtils.copyProperties(addCategoryRequest, spuCategory);
-        spuCategoryAdminModuleService.add(spuCategory);
+        spuCategoryService.add(addCategoryRequest.getName());
         return Result.success();
     }
 
     @PutMapping(value = "/category/{id}")
     @ApiOperation("商品分类-更新")
     public Result<String> category(@PathVariable long id, @RequestBody @Valid AddCategoryRequest addCategoryRequest) {
-
-        SpuCategory spuCategory = new SpuCategory();
-        BeanUtils.copyProperties(addCategoryRequest, spuCategory);
-        spuCategoryAdminModuleService.update(id, spuCategory);
+        spuCategoryService.update(id, addCategoryRequest.getName());
         return Result.success();
     }
 
@@ -91,7 +87,7 @@ public class SpuCategoryController {
     @DeleteMapping(value = "/category/{id}")
     @ApiOperation("商品分类-删除")
     public Result<String> category(@PathVariable long id) {
-        spuCategoryAdminModuleService.delete(id);
+        spuCategoryService.delete(id);
         return Result.success();
     }
 

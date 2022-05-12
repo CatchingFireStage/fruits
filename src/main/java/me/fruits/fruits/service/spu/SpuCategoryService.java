@@ -1,12 +1,9 @@
 package me.fruits.fruits.service.spu;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.fruits.fruits.mapper.SpuCategoryMapper;
-import me.fruits.fruits.mapper.SpuMapper;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.mapper.po.SpuCategory;
-import me.fruits.fruits.utils.FruitsException;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,29 +14,28 @@ import java.util.Set;
 
 
 @Service
-public class SpuCategoryService {
+public class SpuCategoryService extends ServiceImpl<SpuCategoryMapper, SpuCategory> {
+
 
     @Autowired
-    private SpuCategoryMapper spuCategoryMapper;
-
-    @Autowired
-    private SpuMapper spuMapper;
+    private SpuService spuService;
 
 
     /**
      * 获取列表
      */
     public List<SpuCategory> getSpuCategories(Set<Long> ids) {
-        QueryWrapper<SpuCategory> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("id", ids);
-        return this.spuCategoryMapper.selectList(queryWrapper);
+        return lambdaQuery().in(SpuCategory::getId, ids)
+                .list();
     }
 
-    public void add(SpuCategory spuCategory) {
+    public void add(String name) {
+
+        SpuCategory spuCategory = new SpuCategory();
+        spuCategory.setName(name);
         spuCategory.setCreateTime(LocalDateTime.now());
         spuCategory.setUpdateTime(LocalDateTime.now());
-
-        this.spuCategoryMapper.insert(spuCategory);
+        save(spuCategory);
     }
 
 
@@ -48,11 +44,10 @@ public class SpuCategoryService {
      */
     public void update(long id, String name) {
 
-        UpdateWrapper<SpuCategory> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("name", name).set("update_time", LocalDateTime.now());
-
-        this.spuCategoryMapper.update(null, updateWrapper);
+        lambdaUpdate().eq(SpuCategory::getId, id)
+                .set(SpuCategory::getName, name)
+                .set(SpuCategory::getUpdateTime, LocalDateTime.now())
+                .update();
     }
 
 
@@ -63,12 +58,11 @@ public class SpuCategoryService {
      */
     public void delete(long id) {
 
-        QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("category_id", id);
-        if (this.spuMapper.selectCount(queryWrapper) > 0) {
+        Long count = spuService.lambdaQuery().eq(Spu::getCategoryId, id).count();
+        if (count > 0) {
             throw new FruitsRuntimeException("删除分类下所有商品才能删除分类");
         }
 
-        this.spuCategoryMapper.deleteById(id);
+        removeById(id);
     }
 }
