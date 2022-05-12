@@ -61,7 +61,7 @@ public class OrderAdminModuleService {
         //倒序排序
         queryWrapper.orderByDesc(Orders::getId);
 
-        return orderService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return queryWrapper.page(new Page<>(pageVo.getP(), pageVo.getPageSize()));
     }
 
 }

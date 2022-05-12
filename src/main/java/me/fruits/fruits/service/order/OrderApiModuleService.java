@@ -44,7 +44,8 @@ public class OrderApiModuleService {
 
         queryWrapper.orderByDesc(Orders::getCreateTime);
 
-        return orderService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+
+        return queryWrapper.page(new Page<>(pageVo.getP(), pageVo.getPageSize()));
     }
 
 

@@ -36,6 +36,6 @@ public class RefundAdminModuleService {
 
         queryWrapper.orderByDesc(Refund::getId);
 
-        return refundService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return queryWrapper.page(new Page<>(pageVo.getP(), pageVo.getPageSize()));
     }
 }

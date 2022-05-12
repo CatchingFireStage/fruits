@@ -54,6 +54,6 @@ public class SpuCategoryAdminModuleService {
 
         queryWrapper.orderByDesc(SpuCategory::getId);
 
-        return spuCategoryService.page(new Page<>(p, pageSize), queryWrapper);
+        return queryWrapper.page(new Page<>(p, pageSize));
     }
 }

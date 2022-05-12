@@ -44,7 +44,7 @@ public class SpecificationAdminModuleService {
 
         queryWrapper.orderByDesc(Specification::getId);
 
-        return specificationService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return queryWrapper.page(new Page<>(pageVo.getP(), pageVo.getPageSize()));
     }
 
 

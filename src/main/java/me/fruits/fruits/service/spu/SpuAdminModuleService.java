@@ -30,6 +30,6 @@ public class SpuAdminModuleService {
 
         queryWrapper.orderByDesc(Spu::getId);
 
-        return spuService.page(new Page<>(p, pageSize), queryWrapper);
+        return queryWrapper.page(new Page<>(p, pageSize));
     }
 }
