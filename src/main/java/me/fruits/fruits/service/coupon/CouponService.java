@@ -8,7 +8,6 @@ import me.fruits.fruits.mapper.CouponMapper;
 import me.fruits.fruits.mapper.enums.coupon.CategoryEnum;
 import me.fruits.fruits.mapper.po.Coupon;
 import me.fruits.fruits.mapper.po.coupon.MerchantMoneyOffPayload;
-import me.fruits.fruits.mapper.po.coupon.Payload;
 import me.fruits.fruits.utils.FruitsRuntimeException;
 import me.fruits.fruits.utils.PageVo;
 import org.springframework.stereotype.Service;
