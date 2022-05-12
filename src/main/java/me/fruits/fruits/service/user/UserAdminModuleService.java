@@ -35,7 +35,7 @@ public class UserAdminModuleService {
             queryWrapper.like(User::getPhone, keyword);
         }
 
-        return userService.page(new Page<>(pageVo.getP(), pageVo.getPageSize()), queryWrapper);
+        return queryWrapper.page(new Page<>(pageVo.getP(), pageVo.getPageSize()));
     }
 
 
