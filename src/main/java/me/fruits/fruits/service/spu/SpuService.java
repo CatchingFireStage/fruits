@@ -1,11 +1,11 @@
 package me.fruits.fruits.service.spu;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.fruits.fruits.mapper.SpuMapper;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.upload.UploadService;
 import me.fruits.fruits.utils.FruitsException;
+import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,26 +18,38 @@ import java.time.LocalDateTime;
  * 公共的服务
  */
 @Service
-public class SpuService {
-    @Autowired
-    private SpuMapper spuMapper;
+public class SpuService extends ServiceImpl<SpuMapper, Spu> {
 
     @Autowired
     private UploadService uploadService;
 
 
     public Spu getSpu(long id) {
-        return this.spuMapper.selectById(id);
+        return getById(id);
     }
 
+
     /**
-     * 添加一个spu
+     * @param name        商品名
+     * @param categoryId  商品分类id
+     * @param money       金额,单位元
+     * @param isInventory 0没有货，1有货
+     * @param file        商品图片
      */
-    public void add(Spu spu) {
+    public void add(String name, long categoryId, String money, boolean isInventory, MultipartFile file) throws IOException, FruitsException {
+        Spu spu = new Spu();
+        spu.setName(name);
+        spu.setCategoryId(categoryId);
+        spu.setMoney(MoneyUtils.yuanChangeFen(money));
+        spu.setIsInventory(isInventory);
+        //图片处理
+        String path = uploadService.uploadBySpu(file);
+        spu.setImage(path);
 
         spu.setCreateTime(LocalDateTime.now());
         spu.setUpdateTime(LocalDateTime.now());
-        this.spuMapper.insert(spu);
+
+        save(spu);
     }
 
 
@@ -47,30 +59,48 @@ public class SpuService {
     @Transactional
     public void delete(long id) {
 
-        QueryWrapper<Spu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-
-        Spu spu = this.spuMapper.selectOne(queryWrapper);
+        Spu spu = lambdaQuery().eq(Spu::getId, id).one();
 
         //删除文件
         this.uploadService.delete(spu.getImage());
 
-        this.spuMapper.deleteById(spu.getId());
+        this.removeById(spu.getId());
     }
 
 
+    /**
+     * 更新spu的元数据和图片
+     *
+     * @param id          唯一标识
+     * @param name        spu名字
+     * @param categoryId  分类
+     * @param money       金额
+     * @param isInventory 是否有货
+     * @param file        新的图片
+     */
+    @Transactional
+    public void update(long id, String name, long categoryId, String money, boolean isInventory, MultipartFile file) throws IOException, FruitsException {
+        //更新元数据
+        update(id, name, categoryId, money, isInventory);
+
+        if (file != null && !file.isEmpty()) {
+            //更新图片
+            update(id, file);
+        }
+    }
 
     /**
      * 更新spu的分类、是否有有货
      */
-    public void update(long id, Spu spu) {
-        UpdateWrapper<Spu> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("category_id", spu.getCategoryId())
-                .set("is_inventory", spu.getIsInventory())
-                .set("money", spu.getMoney())
-                .set("update_time", LocalDateTime.now());
-        this.spuMapper.update(null, updateWrapper);
+    public void update(long id, String name, long categoryId, String money, boolean isInventory) {
+
+        lambdaUpdate().eq(Spu::getId, id)
+                .set(Spu::getName, name)
+                .set(Spu::getCategoryId, categoryId)
+                .set(Spu::getMoney, MoneyUtils.yuanChangeFen(money))
+                .set(Spu::getIsInventory, isInventory)
+                .set(Spu::getUpdateTime, LocalDateTime.now())
+                .update();
     }
 
     /**
@@ -78,7 +108,7 @@ public class SpuService {
      */
     @Transactional
     public void update(long id, MultipartFile file) throws IOException, FruitsException {
-        Spu spu = this.spuMapper.selectById(id);
+        Spu spu = getById(id);
 
         //删除图片
         this.uploadService.delete(spu.getImage());
@@ -86,10 +116,9 @@ public class SpuService {
         //上传新的
         String newImage = this.uploadService.uploadBySpu(file);
 
-        UpdateWrapper<Spu> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", id);
-        updateWrapper.set("image", newImage);
-        this.spuMapper.update(null, updateWrapper);
+        lambdaUpdate().eq(Spu::getId, id)
+                .set(Spu::getImage, newImage)
+                .update();
 
     }
 }

@@ -6,14 +6,12 @@ import me.fruits.fruits.controller.AdminLogin;
 import me.fruits.fruits.controller.admin.spu.vo.AddSpuRequest;
 import me.fruits.fruits.mapper.po.Spu;
 import me.fruits.fruits.service.spu.SpuAdminModuleService;
+import me.fruits.fruits.service.spu.SpuService;
 import me.fruits.fruits.service.spu.WrapperDTOService;
 import me.fruits.fruits.service.spu.dto.SpuDTO;
-import me.fruits.fruits.service.upload.UploadService;
 import me.fruits.fruits.utils.FruitsException;
-import me.fruits.fruits.utils.MoneyUtils;
 import me.fruits.fruits.utils.PageVo;
 import me.fruits.fruits.utils.Result;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +43,7 @@ public class SpuController {
     private SpuAdminModuleService spuAdminModuleService;
 
     @Autowired
-    private UploadService uploadService;
+    private SpuService spuService;
 
     @Autowired
     private WrapperDTOService wrapperDTOService;
@@ -60,6 +58,7 @@ public class SpuController {
             @RequestParam(defaultValue = "") String keyword,
             PageVo pageVo
     ) {
+
         IPage<Spu> spUs = spuAdminModuleService.getSPUs(pageVo.getP(), pageVo.getPageSize(), keyword);
 
 
@@ -77,7 +76,7 @@ public class SpuController {
     @ApiOperation(value = "详情页-spu")
     public Result spu(@PathVariable Long id) {
 
-        Spu spu = spuAdminModuleService.getSPU(id);
+        Spu spu = spuService.getById(id);
         if (spu == null) {
             return Result.failed("找不到spu:" + id);
         }
@@ -93,17 +92,10 @@ public class SpuController {
     @PostMapping(value = "/spu", headers = "content-type=multipart/form-data")
     @ApiOperation(value = "添加-spu")
     public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
-        Spu spu = new Spu();
-        BeanUtils.copyProperties(addSpuRequest, spu);
 
-        //图片处理
-        String path = uploadService.uploadBySpu(file);
-        spu.setImage(path);
+        spuService.add(addSpuRequest.getName(), addSpuRequest.getCategoryId(), addSpuRequest.getMoney(),
+                addSpuRequest.getIsInventory() > 0, file);
 
-        //金额处理
-        spu.setMoney(MoneyUtils.yuanChangeFen(addSpuRequest.getMoney()));
-
-        spuAdminModuleService.add(spu);
         return Result.success();
     }
 
@@ -112,15 +104,11 @@ public class SpuController {
     public Result<String> spu(
             @PathVariable long id,
             @Valid AddSpuRequest addSpuRequest,
-            @RequestPart(value = "file",required = false) MultipartFile file) throws IOException, FruitsException {
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException, FruitsException {
 
-        Spu spu = new Spu();
-        BeanUtils.copyProperties(addSpuRequest, spu);
 
-        //金额处理
-        spu.setMoney(MoneyUtils.yuanChangeFen(addSpuRequest.getMoney()));
-
-        spuAdminModuleService.update(id, spu, file);
+        spuService.update(id, addSpuRequest.getName(), addSpuRequest.getCategoryId(), addSpuRequest.getMoney(),
+                addSpuRequest.getIsInventory() > 0, file);
 
         return Result.success();
     }
@@ -130,7 +118,7 @@ public class SpuController {
     @ApiOperation(value = "删除-spu")
     public Result<String> spu(@PathVariable long id) {
 
-        spuAdminModuleService.delete(id);
+        spuService.delete(id);
 
         return Result.success();
     }

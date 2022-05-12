@@ -26,7 +26,7 @@ public class Spu implements Serializable {
     private Long categoryId;
 
     @ApiModelProperty(value = "是否有货：0没有货：1有货")
-    private Integer isInventory;
+    private Boolean isInventory;
 
     @ApiModelProperty(value = "商品图片")
     private String image;
