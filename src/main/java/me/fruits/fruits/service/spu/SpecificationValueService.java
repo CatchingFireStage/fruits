@@ -1,51 +1,63 @@
 package me.fruits.fruits.service.spu;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.fruits.fruits.mapper.SpecificationValueMapper;
 import me.fruits.fruits.mapper.po.SpecificationValue;
-import org.springframework.beans.factory.annotation.Autowired;
+import me.fruits.fruits.utils.MoneyUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @Service
-public class SpecificationValueService {
+public class SpecificationValueService extends ServiceImpl<SpecificationValueMapper, SpecificationValue> {
 
-    @Autowired
-    private SpecificationValueMapper specificationValueMapper;
 
-    public void add(SpecificationValue specificationValue) {
 
-        this.specificationValueMapper.insert(specificationValue);
+    /**
+     * @param specificationId 规格id
+     * @param value           规格值
+     * @param money           价格，单位元
+     */
+    public void add(long specificationId, String value, @Nullable String money) {
+
+        SpecificationValue specificationValue = new SpecificationValue();
+        specificationValue.setSpecificationId(specificationId);
+        specificationValue.setValue(value);
+        if (money != null) {
+            specificationValue.setMoney(MoneyUtils.yuanChangeFen(money));
+        }
+
+        save(specificationValue);
     }
 
-    public boolean update(long id, SpecificationValue specificationValue) {
-        UpdateWrapper<SpecificationValue> updateWrapper = new UpdateWrapper<>();
 
-        updateWrapper.eq("id", id);
-        updateWrapper.set("specification_id", specificationValue.getSpecificationId())
-                .set("value", specificationValue.getValue())
-                .set("money", specificationValue.getMoney());
+    /**
+     * @param money 单位元
+     */
+    public boolean update(long id, long specificationId, String value, @Nullable String money) {
 
-        return this.specificationValueMapper.update(null, updateWrapper) > 0;
+        LambdaUpdateChainWrapper<SpecificationValue> updateChainWrapper = lambdaUpdate().eq(SpecificationValue::getId, id)
+                .set(SpecificationValue::getSpecificationId, specificationId)
+                .set(SpecificationValue::getValue, value);
+
+        if (money != null) {
+            updateChainWrapper.set(SpecificationValue::getMoney, MoneyUtils.yuanChangeFen(money));
+        }
+
+        return updateChainWrapper.update();
     }
 
     public boolean delete(long id) {
-
-        return this.specificationValueMapper.deleteById(id) > 0;
+        return removeById(id);
     }
 
     public List<SpecificationValue> getSpecificationValuesBySpecificationId(Set<Long> specificationIds) {
-        QueryWrapper<SpecificationValue> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("specification_id", specificationIds);
-        return this.specificationValueMapper.selectList(queryWrapper);
+        return lambdaQuery().in(SpecificationValue::getSpecificationId, specificationIds).list();
     }
 
-    public SpecificationValue getSpecificationValue(long id){
-
-        QueryWrapper<SpecificationValue> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",id);
-        return this.specificationValueMapper.selectOne(queryWrapper);
+    public SpecificationValue getSpecificationValue(long id) {
+        return lambdaQuery().eq(SpecificationValue::getId, id).one();
     }
 }
