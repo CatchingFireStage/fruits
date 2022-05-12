@@ -2,7 +2,8 @@ package me.fruits.fruits.controller.admin.finance;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryV3Result;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -108,7 +109,7 @@ public class PayController {
 
     @GetMapping(value = "/pay/{id}")
     @ApiOperation("支付-详情")
-    public Result<Object> pay(@PathVariable long id) throws JsonProcessingException {
+    public Result<Object> pay(@PathVariable long id) {
 
         //获取支付信息
         Pay pay = payService.getPay(id);
@@ -176,5 +177,12 @@ public class PayController {
         return Result.success(response);
     }
 
+
+    @GetMapping(value = "/pay/{id}/checkIsPay")
+    @ApiOperation("支付-检查是否支付成功，但是微信异步通知有得到了上限，无法再次通知")
+    public Result<WxPayOrderQueryV3Result> checkIsPay(@PathVariable long id) throws WxPayException {
+        return Result.success(payService.checkIsPayStatusSUCCESS(id));
+
+    }
 
 }

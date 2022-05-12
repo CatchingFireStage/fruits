@@ -3,6 +3,7 @@ package me.fruits.fruits.service.pay;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderV3Request;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryV3Result;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderV3Result;
 import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -76,6 +77,31 @@ public class PayService extends ServiceImpl<PayMapper, Pay> {
     public List<Pay> getPays(Set<Long> outTradeNo) {
 
         return lambdaQuery().in(Pay::getOutTradeNo, outTradeNo).list();
+    }
+
+
+    /**
+     * 实际用户支付已经支付成功，
+     * 但是支付通知一直没有得到正确的响应（开发阶段或者网络原因）导致微信回调已达上限
+     * 则手动查询支付的订单状态，从而继续往下走业务
+     * @param id 唯一标识
+     */
+    public WxPayOrderQueryV3Result checkIsPayStatusSUCCESS(long id) throws WxPayException {
+
+        Pay pay = getPay(id);
+        WxPayOrderQueryV3Result wxPayOrderQueryV3Result = wxPayService.queryOrderV3(null, String.valueOf(pay.getOutTradeNo()));
+
+        if (!PayStateEnum.ORDER.getValue().equals(pay.getState())) {
+            throw new FruitsRuntimeException("当前状态不是下单状态，无法往下进行");
+        }
+
+        //下单状态的情况下，检查微信那边是否支付成功
+        if ("SUCCESS".equals(wxPayOrderQueryV3Result.getTradeState())) {
+            //已经支付成功,更新订单的状态
+            updateStateToSuccess(wxPayOrderQueryV3Result.getTransactionId(), wxPayOrderQueryV3Result.getOutTradeNo());
+        }
+
+        return wxPayOrderQueryV3Result;
     }
 
     /**
