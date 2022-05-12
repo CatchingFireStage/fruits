@@ -205,7 +205,7 @@ public class PayService extends ServiceImpl<PayMapper, Pay> {
         //设置微信的订单id
         updateWrapper.set(Pay::getTransactionId, transactionId);
 
-        if (updateWrapper.update()) {
+        if (!updateWrapper.update()) {
             //更新失败,让微信再次通知
             String format = String.format("微信的transactionId:%s,系统订单号outTradeNo:%s从0到1的状态更新失败", transactionId, outTradeNo);
             log.error(format);
