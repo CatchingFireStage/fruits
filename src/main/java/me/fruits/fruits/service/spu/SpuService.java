@@ -36,7 +36,7 @@ public class SpuService extends ServiceImpl<SpuMapper, Spu> {
      * @param isInventory 0没有货，1有货
      * @param file        商品图片
      */
-    public void add(String name, long categoryId, String money, boolean isInventory, MultipartFile file) throws IOException, FruitsException {
+    public void add(String name, long categoryId, String money, Integer isInventory, MultipartFile file) throws IOException, FruitsException {
         Spu spu = new Spu();
         spu.setName(name);
         spu.setCategoryId(categoryId);
@@ -79,7 +79,7 @@ public class SpuService extends ServiceImpl<SpuMapper, Spu> {
      * @param file        新的图片
      */
     @Transactional
-    public void update(long id, String name, long categoryId, String money, boolean isInventory, MultipartFile file) throws IOException, FruitsException {
+    public void update(long id, String name, long categoryId, String money, int isInventory, MultipartFile file) throws IOException, FruitsException {
         //更新元数据
         update(id, name, categoryId, money, isInventory);
 
@@ -92,7 +92,7 @@ public class SpuService extends ServiceImpl<SpuMapper, Spu> {
     /**
      * 更新spu的分类、是否有有货
      */
-    public void update(long id, String name, long categoryId, String money, boolean isInventory) {
+    public void update(long id, String name, long categoryId, String money, int isInventory) {
 
         lambdaUpdate().eq(Spu::getId, id)
                 .set(Spu::getName, name)

@@ -94,7 +94,7 @@ public class SpuController {
     public Result<String> spu(@Valid AddSpuRequest addSpuRequest, @RequestPart("file") MultipartFile file) throws IOException, FruitsException {
 
         spuService.add(addSpuRequest.getName(), addSpuRequest.getCategoryId(), addSpuRequest.getMoney(),
-                addSpuRequest.getIsInventory() > 0, file);
+                addSpuRequest.getIsInventory(), file);
 
         return Result.success();
     }
@@ -108,7 +108,7 @@ public class SpuController {
 
 
         spuService.update(id, addSpuRequest.getName(), addSpuRequest.getCategoryId(), addSpuRequest.getMoney(),
-                addSpuRequest.getIsInventory() > 0, file);
+                addSpuRequest.getIsInventory(), file);
 
         return Result.success();
     }
